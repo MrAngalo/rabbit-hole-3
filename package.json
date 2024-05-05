@@ -1,0 +1,10 @@
+{
+  "name": "rabbit-hole-3-installer",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "docker build ./src -t rabbit-hole-3-src && docker build ./app -t rabbit-hole-3-app && docker compose up"
+  },
+  "author": "",
+  "license": "ISC"
+}
