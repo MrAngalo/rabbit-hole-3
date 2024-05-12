@@ -3,7 +3,7 @@ An updated version of Rabbit Hole 2 using django and angular
 
 ## 1. Installation:
 
-To run install the project, use:
+To install the project, use:
 ```
 npm run build
 npm run start
