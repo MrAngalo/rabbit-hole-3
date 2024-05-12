@@ -20,6 +20,7 @@ class CustomUserManager(UserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+        user.username_lower = user.username.lower()
         user.save(using=self._db)
 
         return user
@@ -53,15 +54,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     username_lower = models.CharField(unique=True, max_length=20)
     username = models.CharField(unique=True, max_length=20)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=60)
+    password = models.CharField(max_length=100)
     # confirmed = models.BooleanField(default=False)
     created = models.DateTimeField(default=timezone.now)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     score = models.IntegerField(default=0)
     # permission = models.IntegerField(choices=UserPremission, default=UserPremission[0][0])
-    ppf_gifId = models.CharField(max_length=32, null=True)
-    bio = models.CharField(max_length=400, null=True)
+    ppf_gifId = models.CharField(max_length=32, blank=True)
+    bio = models.CharField(max_length=400, blank=True)
     view_await_review = models.BooleanField(default=False)
     # scenes: Scenes[]
     # rated_by: UserRating[] @OneToMany(() => UserRating, rating => rating.recipient)
@@ -69,7 +70,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     # scene_ratings: SceneRating[] @OneToMany(() => SceneRating, rating => rating.owner)
     # tokens: Token[] @OneToMany(() => Token, token => token.owner)
     # apitokens: ApiUserToken[] @OneToMany(() => ApiUserToken, usertoken => usertoken.user, { nullable: true })
-    pass
+
+    def get_full_name(self):
+        return self.username
+
+    def get_short_name(self):
+        return self.username
 
 SCENE_STATUS = (
     ("HIDDEN", 10), # Only admins can see it
