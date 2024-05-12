@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "docker build ./src -t rabbit-hole-3-src && docker build ./app -t rabbit-hole-3-app && docker compose up"
+    "build": "docker build ./api -t rabbit-hole-3-api:1.0 && docker build ./app -t rabbit-hole-3-app:1.0",
+    "start": "docker compose up"
   },
   "author": "",
   "license": "ISC"
