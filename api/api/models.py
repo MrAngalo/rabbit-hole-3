@@ -3,14 +3,14 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
-UserPremission = (
-    ("VISITOR", 5),
-    ("TRUSTED", 10),
-    ("DONOR", 15),
-    ("MODERATOR", 80),
-    ("ADMINISTRATOR", 90),
-    ("OWNER", 100),
-)
+UserPremission = {
+    5: "VISITOR",
+    10: "TRUSTED",
+    15: "DONOR",
+    80: "MODERATOR",
+    90: "ADMINISTRATOR",
+    100: "OWNER",
+}
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -36,10 +36,6 @@ class CustomUserManager(UserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-    
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -60,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     score = models.IntegerField(default=0)
-    # permission = models.IntegerField(choices=UserPremission, default=UserPremission[0][0])
+    # permission = models.IntegerField(choices=UserPremission, default="VISITOR")
     ppf_gifId = models.CharField(max_length=32, blank=True)
     bio = models.CharField(max_length=400, blank=True)
     view_await_review = models.BooleanField(default=False)
@@ -71,28 +67,31 @@ class User(AbstractBaseUser, PermissionsMixin):
     # tokens: Token[] @OneToMany(() => Token, token => token.owner)
     # apitokens: ApiUserToken[] @OneToMany(() => ApiUserToken, usertoken => usertoken.user, { nullable: true })
 
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
     def get_full_name(self):
         return self.username
 
     def get_short_name(self):
         return self.username
+    
+    def __str__(self):
+        return f"{self.username} - {self.email}"
 
-SCENE_STATUS = (
-    ("HIDDEN", 10), # Only admins can see it
-    ("AWAITING_REVIEW", 20), # Only users with "view scenes awaiting approval" enabled
-    ("PUBLIC", 30), # Everyone can see
-)
+SCENE_STATUS = {
+    10: "HIDDEN",           # Only admins can see it
+    20: "AWAITING_REVIEW",  # Only users with "view scenes awaiting approval" enabled
+    30: "PUBLIC",           # Everyone can see
+}
 
 class Scene(models.Model):
-    class Meta:
-        verbose_name = 'Scene'
-        verbose_name_plural = 'Scenes'
-
     id = models.AutoField(primary_key=True)
-    parent = models.ForeignKey("self", related_name="children", null=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey("self", related_name="children", null=True, blank=True, on_delete=models.SET_NULL)
     # children: Scene[]
     # badges: Badge[];
-    creator = models.ForeignKey(User, related_name="scenes", null=True, on_delete=models.SET_NULL);
+    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, on_delete=models.SET_NULL);
     creator_name = models.CharField(max_length=20)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=1000)
@@ -102,6 +101,13 @@ class Scene(models.Model):
     dislikes = models.IntegerField(default=0)
     status = models.IntegerField(choices=SCENE_STATUS)
     # rated_by: SceneRating[] @OneToMany(() => SceneRating, rating => rating.scene)
+
+    class Meta:
+        verbose_name = 'Scene'
+        verbose_name_plural = 'Scenes'
+
+    def __str__(self):
+        return f"{self.title} - {self.creator_name}"
 
 class SceneRating(models.Model):
     class Meta:
@@ -114,16 +120,20 @@ class UserRating(models.Model):
         verbose_name_plural = 'User Ratings'
 
 class Badge(models.Model):
-    class Meta:
-        verbose_name = 'Badge'
-        verbose_name_plural = 'Badges'
-
     id = models.AutoField(primary_key=True)
     scenes = models.ManyToManyField(Scene, related_name="badges", blank=True)
     name = models.CharField(max_length=20)
     bg_color = models.CharField(max_length=8)
     description = models.CharField(max_length=250)
     data_uri = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = 'Badge'
+        verbose_name_plural = 'Badges'
+
+    def __str__(self):
+        return self.name
+
 
 # class ApiKeys(models.Model):
 #     pass
