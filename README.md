@@ -7,7 +7,7 @@ You must have Node.js. The wrapper node project was created using v18.16.0, and 
 If you prefer to install manually without Node.js, please copy the scripts found in ./package.json into your terminal.
 
 You must have Docker. Docker is the environment in which the project will be built and ran. Make sure you have it running in the
-background before you attempt installation
+background before you attempt installation.
 
 ## 1. Installation:
 
@@ -26,7 +26,7 @@ cd api
 python3 manage.py createsuperuser
 ```
 
-Note that you must have run the installation before creating a superuser
+Note that you must have run the installation before creating a superuser.
 
 
 
