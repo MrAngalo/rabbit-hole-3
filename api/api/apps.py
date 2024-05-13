@@ -12,10 +12,10 @@ class ApiConfig(AppConfig):
         from api.models import Scene
 
         # Create root scene if it does not exist
-        try:
-            Scene.objects.get(id=0)
+        root = Scene.objects.get_safe(id=0)
+        if (root != None):
             print("Root Scene (id=0) found, skipping...")
-        except Scene.DoesNotExist:
+        else:
             print("Root Scene (id=0) not found, creating default...")
             root = Scene(
                 id=0,

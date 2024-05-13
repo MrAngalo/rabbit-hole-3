@@ -12,7 +12,14 @@ UserPremission = {
     100: "OWNER",
 }
 
-class CustomUserManager(UserManager):
+class CustomManager(models.Manager):
+    def get_safe(self, *args, **kwargs):
+        try:
+            return self.get(*args, **kwargs)
+        except:
+            return None
+
+class CustomUserManager(CustomManager, UserManager):
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("You have not provided a valid email address.")
@@ -87,11 +94,13 @@ SCENE_STATUS = {
 }
 
 class Scene(models.Model):
+    objects = CustomManager()
+
     id = models.AutoField(primary_key=True)
     parent = models.ForeignKey("self", related_name="children", null=True, blank=True, on_delete=models.SET_NULL)
     # children: Scene[]
-    # badges: Badge[];
-    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, on_delete=models.SET_NULL);
+    # badges: Badge[]
+    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, on_delete=models.SET_NULL)
     creator_name = models.CharField(max_length=20)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=1000)
@@ -110,16 +119,19 @@ class Scene(models.Model):
         return f"{self.title} - {self.creator_name}"
 
 class SceneRating(models.Model):
+    objects = CustomManager()
     class Meta:
         verbose_name = 'Scene Rating'
         verbose_name_plural = 'Scene Ratings'
 
 class UserRating(models.Model):
+    objects = CustomManager()
     class Meta:
         verbose_name = 'User Rating'
         verbose_name_plural = 'User Ratings'
 
 class Badge(models.Model):
+    objects = CustomManager()
     id = models.AutoField(primary_key=True)
     scenes = models.ManyToManyField(Scene, related_name="badges", blank=True)
     name = models.CharField(max_length=20)
