@@ -7,8 +7,5 @@
     "start": "docker compose up"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "prettier": "3.2.5"
-  }
+  "license": "ISC"
 }
