@@ -12,17 +12,16 @@ from api.serializers import SceneSerializer
 # Create your views here.
 
 @csrf_exempt
-@api_view(['GET'])
 def sceneApi(request: HttpRequest, id=0):
-    scenes = Scene.objects.get_safe(id=id)
-    scenes_serializer = SceneSerializer(scenes)
-    return JsonResponse(scenes_serializer.data, safe=False)
-    
-    # elif request.method == "POST":
-    #     scene_data = JSONParser().parse(request)
-    #     scenes_serializer = SceneSerializer(data=scene_data)
-    #     if scenes_serializer.is_valid():
-    #         scenes_serializer.save()
-    #         return JsonResponse("Added Successfully", safe=False)
-    #     else:
-    #         return JsonResponse("Failed to Add", safe=False)
+    if request.method == "GET":
+        scenes = Scene.objects.get_safe(id=id)
+        scenes_serializer = SceneSerializer(scenes)
+        return JsonResponse(scenes_serializer.data, safe=False)
+    return None
+
+@csrf_exempt
+@api_view(['GET'])
+def notImplemented(request: HttpRequest):
+    if request.method == "GET":
+        return JsonResponse("Not Implemented", safe=False)
+    return None
