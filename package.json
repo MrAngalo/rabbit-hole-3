@@ -5,10 +5,11 @@
   "scripts": {
     "build": "docker build ./api -t rabbit-hole-3-api:1.0 && docker build ./app -t rabbit-hole-3-app:1.0",
     "start": "docker compose up",
-    "beautify": "cd app && npx prettier . --write && git diff --exit-code --quiet"
+    "beautify": "cd app && npx prettier . --write",
+    "check": "git diff --exit-code --quiet"
   },
   "pre-commit": {
-    "run": "beautify"
+    "run": ["beautify", "check"]
   },
   "author": "",
   "license": "ISC",
