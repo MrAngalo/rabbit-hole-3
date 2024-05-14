@@ -1,7 +1,28 @@
 from rest_framework import serializers
-from api.models import Scene
+from api.models import Badge, Scene
 
+
+class BadgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Badge
+        fields = (
+            'id',
+            'name',
+            'bg_color',
+            'description',
+            'data_uri'
+        )
+
+class SceneParentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scene
+        fields = (
+            'id',
+            'status',
+        )
+    
 class SceneChildSerializer(serializers.ModelSerializer):
+    badges = BadgeSerializer(many=True, required=False)
     class Meta:
         model = Scene
         fields = (
@@ -11,11 +32,13 @@ class SceneChildSerializer(serializers.ModelSerializer):
             'likes',
             'dislikes',
             'status',
-        #     'badges',
+            'badges',
         )
 
 class SceneSerializer(serializers.ModelSerializer):
+    parent = SceneParentSerializer(many=False, required=False)
     children = SceneChildSerializer(many=True, required=False)
+    badges = BadgeSerializer(many=True, required=False)
     # parent_id = serializers.CharField(source='parent.id')
     # children_title = serializers.CharField(source='children.title')
     # children_title = serializers.ReadOnlyField(source='children.title')
@@ -36,10 +59,7 @@ class SceneSerializer(serializers.ModelSerializer):
             "likes",
             "dislikes",
             "status",
-        #    "badges",
-        #     'badges',
-        #     'creator.id',
-            # 'parent_id',
+            "badges",
         #     'parent.status',
         #     'children.id',
             # 'children_title',

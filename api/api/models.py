@@ -43,17 +43,13 @@ class CustomUserManager(CustomManager, UserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    objects = CustomUserManager()
+    id = models.AutoField(primary_key=True)
+
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
-    objects = CustomUserManager()
-
-    USERNAME_FIELD = 'email'
-    EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['username','password']
-
-    id = models.AutoField(primary_key=True)
     username_lower = models.CharField(unique=True, max_length=20)
     username = models.CharField(unique=True, max_length=20)
     email = models.EmailField(unique=True)
@@ -78,6 +74,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['username','password']
+
     def get_full_name(self):
         return self.username
 
@@ -86,6 +86,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return f"{self.username} - {self.email}"
+    
+class Badge(models.Model):
+    objects = CustomManager()
+    id = models.AutoField(primary_key=True)
+    # scenes: Scene[]
+    name = models.CharField(max_length=20)
+    bg_color = models.CharField(max_length=8)
+    description = models.CharField(max_length=250)
+    data_uri = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = 'Badge'
+        verbose_name_plural = 'Badges'
+
+    def __str__(self):
+        return self.name
 
 SCENE_STATUS = {
     10: "HIDDEN",           # Only admins can see it
@@ -97,10 +113,9 @@ class Scene(models.Model):
     objects = CustomManager()
 
     id = models.AutoField(primary_key=True)
-    parent = models.ForeignKey("self", related_name="children", null=True, blank=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey("self", related_name="children", null=True, blank=True, default=None,on_delete=models.SET_NULL)
     # children: Scene[]
-    # badges: Badge[]
-    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, default=None, on_delete=models.SET_NULL)
     creator_name = models.CharField(max_length=20)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=1000)
@@ -111,12 +126,14 @@ class Scene(models.Model):
     status = models.IntegerField(choices=SCENE_STATUS)
     # rated_by: SceneRating[] @OneToMany(() => SceneRating, rating => rating.scene)
 
+    badges = models.ManyToManyField(Badge, related_name="scenes", blank=True)
+
     class Meta:
         verbose_name = 'Scene'
         verbose_name_plural = 'Scenes'
 
     def __str__(self):
-        return f"{self.title} - {self.creator_name}"
+        return f"{self.id} - {self.title} - {self.creator_name}"
 
 class SceneRating(models.Model):
     objects = CustomManager()
@@ -129,22 +146,6 @@ class UserRating(models.Model):
     class Meta:
         verbose_name = 'User Rating'
         verbose_name_plural = 'User Ratings'
-
-class Badge(models.Model):
-    objects = CustomManager()
-    id = models.AutoField(primary_key=True)
-    scenes = models.ManyToManyField(Scene, related_name="badges", blank=True)
-    name = models.CharField(max_length=20)
-    bg_color = models.CharField(max_length=8)
-    description = models.CharField(max_length=250)
-    data_uri = models.CharField(max_length=30)
-
-    class Meta:
-        verbose_name = 'Badge'
-        verbose_name_plural = 'Badges'
-
-    def __str__(self):
-        return self.name
 
 
 # class ApiKeys(models.Model):

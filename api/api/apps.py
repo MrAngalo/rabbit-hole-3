@@ -23,6 +23,6 @@ class ApiConfig(AppConfig):
                 title="The Mischievous Forest",
                 description="You are lost.\\nYou see a tree, a rock, and a waterfall on the distance.\\nYou can do anything! What do you do?",
                 gifId="16992587",
-                status="PUBLIC",
+                status=30,
             )
             root.save()
