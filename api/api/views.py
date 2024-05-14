@@ -3,9 +3,6 @@ from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import JsonResponse
 
-from rest_framework.decorators import api_view
-# from rest_framework.parsers import JSONParser
-
 from api.models import Scene
 from api.serializers import SceneSerializer
 
@@ -20,7 +17,6 @@ def sceneApi(request: HttpRequest, id=0):
     return None
 
 @csrf_exempt
-@api_view(['GET'])
 def notImplemented(request: HttpRequest):
     if request.method == "GET":
         return JsonResponse("Not Implemented", safe=False)
