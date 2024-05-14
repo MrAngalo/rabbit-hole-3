@@ -13,6 +13,7 @@ background before you attempt installation.
 
 To install the project, use:
 ```
+npm install
 npm run build
 npm run start
 ```
