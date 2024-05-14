@@ -4,8 +4,15 @@
   "description": "",
   "scripts": {
     "build": "docker build ./api -t rabbit-hole-3-api:1.0 && docker build ./app -t rabbit-hole-3-app:1.0",
-    "start": "docker compose up"
+    "start": "docker compose up",
+    "beautify": "cd app && npx prettier . --write && git diff --exit-code --quiet"
+  },
+  "pre-commit": {
+    "run": "beautify"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  }
 }

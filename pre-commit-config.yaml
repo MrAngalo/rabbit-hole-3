@@ -1,0 +1,8 @@
+- repo: local
+  hooks:
+    - id: pylint-error-count
+      name: pylint-error-count
+      entry: bash -c 'exit 1'
+      language: system
+      types: [python]
+      pass_filenames: false
