@@ -5,35 +5,33 @@ from api.models import Badge, Scene
 class BadgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge
-        fields = (
-            'id',
-            'name',
-            'bg_color',
-            'description',
-            'data_uri'
-        )
+        fields = ("id", "name", "bg_color", "description", "data_uri")
+
 
 class SceneParentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scene
         fields = (
-            'id',
-            'status',
+            "id",
+            "status",
         )
-    
+
+
 class SceneChildSerializer(serializers.ModelSerializer):
     badges = BadgeSerializer(many=True, required=False)
+
     class Meta:
         model = Scene
         fields = (
-            'id',
-            'creator',
-            'title',
-            'likes',
-            'dislikes',
-            'status',
-            'badges',
+            "id",
+            "creator",
+            "title",
+            "likes",
+            "dislikes",
+            "status",
+            "badges",
         )
+
 
 class SceneSerializer(serializers.ModelSerializer):
     parent = SceneParentSerializer(many=False, required=False)
@@ -60,16 +58,16 @@ class SceneSerializer(serializers.ModelSerializer):
             "dislikes",
             "status",
             "badges",
-        #     'parent.status',
-        #     'children.id',
+            #     'parent.status',
+            #     'children.id',
             # 'children_title',
-        #     'children.likes',
-        #     'children.dislikes',
-        #     'children.status',
-        #     'children.creator.id',
-        #     'children.badges',
+            #     'children.likes',
+            #     'children.dislikes',
+            #     'children.status',
+            #     'children.creator.id',
+            #     'children.badges',
         )
-        
+
         # .leftJoinAndSelect('scene.creator', 'creator')
         # .leftJoinAndSelect('scene.badges', 'badges')
         # .leftJoinAndSelect('scene.parent', 'parent')
@@ -98,7 +96,7 @@ class SceneSerializer(serializers.ModelSerializer):
 #     if request.method == 'GET':
 #         serializer = QuestionSerializer(question)
 #         return Response(serializer.data)
-    
+
 # class AskedToSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = AskedTo
@@ -106,7 +104,7 @@ class SceneSerializer(serializers.ModelSerializer):
 
 # class QuestionSerializer(serializers.ModelSerializer):
 #     places = PlaceSerializer(many=True, required=False)
-#     asked = AskedToSerializer(source='askedto_set', many=True)    
+#     asked = AskedToSerializer(source='askedto_set', many=True)
 
 #     class Meta:
 #         model = Question

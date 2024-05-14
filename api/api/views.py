@@ -8,6 +8,7 @@ from api.serializers import SceneSerializer
 
 # Create your views here.
 
+
 @csrf_exempt
 def sceneApi(request: HttpRequest, id=0):
     if request.method == "GET":
@@ -15,6 +16,7 @@ def sceneApi(request: HttpRequest, id=0):
         scenes_serializer = SceneSerializer(scenes)
         return JsonResponse(scenes_serializer.data, safe=False)
     return None
+
 
 @csrf_exempt
 def notImplemented(request: HttpRequest):

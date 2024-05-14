@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
 from django.utils import timezone
+
 # Create your models here.
 
 UserPremission = {
@@ -12,6 +13,7 @@ UserPremission = {
     100: "OWNER",
 }
 
+
 class CustomManager(models.Manager):
     def get_safe(self, *args, **kwargs):
         try:
@@ -19,11 +21,12 @@ class CustomManager(models.Manager):
         except:
             return None
 
+
 class CustomUserManager(CustomManager, UserManager):
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("You have not provided a valid email address.")
-        
+
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -31,16 +34,17 @@ class CustomUserManager(CustomManager, UserManager):
         user.save(using=self._db)
 
         return user
-    
+
     def create_user(self, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
         return self._create_user(email, password, **extra_fields)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
@@ -71,22 +75,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     # apitokens: ApiUserToken[] @OneToMany(() => ApiUserToken, usertoken => usertoken.user, { nullable: true })
 
     class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
-    USERNAME_FIELD = 'email'
-    EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['username','password']
+    USERNAME_FIELD = "email"
+    EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "password"]
 
     def get_full_name(self):
         return self.username
 
     def get_short_name(self):
         return self.username
-    
+
     def __str__(self):
         return f"{self.username} - {self.email}"
-    
+
+
 class Badge(models.Model):
     objects = CustomManager()
     id = models.AutoField(primary_key=True)
@@ -97,25 +102,41 @@ class Badge(models.Model):
     data_uri = models.CharField(max_length=30)
 
     class Meta:
-        verbose_name = 'Badge'
-        verbose_name_plural = 'Badges'
+        verbose_name = "Badge"
+        verbose_name_plural = "Badges"
 
     def __str__(self):
         return self.name
 
+
 SCENE_STATUS = {
-    10: "HIDDEN",           # Only admins can see it
+    10: "HIDDEN",  # Only admins can see it
     20: "AWAITING_REVIEW",  # Only users with "view scenes awaiting approval" enabled
-    30: "PUBLIC",           # Everyone can see
+    30: "PUBLIC",  # Everyone can see
 }
+
 
 class Scene(models.Model):
     objects = CustomManager()
 
     id = models.AutoField(primary_key=True)
-    parent = models.ForeignKey("self", related_name="children", null=True, blank=True, default=None,on_delete=models.SET_NULL)
+    parent = models.ForeignKey(
+        "self",
+        related_name="children",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL,
+    )
     # children: Scene[]
-    creator = models.ForeignKey(User, related_name="scenes", null=True, blank=True, default=None, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(
+        User,
+        related_name="scenes",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL,
+    )
     creator_name = models.CharField(max_length=20)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=1000)
@@ -129,23 +150,27 @@ class Scene(models.Model):
     badges = models.ManyToManyField(Badge, related_name="scenes", blank=True)
 
     class Meta:
-        verbose_name = 'Scene'
-        verbose_name_plural = 'Scenes'
+        verbose_name = "Scene"
+        verbose_name_plural = "Scenes"
 
     def __str__(self):
         return f"{self.id} - {self.title} - {self.creator_name}"
 
+
 class SceneRating(models.Model):
     objects = CustomManager()
+
     class Meta:
-        verbose_name = 'Scene Rating'
-        verbose_name_plural = 'Scene Ratings'
+        verbose_name = "Scene Rating"
+        verbose_name_plural = "Scene Ratings"
+
 
 class UserRating(models.Model):
     objects = CustomManager()
+
     class Meta:
-        verbose_name = 'User Rating'
-        verbose_name_plural = 'User Ratings'
+        verbose_name = "User Rating"
+        verbose_name_plural = "User Ratings"
 
 
 # class ApiKeys(models.Model):

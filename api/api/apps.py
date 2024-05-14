@@ -1,19 +1,20 @@
 import sys
 from django.apps import AppConfig
 
+
 class ApiConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'api'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "api"
 
     def ready(self):
-        if 'runserver' not in sys.argv:
+        if "runserver" not in sys.argv:
             return True
-        
+
         from api.models import Scene
 
         # Create root scene if it does not exist
         root = Scene.objects.get_safe(id=0)
-        if (root != None):
+        if root != None:
             print("Root Scene (id=0) found, skipping...")
         else:
             print("Root Scene (id=0) not found, creating default...")
