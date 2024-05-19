@@ -1,14 +1,42 @@
 from rest_framework import serializers
-from api.models import Badge, Scene
+from api.models import Badge, Scene, User
 
 
-class BadgeSerializer(serializers.ModelSerializer):
+# https://stackoverflow.com/questions/53319787/how-can-i-select-specific-fields-in-django-rest-framework
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop("fields", None)
+
+        # Instantiate the superclass normally
+        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+
+class UserSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+class BadgeSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Badge
         fields = ("id", "name", "bg_color", "description", "data_uri")
 
 
-class SceneParentSerializer(serializers.ModelSerializer):
+class SceneParentSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Scene
         fields = (
@@ -17,7 +45,7 @@ class SceneParentSerializer(serializers.ModelSerializer):
         )
 
 
-class SceneChildSerializer(serializers.ModelSerializer):
+class SceneChildSerializer(DynamicFieldsModelSerializer):
     badges = BadgeSerializer(many=True, required=False)
 
     class Meta:
@@ -33,7 +61,7 @@ class SceneChildSerializer(serializers.ModelSerializer):
         )
 
 
-class SceneSerializer(serializers.ModelSerializer):
+class SceneSerializer(DynamicFieldsModelSerializer):
     parent = SceneParentSerializer(many=False, required=False)
     children = SceneChildSerializer(many=True, required=False)
     badges = BadgeSerializer(many=True, required=False)
