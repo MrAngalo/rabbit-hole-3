@@ -24,7 +24,7 @@ from userauth.authentication import ExpiringTokenAuthentication
 @csrf_exempt
 @api_view(["POST"])
 def login(request: Request):
-    user = User.objects.get_safe(username=request.data["username"])
+    user = User.objects.get_safe(email=request.data["email"])
     if user == None:
         return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     if not user.check_password(request.data["password"]):
