@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authentication",
     "rest_framework.authtoken",
+    "userauth",
     "api",
 ]
 
-AUTH_USER_MODEL = "api.User"
+AUTH_USER_MODEL = "userauth.User"
 
 TOKEN_EXPIRE_TIME = timedelta(days=5)
 
