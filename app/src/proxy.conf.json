@@ -1,0 +1,8 @@
+[
+  {
+    "context": ["/api", "/admin", "/static"],
+    "target": "http://django:8000",
+    "secure": false,
+    "logLevel": "debug"
+  }
+]
