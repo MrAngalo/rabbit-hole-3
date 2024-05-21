@@ -2,10 +2,10 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 import { HttpClientModule } from "@angular/common/http";
-import { AuthenticationService } from "./authentication.service";
+import { AuthService } from "./services/auth.service";
 
 @NgModule({
-    declarations: [AuthenticationService],
+    declarations: [AuthService],
     imports: [CommonModule, HttpClientModule]
 })
 export class UserauthModule {}

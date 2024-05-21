@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { AuthenticationService } from "../authentication.service";
+import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 
 @Component({
@@ -15,18 +15,18 @@ export class LoginComponent {
     password = "";
 
     constructor(
-        private auth: AuthenticationService,
+        private auth: AuthService,
         private router: Router
     ) {}
 
     async login() {
-        this.auth.login(this.email, this.password).subscribe({
-            next: (data) => {
-                console.log(data);
-            },
-            error: (error) => {
+        this.auth
+            .login(this.email, this.password)
+            .then(() => {
+                this.router.navigate(["/test_token"]);
+            })
+            .catch((error) => {
                 console.log(error);
-            }
-        });
+            });
     }
 }
