@@ -18,8 +18,8 @@ export type UserToken = {
 export class AuthService {
     private readonly apiUrl = "http://127.0.0.1:8080/api";
 
-    private token: string | null;
-    private user: User | null;
+    private _token: string | null;
+    private _user: User | null;
 
     constructor(
         private http: HttpClient,
@@ -28,16 +28,20 @@ export class AuthService {
         const t = this.cookie.get("token");
         const u = this.cookie.get("user");
         if (t !== "" && u !== "") {
-            this.token = t;
-            this.user = JSON.parse(u);
+            this._token = t;
+            this._user = JSON.parse(u);
         } else {
-            this.token = null;
-            this.user = null;
+            this._token = null;
+            this._user = null;
         }
     }
 
     get isAuthenticated() {
-        return this.token !== null;
+        return this._token !== null;
+    }
+
+    get user(): Readonly<User | null> {
+        return this._user;
     }
 
     login(email: string, password: string) {
@@ -53,8 +57,8 @@ export class AuthService {
         return new Promise<void>((resolve, reject) => {
             a.subscribe({
                 next: (data) => {
-                    this.token = data.token;
-                    this.user = data.user;
+                    this._token = data.token;
+                    this._user = data.user;
                     this.cookie.set("token", data.token);
                     this.cookie.set("user", JSON.stringify(data.user));
                     resolve();
