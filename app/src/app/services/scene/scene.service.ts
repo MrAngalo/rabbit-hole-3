@@ -12,7 +12,11 @@ export class SceneService {
     constructor(private http: HttpClient) {}
 
     async fetchScene(id: number): Promise<Scene> {
-        const req = this.http.get<Scene>(`${this.apiUrl}/scene/${id}`);
+        const req = this.http.get<Scene>(`${this.apiUrl}/scene/${id}`, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
         return new Promise((resolve, reject) => {
             req.subscribe({
                 next: resolve,
