@@ -1,3 +1,9 @@
+export enum SceneStatus {
+    HIDDEN = 10,
+    AWAITING_REVIEW = 20,
+    PUBLIC = 30
+}
+
 export type Badge = {
     id: number;
     name: string;
