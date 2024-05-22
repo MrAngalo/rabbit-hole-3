@@ -44,8 +44,8 @@ export class AuthService {
         return this._user;
     }
 
-    login(email: string, password: string) {
-        const a = this.http.post<UserToken>(
+    login(email: string, password: string): Promise<void> {
+        const req = this.http.post<UserToken>(
             `${this.apiUrl}/login/`,
             JSON.stringify({ email, password }),
             {
@@ -54,8 +54,8 @@ export class AuthService {
                 }
             }
         );
-        return new Promise<void>((resolve, reject) => {
-            a.subscribe({
+        return new Promise((resolve, reject) => {
+            req.subscribe({
                 next: (data) => {
                     this._token = data.token;
                     this._user = data.user;

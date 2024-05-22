@@ -1,7 +1,7 @@
 <header>
     <div class="navigation">
         <div class="navigation-left">
-            <a href="/">
+            <a [routerLink]="['/']">
                 <div class="icon">
                     <img src="/assets/img/icons/rabbit.svg" alt="Rabbit" />
                 </div>
@@ -37,7 +37,7 @@
                 </form>
             </div>
             <div class="menu profile">
-                <a [href]="user !== null ? '/account' : '/login'">
+                <a [routerLink]="user !== null ? ['/account'] : ['/login']">
                     <div class="icon button">
                         <img
                             src="/assets/img/icons/profile.svg"
