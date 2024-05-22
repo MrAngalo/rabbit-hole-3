@@ -9,14 +9,14 @@ import { SceneService } from "../../services/scene/scene.service";
     styleUrl: "./scene-info.component.scss"
 })
 export class SceneInfoComponent {
-    constructor(private scene: SceneService) {
-        scene
-            .fetchScene(0)
-            .then((data) => {
+    constructor(scene: SceneService) {
+        scene.fetchScene(0).subscribe({
+            next: (data) => {
                 console.log(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            },
+            error: (data) => {
+                console.log(data.error);
+            }
+        });
     }
 }

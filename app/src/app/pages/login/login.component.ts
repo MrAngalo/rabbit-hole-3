@@ -19,14 +19,14 @@ export class LoginComponent {
         private router: Router
     ) {}
 
-    async login() {
-        this.auth
-            .login(this.email, this.password)
-            .then(() => {
+    login() {
+        this.auth.login(this.email, this.password).subscribe({
+            next: (data) => {
                 this.router.navigate(["/test_token"]);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            },
+            error: (data) => {
+                console.log(data.error);
+            }
+        });
     }
 }

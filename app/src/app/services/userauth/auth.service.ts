@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { CookieService } from "ngx-cookie-service";
 import { User, UserToken } from "../../types/models/userauth";
+import { tap } from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -35,27 +36,24 @@ export class AuthService {
         return this._user;
     }
 
-    login(email: string, password: string): Promise<void> {
-        const req = this.http.post<UserToken>(
-            `${this.apiUrl}/login/`,
-            JSON.stringify({ email, password }),
-            {
-                headers: {
-                    "Content-Type": "application/json"
+    login(email: string, password: string) {
+        return this.http
+            .post<UserToken>(
+                `${this.apiUrl}/login/`,
+                JSON.stringify({ email, password }),
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
-            }
-        );
-        return new Promise((resolve, reject) => {
-            req.subscribe({
-                next: (data) => {
+            )
+            .pipe(
+                tap((data) => {
                     this._token = data.token;
                     this._user = data.user;
                     this.cookie.set("token", data.token);
                     this.cookie.set("user", JSON.stringify(data.user));
-                    resolve();
-                },
-                error: (data) => reject(data.error)
-            });
-        });
+                })
+            );
     }
 }

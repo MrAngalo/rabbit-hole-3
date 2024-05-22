@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Scene } from "../../types/models/scene";
+import { tap } from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -10,17 +11,11 @@ export class SceneService {
 
     constructor(private http: HttpClient) {}
 
-    async fetchScene(id: number): Promise<Scene> {
-        const req = this.http.get<Scene>(`${this.apiUrl}/scene/${id}`, {
+    fetchScene(id: number) {
+        return this.http.get<Scene>(`${this.apiUrl}/scene/${id}`, {
             headers: {
                 "Content-Type": "application/json"
             }
-        });
-        return new Promise((resolve, reject) => {
-            req.subscribe({
-                next: resolve,
-                error: (data) => reject(data.error)
-            });
         });
     }
 }
