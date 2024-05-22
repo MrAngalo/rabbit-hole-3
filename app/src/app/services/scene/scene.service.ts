@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-
-export type Scene = {};
+import { Scene } from "../../types/models/scene";
 
 @Injectable({
     providedIn: "root"

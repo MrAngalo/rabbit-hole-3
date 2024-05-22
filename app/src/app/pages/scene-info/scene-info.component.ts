@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { SceneService } from "../../services/scene/scene.service";
 
 @Component({
     selector: "app-scene-info",
@@ -7,4 +8,15 @@ import { Component } from "@angular/core";
     templateUrl: "./scene-info.component.html",
     styleUrl: "./scene-info.component.scss"
 })
-export class SceneInfoComponent {}
+export class SceneInfoComponent {
+    constructor(private scene: SceneService) {
+        scene
+            .fetchScene(0)
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+}

@@ -1,16 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { CookieService } from "ngx-cookie-service";
-
-export type User = {
-    username: string;
-    email: string;
-};
-
-export type UserToken = {
-    user: User;
-    token: string;
-};
+import { User, UserToken } from "../../types/models/userauth";
 
 @Injectable({
     providedIn: "root"

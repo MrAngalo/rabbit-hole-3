@@ -1,7 +1,8 @@
 import { Component } from "@angular/core";
-import { AuthService, User } from "../../services/userauth/auth.service";
+import { AuthService } from "../../services/userauth/auth.service";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
+import { User } from "../../types/models/userauth";
 
 @Component({
     selector: "app-header",
