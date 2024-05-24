@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 4200 49153
 
-CMD ["npm", "run", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0", "--poll", "2000", "--live-reload", "false"]
