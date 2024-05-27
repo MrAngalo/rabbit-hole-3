@@ -16,7 +16,7 @@ import { FormsModule } from "@angular/forms";
     styleUrl: "./header.component.scss"
 })
 export class HeaderComponent {
-    user: Readonly<User | null>;
+    user$: Observable<User | null>;
     globals$: Observable<SceneGlobalsResponse>;
     sceneId!: number | null;
 
@@ -25,7 +25,7 @@ export class HeaderComponent {
         private authService: AuthService,
         private sceneService: SceneService
     ) {
-        this.user = this.authService.user;
+        this.user$ = this.authService.user$;
         this.globals$ = this.sceneService.globals$;
         this.router.events
             .pipe(

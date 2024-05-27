@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { CookieService } from "ngx-cookie-service";
 import { User, UserToken } from "./userauth-types";
-import { tap } from "rxjs";
+import { Observable, ReplaySubject, tap } from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -13,10 +13,16 @@ export class AuthService {
     private _token: string | null;
     private _user: User | null;
 
+    userSubject: ReplaySubject<User | null>;
+    user$: Observable<User | null>;
+
     constructor(
         private http: HttpClient,
         private cookie: CookieService
     ) {
+        this.userSubject = new ReplaySubject<User | null>(1);
+        this.user$ = this.userSubject.asObservable();
+
         const t = this.cookie.get("token");
         const u = this.cookie.get("user");
         if (t !== "" && u !== "") {
@@ -26,14 +32,12 @@ export class AuthService {
             this._token = null;
             this._user = null;
         }
+
+        this.userSubject.next(this._user);
     }
 
     get isAuthenticated() {
         return this._token !== null;
-    }
-
-    get user(): Readonly<User | null> {
-        return this._user;
     }
 
     login(email: string, password: string) {
@@ -53,6 +57,7 @@ export class AuthService {
                     this._user = data.user;
                     this.cookie.set("token", data.token);
                     this.cookie.set("user", JSON.stringify(data.user));
+                    this.userSubject.next(this._user);
                 })
             );
     }

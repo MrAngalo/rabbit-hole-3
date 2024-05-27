@@ -32,7 +32,11 @@
                 </div>
             </div>
             <div class="menu profile">
-                <a [routerLink]="user !== null ? ['/account'] : ['/login']">
+                <a
+                    [routerLink]="
+                        (user$ | async) !== null ? ['/account'] : ['/login']
+                    "
+                >
                     <div class="icon button">
                         <img
                             src="/assets/img/icons/profile.svg"
@@ -40,7 +44,7 @@
                         />
                     </div>
                     <div class="username label">
-                        {{ user !== null ? user.username : "Login" }}
+                        {{ (user$ | async)?.username || "Login" }}
                     </div>
                 </a>
             </div>
