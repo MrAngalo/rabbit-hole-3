@@ -27,7 +27,7 @@ export type SceneParent = {
     status: number;
 };
 
-export type Scene = {
+export type SceneResponse = {
     id: number;
     creator: number;
     creator_name: string;
@@ -41,4 +41,9 @@ export type Scene = {
     dislikes: number;
     status: number;
     badges: Badge[];
+};
+
+export type SceneGlobalsResponse = {
+    maxId: number;
+    count: number;
 };

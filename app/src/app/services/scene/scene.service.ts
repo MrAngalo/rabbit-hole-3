@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Scene } from "../../types/models/scene";
-import { tap } from "rxjs";
+import { SceneGlobalsResponse, SceneResponse } from "./scene-types";
 
 @Injectable({
     providedIn: "root"
@@ -12,10 +11,21 @@ export class SceneService {
     constructor(private http: HttpClient) {}
 
     fetchScene(id: number) {
-        return this.http.get<Scene>(`${this.apiUrl}/scene/${id}`, {
+        return this.http.get<SceneResponse>(`${this.apiUrl}/scene/${id}`, {
             headers: {
                 "Content-Type": "application/json"
             }
         });
+    }
+
+    fetchSceneGlobals() {
+        return this.http.get<SceneGlobalsResponse>(
+            `${this.apiUrl}/scene-globals`,
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
     }
 }

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { SceneService } from "../../services/scene/scene.service";
-import { Scene, SceneStatus } from "../../types/models/scene";
+import { SceneResponse, SceneStatus } from "../../services/scene/scene-types";
 import { Observable } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -17,7 +17,7 @@ import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 export class SceneInfoComponent {
     SceneStatus = SceneStatus;
 
-    scene$!: Observable<Scene>;
+    scene$!: Observable<SceneResponse>;
     options = 3;
 
     constructor(
