@@ -10,31 +10,26 @@
         </div>
         <div class="navigation-right">
             <div class="menu search">
-                <form id="search-form" action="/scene" method="GET">
-                    <div class="hint-input">
-                        <label for="id">Scene ID #</label>
-                        <input
-                            type="number"
-                            id="id"
-                            name="id"
-                            min="0"
-                            value="%%% (locals.scene) ? locals.scene.id : 0 %%%"
-                            max="%%% locals.static.last_id || 0 %%%"
-                            oninput="value=Math.min(Math.max(value, 0), parseInt('%%% locals.static.last_id || 0 %%%'));"
-                        />
-                        <div class="hint">
-                            Highest ID is %%% locals.static.last_id || 0 %%%!
-                        </div>
+                <div class="hint-input">
+                    <label for="id">Scene ID #</label>
+                    <input
+                        type="number"
+                        [(ngModel)]="sceneId"
+                        [min]="0"
+                        [max]="(globals$ | async)?.maxId || 0"
+                    />
+                    <div class="hint">
+                        Highest ID is {{ (globals$ | async)?.maxId }}!
                     </div>
-                    <div>
-                        <button class="icon button" type="submit">
-                            <img
-                                src="/assets/img/icons/search.svg"
-                                alt="Search"
-                            />
-                        </button>
-                    </div>
-                </form>
+                </div>
+                <div>
+                    <button
+                        class="icon button"
+                        [routerLink]="['/scene', sceneId || 0]"
+                    >
+                        <img src="/assets/img/icons/search.svg" alt="Search" />
+                    </button>
+                </div>
             </div>
             <div class="menu profile">
                 <a [routerLink]="user !== null ? ['/account'] : ['/login']">

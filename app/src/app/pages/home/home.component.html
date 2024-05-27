@@ -10,7 +10,7 @@
         />
         <img
             class="tenor-footer"
-            src="/img/tenor/PB_tenor_logo_blue_horizontal.svg"
+            src="/assets/img/tenor/PB_tenor_logo_blue_horizontal.svg"
             alt="Tenor Footer"
         />
     </div>
@@ -29,8 +29,8 @@
                 >Join The Discord</a
             >
         </div>
-        <p class="total">
-            There are a total of <%= locals.static.scene_count || 0 %> paths
+        <p class="total" *ngIf="globals$ | async as globals">
+            There are a total of {{ globals.count }} paths
         </p>
     </div>
 </div>

@@ -15,12 +15,12 @@ export class LoginComponent {
     password = "";
 
     constructor(
-        private auth: AuthService,
+        private authService: AuthService,
         private router: Router
     ) {}
 
     login() {
-        this.auth.login(this.email, this.password).subscribe({
+        this.authService.login(this.email, this.password).subscribe({
             next: (data) => {
                 this.router.navigate(["/test_token"]);
             },
