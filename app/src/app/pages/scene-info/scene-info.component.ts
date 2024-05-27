@@ -29,4 +29,12 @@ export class SceneInfoComponent {
             this.scene$ = this.sceneService.fetchScene(id);
         });
     }
+
+    rateClick(rating: "positive" | "negative") {
+        console.log(rating);
+    }
+
+    reportClick() {
+        console.log("report");
+    }
 }

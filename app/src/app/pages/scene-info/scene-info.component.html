@@ -33,9 +33,7 @@
     <div class="description-wrapper">
         <div class="rabbit-gif-wrapper">
             <img
-                class="rabbit-gif tenor-load"
-                gif-id="%%%= locals.scene.gifId %%%"
-                token="%%%= locals.csrfToken %%%"
+                class="rabbit-gif"
                 alt="Rabbit Gif"
                 [src]="scene.gifId | fetchPost | async"
             />
@@ -109,48 +107,30 @@
             <p>Scene ID: {{ scene.id }}</p>
             <div class="rating-container">
                 <div class="rating-option">
-                    <form action="/rate/%%%= locals.scene.id %%%" method="POST">
-                        <input
-                            type="hidden"
-                            name="_csrf"
-                            value="%%%= locals.csrfToken %%%"
-                        />
-                        <input type="hidden" name="rating" value="positive" />
-                        <button class="icon button green" type="submit">
-                            <img src="/assets/img/icons/like.svg" alt="Like" />
-                        </button>
-                    </form>
-                    <div>%%%= locals.scene.likes %%%</div>
+                    <button
+                        class="icon button green"
+                        (click)="rateClick('positive')"
+                    >
+                        <img src="/assets/img/icons/like.svg" alt="Like" />
+                    </button>
+                    <div>{{ scene.likes }}</div>
                 </div>
                 <div class="rating-option">
-                    <form action="/rate/%%%= locals.scene.id %%%" method="POST">
-                        <input
-                            type="hidden"
-                            name="_csrf"
-                            value="%%%= locals.csrfToken %%%"
+                    <button
+                        class="icon button red"
+                        (click)="rateClick('negative')"
+                    >
+                        <img
+                            src="/assets/img/icons/dislike.svg"
+                            alt="Dislike"
                         />
-                        <input type="hidden" name="rating" value="negative" />
-                        <button class="icon button red" type="submit">
-                            <img
-                                src="/assets/img/icons/dislike.svg"
-                                alt="Dislike"
-                            />
-                        </button>
-                    </form>
-                    <div>%%%= -locals.scene.dislikes %%%</div>
+                    </button>
+                    <div>{{ -scene.dislikes }}</div>
                 </div>
                 <div class="rating-option">
-                    <form action="/rate/%%%= locals.scene.id %%%" method="POST">
-                        <input
-                            type="hidden"
-                            name="_csrf"
-                            value="%%%= locals.csrfToken %%%"
-                        />
-                        <input type="hidden" name="rating" value="report" />
-                        <button class="icon button yellow" type="submit">
-                            <img src="/assets/img/icons/warn.svg" alt="Warn" />
-                        </button>
-                    </form>
+                    <button class="icon button yellow" (click)="reportClick()">
+                        <img src="/assets/img/icons/warn.svg" alt="Warn" />
+                    </button>
                     <div>report (WIP)</div>
                 </div>
             </div>
