@@ -22,11 +22,16 @@ export type SceneChildren = {
     badges: Badge[];
 };
 
+export type SceneParent = {
+    id: number;
+    status: number;
+};
+
 export type Scene = {
     id: number;
     creator: number;
     creator_name: string;
-    parent: number;
+    parent: SceneParent;
     children: SceneChildren[];
     title: string;
     description: string;

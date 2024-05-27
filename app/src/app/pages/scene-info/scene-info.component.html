@@ -100,6 +100,11 @@
                         <div class="button create">Create your action</div>
                     </a>
                 </div>
+                <div class="choice" *ngIf="scene.parent">
+                    <a [routerLink]="['/scene', scene.parent.id]">
+                        <div class="button">Go Back!</div>
+                    </a>
+                </div>
             </div>
             <p>Scene ID: {{ scene.id }}</p>
             <div class="rating-container">
