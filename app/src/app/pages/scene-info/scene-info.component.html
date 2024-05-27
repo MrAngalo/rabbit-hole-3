@@ -37,6 +37,7 @@
                 gif-id="%%%= locals.scene.gifId %%%"
                 token="%%%= locals.csrfToken %%%"
                 alt="Rabbit Gif"
+                [src]="scene.gifId | fetchPost | async"
             />
             <img
                 class="tenor-footer"

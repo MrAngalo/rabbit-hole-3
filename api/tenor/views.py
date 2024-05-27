@@ -6,12 +6,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 
-API_URL = "https://tenor.googleapis.com/v2/search"
+API_URL = "https://tenor.googleapis.com/v2"
 
 
 @csrf_exempt
 @api_view(["GET"])
-def find(request: Request):
+def posts(request: Request):
     query_params = request.query_params
     if len(query_params) == 0:
         return Response(
@@ -19,7 +19,7 @@ def find(request: Request):
         )
 
     api_key = os.getenv("TENOR_API_V2")
-    full_url = f"{API_URL}?key={api_key}&{query_params.urlencode()}"
+    full_url = f"{API_URL}/posts/?key={api_key}&{query_params.urlencode()}"
 
     try:
         response = requests.get(full_url)
