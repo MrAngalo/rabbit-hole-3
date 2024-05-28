@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../services/userauth/auth.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
     selector: "app-login",
@@ -16,13 +16,15 @@ export class LoginComponent {
 
     constructor(
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) {}
 
     login() {
         this.authService.login(this.email, this.password).subscribe({
             next: (data) => {
-                this.router.navigate(["/test_token"]);
+                const ref = this.route.snapshot.queryParams["ref"];
+                this.router.navigate([ref || "/"]);
             },
             error: (data) => {
                 console.log(data.error);

@@ -27,7 +27,8 @@ export const routes: Routes = [
     },
     {
         path: "create/:id",
-        component: SceneCreateComponent
+        component: SceneCreateComponent,
+        canActivate: [authGuard]
     },
     {
         path: "login",
