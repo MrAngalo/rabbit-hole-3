@@ -67,8 +67,9 @@ This project utilizes the Tenor API v2 to render GIFs present on the website. Yo
 
 To install the project, follow these steps:
 
-1. Open a terminal on the same directory as this file
-2. Run the following commands:
+1. Launch Docker and keep it on the background
+2. Open a terminal on the same directory as this file
+3. Run the following commands:
     ```bash
     npm install
     npm run build
