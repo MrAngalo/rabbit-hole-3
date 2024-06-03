@@ -9,4 +9,4 @@ venv.bak/
 
 node_modules
 test
-api/sqlite3.exee
+api/sqlite3.exe

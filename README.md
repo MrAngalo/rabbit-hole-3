@@ -30,16 +30,19 @@ It is recommended that you setup a virtual environment to isolate global and loc
 The virtual environment will be generated based on your operating system. To activate it in windows:
 
 1. Open a terminal on the same directory as this file
-2. Run one of the following commands depending on your shell (.bat is for command prompt while .ps1 is for powershell):
+2. Run one of the following commands depending on your shell (.bat for command prompt, .ps1 is for powershell, source for linux and mac):
     ```bash
     ./venv/Scripts/activate.bat
     ./venv/Scripts/Activate.ps1
+    source ./venv/bin/activate
     ```
 3. You will see if it worked if you see **(venv)** in the terminal.
 4. Install python black, the code formatter:
     ```bash
     pip install black
     ```
+5. Depending on your operating system, you may need to modify `package.json` to run **beautify** with the virtual environment
+
 
 **Note:** If you are using powershell and run into this error, "\venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system,"
 please refer to [this solution](https://stackoverflow.com/questions/64633727/how-to-fix-running-scripts-is-disabled-on-this-system) 
