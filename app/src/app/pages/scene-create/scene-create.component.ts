@@ -31,11 +31,12 @@ export class SceneCreateComponent {
     user$: Observable<User>;
     SceneStatus = SceneStatus;
 
+    parentId!: number;
     parent$!: Observable<SceneResponse>;
     options = 3;
 
-    newGifTitle: string = "";
-    newGifDesc: string = "";
+    newTitle: string = "";
+    newDesc: string = "";
     newGifId: string = "";
 
     tenorResults: TenorResponseObject[] = [];
@@ -50,8 +51,8 @@ export class SceneCreateComponent {
     ) {
         this.user$ = this.authService.user$ as Observable<User>;
         this.route.params.subscribe((params) => {
-            const id = params["id"];
-            this.parent$ = this.sceneService.fetchScene(id);
+            this.parentId = params["id"];
+            this.parent$ = this.sceneService.fetchScene(this.parentId);
         });
     }
 
@@ -121,5 +122,23 @@ export class SceneCreateComponent {
     tenorResultClick(result: TenorResponseObject) {
         this.newGifId = result.id;
         this.previewGifUrl = result.media_formats.gif.url;
+    }
+
+    create() {
+        this.sceneService
+            .createScene(
+                this.parentId,
+                this.newTitle,
+                this.newDesc,
+                this.newGifId
+            )
+            .subscribe({
+                next: (data) => {
+                    console.log(data);
+                },
+                error: (err) => {
+                    console.error(err);
+                }
+            });
     }
 }

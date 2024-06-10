@@ -13,7 +13,7 @@ export class AuthService {
     private _token: string | null;
     private _user: User | null;
 
-    userSubject: ReplaySubject<User | null>;
+    private userSubject: ReplaySubject<User | null>;
     user$: Observable<User | null>;
 
     constructor(
@@ -34,6 +34,14 @@ export class AuthService {
         }
 
         this.userSubject.next(this._user);
+    }
+
+    get token() {
+        return this._token;
+    }
+
+    get user() {
+        return this._user;
     }
 
     get isAuthenticated() {

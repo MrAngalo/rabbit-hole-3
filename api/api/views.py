@@ -1,8 +1,15 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
+from userauth.authentication import ExpiringTokenAuthentication
 from api.models import Scene
 from api.serializers import SceneSerializer
 
@@ -12,13 +19,13 @@ from api.serializers import SceneSerializer
 @csrf_exempt
 @api_view(["GET"])
 def fetchScene(request: Request, id):
-    scenes = Scene.objects.get_safe(id=id)
-    if scenes == None:
+    scene = Scene.objects.get_safe(id=id)
+    if scene == None:
         return Response(
             {"error", "Scene not found"}, status=status.HTTP_400_BAD_REQUEST
         )
-    scenes_serializer = SceneSerializer(scenes)
-    return Response(scenes_serializer.data, status=status.HTTP_200_OK)
+    scene_serializer = SceneSerializer(scene)
+    return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -33,3 +40,12 @@ def sceneGlobals(request: Request):
 @api_view(["GET"])
 def notImplemented(request: Request):
     return Response({"error": "Not Implemented"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def createScene(request: Request, id):
+    print(request.data)
+    return Response({"status", "Success"}, status=status.HTTP_200_OK)

@@ -8,7 +8,7 @@ from core.models import CustomManager
 
 
 class Badge(models.Model):
-    objects = CustomManager()
+    objects: CustomManager = CustomManager()
     id = models.AutoField(primary_key=True)
     # scenes: Scene[]
     name = models.CharField(max_length=20)
@@ -32,7 +32,7 @@ SCENE_STATUS = {
 
 
 class Scene(models.Model):
-    objects = CustomManager()
+    objects: CustomManager = CustomManager()
 
     id = models.AutoField(primary_key=True)
     parent = models.ForeignKey(
@@ -73,7 +73,7 @@ class Scene(models.Model):
 
 
 class SceneRating(models.Model):
-    objects = CustomManager()
+    objects: CustomManager = CustomManager()
 
     class Meta:
         verbose_name = "Scene Rating"
@@ -81,7 +81,7 @@ class SceneRating(models.Model):
 
 
 class UserRating(models.Model):
-    objects = CustomManager()
+    objects: CustomManager = CustomManager()
 
     class Meta:
         verbose_name = "User Rating"
