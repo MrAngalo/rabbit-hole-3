@@ -38,7 +38,7 @@ class CustomUserManager(CustomManager, UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    objects = CustomUserManager()
+    objects: CustomUserManager = CustomUserManager()
     id = models.AutoField(primary_key=True)
 
     is_active = models.BooleanField(default=True)
