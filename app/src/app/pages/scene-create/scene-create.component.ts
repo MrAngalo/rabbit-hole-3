@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { SceneResponse, SceneStatus } from "../../services/scene/scene-types";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable } from "rxjs";
 import { SceneService } from "../../services/scene/scene.service";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/userauth/auth.service";
@@ -10,6 +10,8 @@ import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { FormsModule } from "@angular/forms";
 import { FetchPostPipe } from "../../pipes/tenor/pipes/fetch-post.pipe";
+import { TenorService } from "../../services/tenor/tenor.service";
+import { TenorResponseObject } from "../../services/tenor/tenor-types";
 
 @Component({
     selector: "app-scene-create",
@@ -36,23 +38,54 @@ export class SceneCreateComponent {
     newGifDesc: string = "";
     newGifId: string = "";
 
-    previewGifUrl: string;
+    tenorResults: TenorResponseObject[] = [];
+
+    previewGifUrl = this.tenorService.defaultUrl;
 
     constructor(
         private route: ActivatedRoute,
         private authService: AuthService,
         private sceneService: SceneService,
-        private fetchPostPipe: FetchPostPipe
+        private tenorService: TenorService
     ) {
         this.user$ = this.authService.user$ as Observable<User>;
         this.route.params.subscribe((params) => {
             const id = params["id"];
             this.parent$ = this.sceneService.fetchScene(id);
         });
-        this.previewGifUrl = this.fetchPostPipe.defaultUrl;
     }
 
-    async updateGifId(event: Event) {
+    async updateGifSearch(event: Event) {
+        const target = event.target as HTMLInputElement;
+
+        // Trim all spaces of input field
+        target.value = target.value.trimStart().replaceAll(/\s\s+/g, " ");
+
+        // Reject all inputs that have been modified quickly, only allow last
+        const cached = target.value;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (cached !== target.value) {
+            return;
+        }
+
+        // Logic starts here
+        const query = target.value;
+
+        if (query === undefined || query === null || query === "") {
+            this.previewGifUrl = this.tenorService.defaultUrl;
+            return;
+        }
+        this.tenorService.search(query).subscribe({
+            next: (data) => {
+                this.tenorResults = data.results;
+            },
+            error: (_) => {
+                this.tenorResults = [];
+            }
+        });
+    }
+
+    async updateGifPreview(event: Event) {
         const target = event.target as HTMLInputElement;
 
         // Trim all spaces of input field
@@ -65,8 +98,28 @@ export class SceneCreateComponent {
             return;
         }
 
-        this.fetchPostPipe
-            .transform(target.value)
-            .subscribe((url) => (this.previewGifUrl = url));
+        // Logic starts here
+        const value = target.value;
+
+        if (value === undefined || value === null || value === "") {
+            this.previewGifUrl = this.tenorService.defaultUrl;
+            return;
+        }
+        this.tenorService.posts([value]).subscribe({
+            next: (data) => {
+                this.previewGifUrl =
+                    data.results.length != 0
+                        ? data.results[0].media_formats.gif.url
+                        : this.tenorService.defaultUrl;
+            },
+            error: (_) => {
+                this.previewGifUrl = this.tenorService.defaultUrl;
+            }
+        });
+    }
+
+    tenorResultClick(result: TenorResponseObject) {
+        this.newGifId = result.id;
+        this.previewGifUrl = result.media_formats.gif.url;
     }
 }

@@ -51,8 +51,7 @@
     <div class="title">
         <h1>Your Scene Information</h1>
     </div>
-    <form action="/create/%%%= locals.parent.id %%%" method="POST">
-        <input type="hidden" name="_csrf" value="%%%= csrfToken %%%" />
+    <form action="#">
         <div class="description-wrapper">
             <div class="rabbit-gif-wrapper">
                 <img
@@ -83,10 +82,9 @@
                     <label for="title"><b>Title:</b></label>
                     <input
                         type="text"
-                        id="title"
+                        [(ngModel)]="newGifTitle"
                         name="title"
                         placeholder="Snap the Gauntlet"
-                        value="%%%= (fields && fields.title) ? fields.title : '' %%%"
                         required
                     />
                 </div>
@@ -128,14 +126,12 @@
                 <div class="input-wrapper">
                     <label for="description"><b>Desc:</b></label>
                     <textarea
-                        id="description"
+                        [(ngModel)]="newGifDesc"
                         name="description"
                         placeholder="You decided to..."
                         required
-                        onload="this.value = this.value;"
-                    >
-%%%= (fields && fields.description) ? fields.description : '' %%%</textarea
-                    ><br />
+                    ></textarea>
+                    <br />
                 </div>
             </div>
         </div>
@@ -157,15 +153,21 @@
                 <div class="tenor-selector">
                     <div class="flex">
                         <input
-                            id="tenor-search"
                             type="text"
                             placeholder="Search Tenor"
                             class="text"
-                            token="%%%= csrfToken %%%"
+                            (input)="updateGifSearch($event)"
                         />
                         <button type="button">Search</button>
                     </div>
-                    <div class="searched_content"></div>
+                    <div class="searched_content">
+                        <img
+                            class="pic"
+                            *ngFor="let result of tenorResults"
+                            [src]="result.media_formats.gif.url"
+                            (click)="tenorResultClick(result)"
+                        />
+                    </div>
                 </div>
                 <img
                     class="tenor-footer"
@@ -197,7 +199,8 @@
                     <input
                         [(ngModel)]="newGifId"
                         name="gifId"
-                        (input)="updateGifId($event)"
+                        (input)="updateGifPreview($event)"
+                        required
                     />
                 </div>
                 <p>You are all done! Make sure to review before you submit!</p>

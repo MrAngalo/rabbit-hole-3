@@ -6,17 +6,15 @@ import { Observable, catchError, map, of } from "rxjs";
     name: "fetchPost"
 })
 export class FetchPostPipe implements PipeTransform {
-    readonly defaultUrl = "/assets/img/no-gif.png";
-
     constructor(private tenorService: TenorService) {}
 
     transform(value: string): Observable<string> {
         if (value === undefined || value === null || value === "") {
-            return of(this.defaultUrl);
+            return of(this.tenorService.defaultUrl);
         }
-        return this.tenorService.fetchPost([value]).pipe(
+        return this.tenorService.posts([value]).pipe(
             map((data) => data.results[0].media_formats.gif.url),
-            catchError(() => of(this.defaultUrl))
+            catchError(() => of(this.tenorService.defaultUrl))
         );
     }
 }
