@@ -1,8 +1,5 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from api.models import Scene
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from api.apps import ApiConfig
 
 
