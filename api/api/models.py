@@ -8,7 +8,7 @@ from core.models import CustomManager
 
 
 class Badge(models.Model):
-    objects: CustomManager = CustomManager()
+    objects: CustomManager["Badge"] = CustomManager()  # Error
     id = models.AutoField(primary_key=True)
     # scenes: Scene[]
     name = models.CharField(max_length=20)
@@ -25,14 +25,18 @@ class Badge(models.Model):
 
 
 SCENE_STATUS = {
-    10: "HIDDEN",  # Only admins can see it
-    20: "AWAITING_REVIEW",  # Only users with "view scenes awaiting approval" enabled
-    30: "PUBLIC",  # Everyone can see
+    "HIDDEN": 10,  # Only admins can see it
+    "AWAITING_REVIEW": 20,  # Only users with "view scenes awaiting approval" enabled
+    "PUBLIC": 30,  # Everyone can see
 }
+
+SCENE_STATUS_R = {v: k for k, v in SCENE_STATUS.items()}
+
+Badge.objects.get_safe()
 
 
 class Scene(models.Model):
-    objects: CustomManager = CustomManager()
+    objects: CustomManager["Scene"] = CustomManager()
 
     id = models.AutoField(primary_key=True)
     parent = models.ForeignKey(
@@ -43,7 +47,7 @@ class Scene(models.Model):
         default=None,
         on_delete=models.SET_NULL,
     )
-    # children: Scene[]
+    children: models.Manager
     creator = models.ForeignKey(
         User,
         related_name="scenes",
@@ -59,7 +63,7 @@ class Scene(models.Model):
     created = models.DateTimeField(default=timezone.now)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
-    status = models.IntegerField(choices=SCENE_STATUS)
+    status = models.IntegerField(choices=SCENE_STATUS_R)  # type: ignore
     # rated_by: SceneRating[] @OneToMany(() => SceneRating, rating => rating.scene)
 
     badges = models.ManyToManyField(Badge, related_name="scenes", blank=True)
@@ -73,7 +77,7 @@ class Scene(models.Model):
 
 
 class SceneRating(models.Model):
-    objects: CustomManager = CustomManager()
+    objects: CustomManager["SceneRating"] = CustomManager()
 
     class Meta:
         verbose_name = "Scene Rating"
@@ -81,7 +85,7 @@ class SceneRating(models.Model):
 
 
 class UserRating(models.Model):
-    objects: CustomManager = CustomManager()
+    objects: CustomManager["UserRating"] = CustomManager()
 
     class Meta:
         verbose_name = "User Rating"

@@ -9,23 +9,17 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
+from tenor.views import API_KEY, API_URL, CLIENT_KEY
 from userauth.authentication import ExpiringTokenAuthentication
 from api.models import Scene
 from api.serializers import SceneSerializer
+from api.models import SCENE_STATUS
+import requests
+from urllib.parse import quote
+import re
+from userauth.models import User
 
 # Create your views here.
-
-
-@csrf_exempt
-@api_view(["GET"])
-def fetchScene(request: Request, id):
-    scene = Scene.objects.get_safe(id=id)
-    if scene == None:
-        return Response(
-            {"error", "Scene not found"}, status=status.HTTP_400_BAD_REQUEST
-        )
-    scene_serializer = SceneSerializer(scene)
-    return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -39,13 +33,96 @@ def sceneGlobals(request: Request):
 @csrf_exempt
 @api_view(["GET"])
 def notImplemented(request: Request):
-    return Response({"error": "Not Implemented"}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error": "Not Implemented."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def fetchScene(request: Request, id=0):
+    scene = Scene.objects.get_safe(id=id)
+    if scene == None:
+        return Response(
+            {"error", "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
+        )
+    scene_serializer = SceneSerializer(scene)
+    return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def createScene(request: Request, id):
-    print(request.data)
+def createScene(request: Request, parentId=0):
+    data: dict[str, str] = request.data  # type: ignore
+    if not ("title" in data and "desc" in data and "gifId" in data):
+        return Response(
+            {"error", "At least one of the fields is empty!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Clean up data
+
+    title: str = data["title"].strip()
+    desc: str = data["desc"].strip()
+    gifId: str = data["gifId"]
+
+    title = re.sub(r"\s{2,}", " ", title)
+
+    desc = re.sub(r"^[ ]+|[ ]+$", "", desc, flags=re.MULTILINE)
+    desc = re.sub(r"[ ]{2,}", " ", desc)
+    desc = re.sub(r"[\r\n\t\f\v]+", "\\n", desc)
+
+    if not (5 < len(title) < 40):
+        return Response(
+            {"error", "Title length must be between 5 and 40 characters!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if not (80 < len(desc) < 3000):
+        return Response(
+            {"error", "Title length must be between 5 and 40 characters!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    parent = Scene.objects.get_safe(id=parentId)
+    if parent == None:
+        return Response(
+            {"error", f"The scene id={parentId} does not exist or has been removed."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if parent.status != SCENE_STATUS["PUBLIC"]:
+        return Response(
+            {"error", f"The scene id={parentId} is not open to the public yet!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if parent.children.count() >= 3:
+        return Response(
+            {
+                "error",
+                f"There are no more children available for parent scene id={parentId}!",
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    full_url = (
+        f"{API_URL}/posts/?key={API_KEY}&client_key={CLIENT_KEY}ids={quote(gifId)}"
+    )
+    try:
+        response = requests.get(full_url)
+        response.raise_for_status()
+        json = response.json()
+        if len(json["results"]) == 0:
+            raise ValueError()
+    except:
+        return Response(
+            {"error": "Tenor GIF ID is invalid!"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # user:User = request.user
+    # status = (user.permission >= UserPremission.TRUSTED) ? SceneStatus.PUBLIC : SceneStatus.AWAITING_REVIEW;
+
+    scene = Scene()
+
     return Response({"status", "Success"}, status=status.HTTP_200_OK)

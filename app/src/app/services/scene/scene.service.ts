@@ -8,7 +8,7 @@ import { AuthService } from "../userauth/auth.service";
     providedIn: "root"
 })
 export class SceneService {
-    private readonly apiUrl = "http://127.0.0.1:8080/api";
+    private readonly API_URL = "http://127.0.0.1:8080/api";
 
     globals$: Observable<SceneGlobalsResponse>;
 
@@ -20,7 +20,7 @@ export class SceneService {
     }
 
     fetchScene(id: number) {
-        return this.http.get<SceneResponse>(`${this.apiUrl}/scene/${id}`, {
+        return this.http.get<SceneResponse>(`${this.API_URL}/scene/${id}`, {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -30,7 +30,7 @@ export class SceneService {
     createScene(parentId: number, title: string, desc: string, gifId: string) {
         const token = this.authService.token;
         return this.http.post<SceneResponse>(
-            `${this.apiUrl}/create/${parentId}`,
+            `${this.API_URL}/create/${parentId}`,
             {
                 title,
                 desc,
@@ -47,7 +47,7 @@ export class SceneService {
 
     private fetchSceneGlobals() {
         return this.http.get<SceneGlobalsResponse>(
-            `${this.apiUrl}/scene-globals`,
+            `${this.API_URL}/scene-globals`,
             {
                 headers: {
                     "Content-Type": "application/json"

@@ -9,6 +9,7 @@ from rest_framework.request import Request
 
 API_URL = "https://tenor.googleapis.com/v2"
 API_KEY = os.getenv("TENOR_API_V2")
+CLIENT_KEY = "internal"
 
 
 @csrf_exempt

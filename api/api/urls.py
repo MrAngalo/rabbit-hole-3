@@ -6,7 +6,7 @@ urlpatterns = [
     re_path(r"^scene/$", fetchScene),
     re_path(r"^scene/(?P<id>[0-9]+)$", fetchScene),
     re_path(r"^create/$", createScene),
-    re_path(r"^create/(?P<id>[0-9]+)$", createScene),
+    re_path(r"^create/(?P<parentId>[0-9]+)$", createScene),
     re_path(r"^scene-globals/$", sceneGlobals),
     # Rating
     re_path(r"^rate/$", notImplemented),
