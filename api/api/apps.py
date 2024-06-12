@@ -10,20 +10,47 @@ class ApiConfig(AppConfig):
         if "runserver" not in sys.argv:
             return True
 
-        from api.models import Scene
+        from api.models import Scene, SCENE_STATUS
+
+        print("\n------ Creating Default Models for API ------")
 
         # Create root scene if it does not exist
-        root = Scene.objects.get_safe(id=0)
-        if root != None:
-            print("Root Scene (id=0) found, skipping...")
+        _, created = Scene.objects.get_or_create(
+            id=0,
+            defaults={
+                "creator_name": "MrAngalo",
+                "title": "The Mischievous Forest",
+                "description": "You are lost.\\nYou see a tree, a rock, and a waterfall on the distance.\\nYou can do anything! What do you do?",
+                "gifId": "16992587",
+                "status": SCENE_STATUS["PUBLIC"],
+            },
+        )
+        if not created:
+            print("Found Root Scene (id=0)!")
         else:
-            print("Root Scene (id=0) not found, creating default...")
-            root = Scene(
-                id=0,
-                creator_name="MrAngalo",
-                title="The Mischievous Forest",
-                description="You are lost.\\nYou see a tree, a rock, and a waterfall on the distance.\\nYou can do anything! What do you do?",
-                gifId="16992587",
-                status=30,
+            print("Creating Root Scene (id=0)...")
+
+        from django.contrib.auth.models import Permission
+        from django.contrib.contenttypes.models import ContentType
+
+        # Permissions for Scene
+        content_type_id = ContentType.objects.get(app_label="api", model="scene").id
+        permissions = (
+            ("view_unapproved", "Can view scenes before they are public"),
+            ("bypass_approval", "Can skip admin approval"),
+        )
+
+        for permission in permissions:
+            codename, name = permission
+
+            _, created = Permission.objects.get_or_create(
+                content_type_id=content_type_id,
+                codename=codename,
+                defaults={"name": name},
             )
-            root.save()
+            if not created:
+                print(f"Found Permission {codename}!")
+            else:
+                print(f"Creating Permission {codename}...")
+
+        print("\n---------------------------------------------")

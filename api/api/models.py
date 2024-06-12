@@ -32,8 +32,6 @@ SCENE_STATUS = {
 
 SCENE_STATUS_R = {v: k for k, v in SCENE_STATUS.items()}
 
-Badge.objects.get_safe()
-
 
 class Scene(models.Model):
     objects: CustomManager["Scene"] = CustomManager()
