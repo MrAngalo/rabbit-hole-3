@@ -1,1 +1,7 @@
-<div class="message">Hello World</div>
+<div
+    *ngFor="let p of popup.popups$ | async"
+    class="message"
+    [style.background]="colorMap[p.color]"
+>
+    {{ p.message }}
+</div>
