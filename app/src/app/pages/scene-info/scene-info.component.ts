@@ -38,7 +38,7 @@ export class SceneInfoComponent {
                     this.router.navigate(["/"]);
                     this.popupService.clear();
                     this.popupService.display({
-                        message: res.error.error,
+                        message: `Cannot load scene. ${res.error.error}`,
                         color: "red"
                     });
                 }

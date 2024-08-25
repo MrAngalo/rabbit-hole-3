@@ -65,7 +65,7 @@ export class SceneCreateComponent {
                     this.router.navigate(["/"]);
                     this.popupService.clear();
                     this.popupService.display({
-                        message: res.error.error,
+                        message: `Cannot load parent scene. ${res.error.error}`,
                         color: "red"
                     });
                 }
