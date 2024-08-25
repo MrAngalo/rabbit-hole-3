@@ -144,6 +144,7 @@ export class SceneCreateComponent {
                     this.router.navigate(["scene", scene.id]);
                 },
                 error: (res: ErrorResponse) => {
+                    this.popupService.clear();
                     this.popupService.display({
                         message: res.error.error,
                         color: "red"
