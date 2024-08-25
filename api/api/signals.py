@@ -8,7 +8,7 @@ def create_api_models(sender, **kwargs):
     if type(sender) != ApiConfig:
         return
 
-    from api.models import Scene, SCENE_STATUS
+    from api.models import Scene, SceneStatus
 
     print("\n------ Creating Default Models for API ------")
 
@@ -20,7 +20,7 @@ def create_api_models(sender, **kwargs):
             "title": "The Mischievous Forest",
             "description": "You are lost.\\nYou see a tree, a rock, and a waterfall on the distance.\\nYou can do anything! What do you do?",
             "gifId": "16992587",
-            "status": SCENE_STATUS["PUBLIC"],
+            "status": SceneStatus.PUBLIC.value,
         },
     )
     if not created:

@@ -4,6 +4,8 @@ from django.utils import timezone
 from userauth.models import User
 from core.models import CustomManager
 
+from enum import Enum
+
 # Create your models here.
 
 
@@ -24,13 +26,10 @@ class Badge(models.Model):
         return self.name
 
 
-SCENE_STATUS = {
-    "HIDDEN": 10,  # Only admins can see it
-    "AWAITING_REVIEW": 20,  # Only users with "view scenes awaiting approval" enabled
-    "PUBLIC": 30,  # Everyone can see
-}
-
-SCENE_STATUS_R = {v: k for k, v in SCENE_STATUS.items()}
+class SceneStatus(Enum):
+    HIDDEN = 10  # Only admins can see it
+    AWAITING_REVIEW = 20  # Only users with "view scenes awaiting approval" enabled
+    PUBLIC = 30  # Everyone can see
 
 
 class Scene(models.Model):
@@ -61,7 +60,7 @@ class Scene(models.Model):
     created = models.DateTimeField(default=timezone.now)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
-    status = models.IntegerField(choices=SCENE_STATUS_R)  # type: ignore
+    status = models.IntegerField(choices={s.value: s.name for s in SceneStatus})  # type: ignore
     # rated_by: SceneRating[] @OneToMany(() => SceneRating, rating => rating.scene)
 
     badges = models.ManyToManyField(Badge, related_name="scenes", blank=True)

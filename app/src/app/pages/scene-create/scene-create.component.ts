@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { SceneResponse, SceneStatus } from "../../services/scene/scene-types";
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Observable } from "rxjs";
 import { SceneService } from "../../services/scene/scene.service";
 import { CommonModule } from "@angular/common";
@@ -44,6 +44,7 @@ export class SceneCreateComponent {
     previewGifUrl = this.tenorService.defaultUrl;
 
     constructor(
+        private router: Router,
         private route: ActivatedRoute,
         private authService: AuthService,
         private sceneService: SceneService,
@@ -133,8 +134,8 @@ export class SceneCreateComponent {
                 this.newGifId
             )
             .subscribe({
-                next: (data) => {
-                    console.log(data);
+                next: (scene) => {
+                    this.router.navigate(["scene", scene.id]);
                 },
                 error: (err) => {
                     console.error(err);

@@ -13,7 +13,7 @@ from tenor.views import API_KEY, API_URL, CLIENT_KEY
 from userauth.authentication import ExpiringTokenAuthentication
 from api.models import Scene
 from api.serializers import SceneSerializer
-from api.models import SCENE_STATUS
+from api.models import SceneStatus
 import requests
 from urllib.parse import quote
 import re
@@ -74,13 +74,13 @@ def createScene(request: Request, parentId=0):
 
     if not (5 < len(title) < 40):
         return Response(
-            {"error", "Title length must be between 5 and 40 characters!"},
+            {"error", "Title must be between 5 and 40 characters!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    if not (80 < len(desc) < 3000):
+    if not (80 < len(desc) < 2000):
         return Response(
-            {"error", "Title length must be between 5 and 40 characters!"},
+            {"error", "Description must be between 80 and 2000 characters!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -91,7 +91,7 @@ def createScene(request: Request, parentId=0):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    if parent.status != SCENE_STATUS["PUBLIC"]:
+    if parent.status != SceneStatus.PUBLIC.value:
         return Response(
             {"error", f"The scene id={parentId} is not open to the public yet!"},
             status=status.HTTP_400_BAD_REQUEST,
@@ -107,7 +107,7 @@ def createScene(request: Request, parentId=0):
         )
 
     full_url = (
-        f"{API_URL}/posts/?key={API_KEY}&client_key={CLIENT_KEY}ids={quote(gifId)}"
+        f"{API_URL}/posts/?key={API_KEY}&client_key={CLIENT_KEY}&ids={quote(gifId)}"
     )
     try:
         response = requests.get(full_url)
@@ -120,9 +120,23 @@ def createScene(request: Request, parentId=0):
             {"error": "Tenor GIF ID is invalid!"}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    # user:User = request.user
-    # status = (user.permission >= UserPremission.TRUSTED) ? SceneStatus.PUBLIC : SceneStatus.AWAITING_REVIEW;
+    user: User = request.user
+    sceneStatus = (
+        SceneStatus.PUBLIC.value
+        if user.has_perm("api.bypass_approval")
+        else SceneStatus.AWAITING_REVIEW.value
+    )
 
-    scene = Scene()
+    scene = Scene.objects.create(
+        parent=parent,
+        creator=user,
+        creator_name=user.username,
+        title=title,
+        description=desc,
+        gifId=gifId,
+        status=sceneStatus,
+    )
 
-    return Response({"status", "Success"}, status=status.HTTP_200_OK)
+    scene_serializer = SceneSerializer(scene)
+
+    return Response(scene_serializer.data, status=status.HTTP_200_OK)
