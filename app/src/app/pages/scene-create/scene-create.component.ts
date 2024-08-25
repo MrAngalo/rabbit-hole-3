@@ -37,7 +37,7 @@ export class SceneCreateComponent {
     SceneStatus = SceneStatus;
 
     parentId!: number;
-    parent$!: Observable<SceneResponse>;
+    parent: SceneResponse | null = null;
     options = 3;
 
     newTitle: string = "";
@@ -59,7 +59,17 @@ export class SceneCreateComponent {
         this.user$ = this.authService.user$ as Observable<User>;
         this.route.params.subscribe((params) => {
             this.parentId = params["id"];
-            this.parent$ = this.sceneService.fetchScene(this.parentId);
+            this.sceneService.fetchScene(this.parentId).subscribe({
+                next: (parent) => (this.parent = parent),
+                error: (res: ErrorResponse) => {
+                    this.router.navigate(["/"]);
+                    this.popupService.clear();
+                    this.popupService.display({
+                        message: res.error.error,
+                        color: "red"
+                    });
+                }
+            });
         });
     }
 
