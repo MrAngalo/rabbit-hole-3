@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { NavigationStart, Router } from "@angular/router";
 import { BehaviorSubject, Subject } from "rxjs";
 
 export type PopupInfo = {
@@ -14,7 +15,13 @@ export class PopupMessagesService {
     private popupSubject = new BehaviorSubject(this.popups);
     popups$ = this.popupSubject.asObservable();
 
-    constructor() {}
+    constructor(router: Router) {
+        router.events.subscribe((event) => {
+            if (event instanceof NavigationStart) {
+                this.clear();
+            }
+        });
+    }
 
     display(popup: PopupInfo) {
         this.popups.add(popup);
