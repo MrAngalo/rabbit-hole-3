@@ -27,13 +27,10 @@ export class HeaderComponent {
     ) {
         this.user$ = this.authService.user$;
         this.globals$ = this.sceneService.globals$;
-        this.router.events
-            .pipe(
-                filter((e) => e instanceof ActivationEnd),
-                map((e) => (e as ActivationEnd).snapshot.params)
-            )
-            .subscribe((params) => {
-                this.sceneId = params["id"] || null;
-            });
+        this.router.events.subscribe((e) => {
+            if (e instanceof ActivationEnd) {
+                this.sceneId = e.snapshot.params["id"] || null;
+            }
+        });
     }
 }
