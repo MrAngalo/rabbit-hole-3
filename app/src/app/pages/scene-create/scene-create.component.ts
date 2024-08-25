@@ -16,6 +16,7 @@ import { FormsModule } from "@angular/forms";
 import { FetchPostPipe } from "../../pipes/tenor/pipes/fetch-post.pipe";
 import { TenorService } from "../../services/tenor/tenor.service";
 import { TenorResponseObject } from "../../services/tenor/tenor-types";
+import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 
 @Component({
     selector: "app-scene-create",
@@ -52,7 +53,8 @@ export class SceneCreateComponent {
         private route: ActivatedRoute,
         private authService: AuthService,
         private sceneService: SceneService,
-        private tenorService: TenorService
+        private tenorService: TenorService,
+        private popupService: PopupMessagesService
     ) {
         this.user$ = this.authService.user$ as Observable<User>;
         this.route.params.subscribe((params) => {
@@ -141,8 +143,11 @@ export class SceneCreateComponent {
                 next: (scene) => {
                     this.router.navigate(["scene", scene.id]);
                 },
-                error: (err: ErrorResponse) => {
-                    console.error(err);
+                error: (res: ErrorResponse) => {
+                    this.popupService.display({
+                        message: res.error.error,
+                        color: "red"
+                    });
                 }
             });
     }
