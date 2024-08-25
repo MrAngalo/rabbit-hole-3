@@ -1,5 +1,9 @@
 import { Component } from "@angular/core";
-import { SceneResponse, SceneStatus } from "../../services/scene/scene-types";
+import {
+    ErrorResponse,
+    SceneResponse,
+    SceneStatus
+} from "../../services/scene/scene-types";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Observable } from "rxjs";
 import { SceneService } from "../../services/scene/scene.service";
@@ -137,7 +141,7 @@ export class SceneCreateComponent {
                 next: (scene) => {
                     this.router.navigate(["scene", scene.id]);
                 },
-                error: (err) => {
+                error: (err: ErrorResponse) => {
                     console.error(err);
                 }
             });

@@ -27,6 +27,12 @@ export type SceneParent = {
     status: number;
 };
 
+export type ErrorResponse = {
+    error: {
+        error: string;
+    };
+};
+
 export type SceneResponse = {
     id: number;
     creator: number;

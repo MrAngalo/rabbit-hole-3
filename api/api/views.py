@@ -42,7 +42,7 @@ def fetchScene(request: Request, id=0):
     scene = Scene.objects.get_safe(id=id)
     if scene == None:
         return Response(
-            {"error", "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
+            {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
         )
     scene_serializer = SceneSerializer(scene)
     return Response(scene_serializer.data, status=status.HTTP_200_OK)
@@ -56,7 +56,7 @@ def createScene(request: Request, parentId=0):
     data: dict[str, str] = request.data  # type: ignore
     if not ("title" in data and "desc" in data and "gifId" in data):
         return Response(
-            {"error", "At least one of the fields is empty!"},
+            {"error": "At least one of the fields is empty!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -74,34 +74,33 @@ def createScene(request: Request, parentId=0):
 
     if not (5 < len(title) < 40):
         return Response(
-            {"error", "Title must be between 5 and 40 characters!"},
+            {"error": "Title must be between 5 and 40 characters!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     if not (80 < len(desc) < 2000):
         return Response(
-            {"error", "Description must be between 80 and 2000 characters!"},
+            {"error": "Description must be between 80 and 2000 characters!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     parent = Scene.objects.get_safe(id=parentId)
     if parent == None:
         return Response(
-            {"error", f"The scene id={parentId} does not exist or has been removed."},
+            {"error": f"The scene id={parentId} does not exist or has been removed."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     if parent.status != SceneStatus.PUBLIC.value:
         return Response(
-            {"error", f"The scene id={parentId} is not open to the public yet!"},
+            {"error": f"The scene id={parentId} is not open to the public yet!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     if parent.children.count() >= 3:
         return Response(
             {
-                "error",
-                f"There are no more children available for parent scene id={parentId}!",
+                "error": f"There are no more children available for parent scene id={parentId}!",
             },
             status=status.HTTP_400_BAD_REQUEST,
         )

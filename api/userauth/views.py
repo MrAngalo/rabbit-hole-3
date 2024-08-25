@@ -26,10 +26,10 @@ from userauth.authentication import ExpiringTokenAuthentication
 def login(request: Request):
     user = User.objects.get_safe(email=request.data["email"])
     if user == None:
-        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     if not user.check_password(request.data["password"]):
         return Response(
-            {"detail": "Incorrect Password."}, status=status.HTTP_404_NOT_FOUND
+            {"error": "Incorrect Password."}, status=status.HTTP_404_NOT_FOUND
         )
 
     token, created = Token.objects.get_or_create(user=user)
@@ -67,7 +67,7 @@ def logout(request: Request):
         request.user.auth_token.delete()
     except:
         pass
-    return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+    return Response({"error": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -76,5 +76,5 @@ def logout(request: Request):
 @permission_classes([IsAuthenticated])
 def testToken(request: Request):
     return Response(
-        {"detail", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
+        {"error", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
     )
