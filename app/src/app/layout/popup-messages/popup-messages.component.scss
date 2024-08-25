@@ -1,0 +1,12 @@
+:host {
+    position: absolute;
+    left: 50%;
+    translate: -50%;
+}
+
+.message {
+    background: rgb(245, 71, 71);
+    padding: 10px;
+    border-radius: 10px;
+    width: fit-content;
+}
