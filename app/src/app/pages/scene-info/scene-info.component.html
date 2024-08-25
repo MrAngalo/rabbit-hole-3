@@ -1,0 +1,139 @@
+<ng-container *ngIf="scene">
+    <div class="title">
+        <div class="heading">
+            <h1>{{ scene.title }}</h1>
+            <div class="badge-wrapper">
+                <div *ngFor="let badge of scene.badges" class="badge">
+                    <div class="icon" [style.background-color]="badge.bg_color">
+                        <img [src]="badge.data_uri" alt="Badge" />
+                    </div>
+                    <div class="badge-hint">
+                        <h3 class="badge-name">Badge: {{ badge.name }}</h3>
+                        <div class="badge-description">
+                            {{ badge.description }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="scene.creator !== null">
+            Created by:
+            <a [routerLink]="['/user', scene.creator_name]">
+                {{ scene.creator_name }}
+            </a>
+        </div>
+        <div *ngIf="scene.creator === null">
+            Created by: {{ scene.creator_name }}
+        </div>
+        <div>Created on: {{ scene.created | dateSuffix }}</div>
+        <div>
+            {{ SceneStatus[scene.status] | lowercase }}
+        </div>
+    </div>
+    <div class="description-wrapper">
+        <div class="rabbit-gif-wrapper">
+            <img
+                class="rabbit-gif"
+                alt="Rabbit Gif"
+                [src]="scene.gifId | fetchPost | async"
+            />
+            <img
+                class="tenor-footer"
+                src="/assets/img/tenor/PB_tenor_logo_blue_horizontal.svg"
+                alt="Tenor Footer"
+            />
+        </div>
+        <div class="description">
+            <p *ngFor="let line of scene.description | split: '\\n'">
+                {{ line }}
+            </p>
+            <div class="choice-wrapper">
+                <div class="choice" *ngFor="let child of scene.children">
+                    <a [routerLink]="['/scene', child.id]">
+                        <div class="button">
+                            {{ child.title }}
+                        </div>
+                    </a>
+                    <div class="child-attributes">
+                        <div class="child-rating-wrapper">
+                            <div class="child-rating green">
+                                {{ child.likes }}
+                            </div>
+                            <div class="child-rating red">
+                                {{ child.dislikes }}
+                            </div>
+                        </div>
+                        <div class="child-badge-wrapper">
+                            <div
+                                *ngFor="let badge of child.badges"
+                                class="badge"
+                            >
+                                <div
+                                    class="icon"
+                                    [style.background-color]="badge.bg_color"
+                                >
+                                    <img [src]="badge.data_uri" alt="Badge" />
+                                </div>
+                                <div class="badge-hint">
+                                    <h3 class="badge-name">
+                                        Badge: {{ badge.name }}
+                                    </h3>
+                                    <div class="badge-description">
+                                        {{ badge.description }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="choice"
+                    *ngFor="
+                        let item of [].constructor(
+                            options - scene.children.length
+                        )
+                    "
+                >
+                    <a [routerLink]="['/create', scene.id]">
+                        <div class="button create">Create your action</div>
+                    </a>
+                </div>
+                <div class="choice" *ngIf="scene.parent">
+                    <a [routerLink]="['/scene', scene.parent.id]">
+                        <div class="button">Go Back!</div>
+                    </a>
+                </div>
+            </div>
+            <p>Scene ID: {{ scene.id }}</p>
+            <div class="rating-container">
+                <div class="rating-option">
+                    <button
+                        class="icon button green"
+                        (click)="rateClick('positive')"
+                    >
+                        <img src="/assets/img/icons/like.svg" alt="Like" />
+                    </button>
+                    <div>{{ scene.likes }}</div>
+                </div>
+                <div class="rating-option">
+                    <button
+                        class="icon button red"
+                        (click)="rateClick('negative')"
+                    >
+                        <img
+                            src="/assets/img/icons/dislike.svg"
+                            alt="Dislike"
+                        />
+                    </button>
+                    <div>{{ -scene.dislikes }}</div>
+                </div>
+                <div class="rating-option">
+                    <button class="icon button yellow" (click)="reportClick()">
+                        <img src="/assets/img/icons/warn.svg" alt="Warn" />
+                    </button>
+                    <div>report (WIP)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

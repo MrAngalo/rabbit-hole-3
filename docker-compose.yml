@@ -2,12 +2,20 @@ version: "3.9"
 
 services:
   django:
-    image: rabbit-hole-3-src
+    image: rabbit-hole-3-api:1.0
     build: .
     ports:
       - 8000:8000
+    volumes:
+      - ./api:/api
+    env_file:
+      - path: ./api/.env
+        required: true
   angular:
-    image: rabbit-hole-3-app
+    image: rabbit-hole-3-app:1.0
     build: .
     ports:
-      - 8080:80
+      - 8080:4200
+    volumes:
+      - ./app/dist:/app/dist
+      - ./app/src:/app/src

@@ -2,12 +2,12 @@ FROM node:18-alpine3.16 as angular
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json ./
 
 RUN npm install
-RUN npm run build
 
-FROM httpd:alpine3.15
+COPY . . 
 
-WORKDIR /user/local/apache2/htdocs
-COPY --from=angular /app/dist/app .
+EXPOSE 4200 49153
+
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0", "--poll", "2000", "--live-reload", "false"]
