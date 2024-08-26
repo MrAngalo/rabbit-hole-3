@@ -69,6 +69,16 @@ class Scene(models.Model):
         verbose_name = "Scene"
         verbose_name_plural = "Scenes"
 
+    def can_access(self, user: User):
+        return (
+            self.status == SceneStatus.PUBLIC.value
+            or (self.creator == user or user.is_staff or user.is_superuser)
+            or (
+                self.status == SceneStatus.AWAITING_REVIEW.value
+                or user.has_perm("api.view_unapproved")
+            )
+        )
+
     def __str__(self):
         return f"{self.id} - {self.title} - {self.creator_name}"
 

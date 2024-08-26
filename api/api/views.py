@@ -38,12 +38,20 @@ def notImplemented(request: Request):
 
 @csrf_exempt
 @api_view(["GET"])
+@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
 def fetchScene(request: Request, id=0):
     scene = Scene.objects.get_safe(id=id)
     if scene == None:
         return Response(
             {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
         )
+
+    user: User = request.user
+    if not scene.can_access(user):
+        return Response(
+            {"error": "Scene is not public."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
     scene_serializer = SceneSerializer(scene)
     return Response(scene_serializer.data, status=status.HTTP_200_OK)
 

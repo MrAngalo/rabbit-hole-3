@@ -20,9 +20,11 @@ export class SceneService {
     }
 
     fetchScene(id: number) {
+        const token = this.authService.token;
         return this.http.get<SceneResponse>(`${this.API_URL}/scene/${id}`, {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                ...(token !== null ? { Authorization: `token ${token}` } : {})
             }
         });
     }
@@ -38,8 +40,8 @@ export class SceneService {
             },
             {
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `token ${token}`
+                    "Content-Type": "application/json"
+                    // Authorization: `token ${token}`
                 }
             }
         );

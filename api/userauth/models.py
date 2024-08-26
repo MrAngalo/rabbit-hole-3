@@ -81,3 +81,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.username} - {self.email}"
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, User) and self.id == other.id
