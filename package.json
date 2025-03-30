@@ -5,7 +5,7 @@
   "scripts": {
     "build": "docker build .\\api -t rabbit-hole-3-api:1.0 && docker build .\\app -t rabbit-hole-3-app:1.0",
     "start": "docker compose up -d",
-    "beautify": "venv\\Scripts\\activate.bat && cd app && npx prettier . --write && cd ..\\api && python -m black .",
+    "beautify": "api\\venv\\Scripts\\activate.bat && cd app && npx prettier . --write && cd ..\\api && python -m black .",
     "check": "git diff --exit-code --quiet"
   },
   "pre-commit": {
