@@ -6,7 +6,7 @@ import { TenorPostsResponse } from "./tenor-types";
     providedIn: "root"
 })
 export class TenorService {
-    private readonly apiUrl = "http://127.0.0.1:8080/api/tenor";
+    private readonly apiUrl = "/api/tenor";
     private readonly clientKey = "webclient";
 
     readonly defaultUrl = "/static/img/no-gif.png";

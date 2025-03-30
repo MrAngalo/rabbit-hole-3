@@ -8,7 +8,7 @@ import { Observable, ReplaySubject, tap } from "rxjs";
     providedIn: "root"
 })
 export class AuthService {
-    private readonly apiUrl = "http://127.0.0.1:8080/api";
+    private readonly apiUrl = "/api";
 
     private _token: string | null;
     private _user: User | null;

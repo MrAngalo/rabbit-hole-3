@@ -8,7 +8,7 @@ import { AuthService } from "../userauth/auth.service";
     providedIn: "root"
 })
 export class SceneService {
-    private readonly API_URL = "http://127.0.0.1:8080/api";
+    private readonly API_URL = "/api";
 
     globals$: Observable<SceneGlobalsResponse>;
 
