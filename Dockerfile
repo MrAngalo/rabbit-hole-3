@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /api
 
-COPY requirements.txt .
+COPY ./api/requirements.txt .
 
 RUN pip install -r requirements.txt
 
