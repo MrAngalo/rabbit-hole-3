@@ -2,9 +2,9 @@ FROM python:3.10-alpine3.19
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /api
+COPY . .
 
-COPY ./api/requirements.txt .
+WORKDIR /api
 
 RUN pip install -r requirements.txt
 
