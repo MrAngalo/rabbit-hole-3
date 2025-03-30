@@ -9,7 +9,7 @@ export class TenorService {
     private readonly apiUrl = "http://127.0.0.1:8080/api/tenor";
     private readonly clientKey = "webclient";
 
-    readonly defaultUrl = "/assets/img/no-gif.png";
+    readonly defaultUrl = "/static/img/no-gif.png";
 
     constructor(private http: HttpClient) {}
 
