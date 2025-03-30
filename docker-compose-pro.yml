@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  django:
+    image: mrangalo/rabbit-hole-3-docker:master
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/api
+    env_file:
+      - path: ./api/.env
+        required: true
