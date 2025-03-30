@@ -16,13 +16,21 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.urls import include
 
 from .views import home
 
 urlpatterns = [
+    # Angular routes
     path("", home),
+    re_path(r"^scene/$", home),
+    re_path(r"^scene/[0-9]+/$", home),
+    re_path(r"^create/$", home),
+    re_path(r"^create/[0-9]+/$", home),
+    re_path(r"^login/$", home),
+    re_path(r"^test_token/$", home),
+    # API routes
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("api/", include("userauth.urls")),
