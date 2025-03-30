@@ -3,6 +3,7 @@ version: "3.9"
 services:
   django:
     image: mrangalo/rabbit-hole-3-docker:master
+    pull_policy: always
     build: .
     ports:
       - 8000:8000
