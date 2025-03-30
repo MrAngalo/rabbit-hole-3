@@ -43,7 +43,7 @@ jobs:
                   ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
                   "cd ${{secrets.WORK_DIR }} &&
                   wget https://github.com/MrAngalo/rabbit-hole-3/raw/refs/heads/master/docker-compose-pro.yml -O docker-compose-pro.yml &&
-                  docker compose -f "docker-compose-pro.yml" up -d --build &&
+                  docker compose -f "docker-compose-pro.yml" up -d &&
                   docker system prune -f &&
                   exit"
             - name: cleanup
