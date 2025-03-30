@@ -11,11 +11,3 @@ services:
     env_file:
       - path: ./api/.env
         required: true
-  angular:
-    image: rabbit-hole-3-app:1.0
-    build: .
-    ports:
-      - 8080:4200
-    volumes:
-      - ./app/dist:/app/dist
-      - ./app/src:/app/src
