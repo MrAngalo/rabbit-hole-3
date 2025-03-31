@@ -9,5 +9,5 @@ services:
     volumes:
       - ./api:/api
     env_file:
-      - path: ./api/.env
+      - path: .env
         required: true
