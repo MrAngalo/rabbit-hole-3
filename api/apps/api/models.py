@@ -16,7 +16,7 @@ class Badge(models.Model):
     name = models.CharField(max_length=20)
     bg_color = models.CharField(max_length=8)
     description = models.CharField(max_length=250)
-    data_uri = models.CharField(max_length=30)
+    data_uri = models.CharField(max_length=10000)
 
     class Meta:
         verbose_name = "Badge"
@@ -54,8 +54,8 @@ class Scene(models.Model):
         on_delete=models.SET_NULL,
     )
     creator_name = models.CharField(max_length=20)
-    title = models.CharField(max_length=30)
-    description = models.CharField(max_length=1000)
+    title = models.CharField(max_length=40)
+    description = models.CharField(max_length=1750)
     gifId = models.CharField(max_length=32)
     created = models.DateTimeField(default=timezone.now)
     likes = models.IntegerField(default=0)
