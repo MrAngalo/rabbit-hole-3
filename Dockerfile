@@ -16,6 +16,8 @@ WORKDIR /api
 
 COPY ./api/ .
 
+COPY --from=angular /api/static/dist static/dist
+
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
