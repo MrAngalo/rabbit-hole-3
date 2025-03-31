@@ -1,10 +1,20 @@
+FROM node:18-alpine3.16 as angular
+
+WORKDIR /app
+
+COPY ./app .
+
+RUN npm install
+
+RUN npm run build
+
 FROM python:3.10-alpine3.19
 
 ENV PYTHONUNBUFFERED=1
 
-COPY . .
-
 WORKDIR /api
+
+COPY ./api/ .
 
 RUN pip install -r requirements.txt
 
