@@ -148,4 +148,4 @@ STATICFILES_DIRS = [STATIC_DIR]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Angular File Names
-ANGULAR_FILES = get_angular_file_names(os.path.join(STATIC_DIR, "dist/app/browser"))
+ANGULAR_FILES = get_angular_file_names("dist/app/browser/")

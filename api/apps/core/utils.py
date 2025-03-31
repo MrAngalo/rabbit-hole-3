@@ -1,8 +1,13 @@
 import os
 import re
 
+from . import settings
+
 
 def get_angular_file_names(build_dir: str):
+    base_url = os.path.join(settings.STATIC_URL, build_dir)
+    base_dir = os.path.join(settings.STATIC_DIR, build_dir)
+
     files = {
         "main_js": "",
         "polyfills_js": "",
@@ -18,10 +23,10 @@ def get_angular_file_names(build_dir: str):
 
     # List files in the build directory and match with patterns
     try:
-        for filename in os.listdir(build_dir):
+        for filename in os.listdir(base_dir):
             for key, pattern in patterns.items():
                 if pattern.match(filename):
-                    files[key] = f"static/dist/app/browser/{filename}"
+                    files[key] = os.path.join(base_url, filename)
     except FileNotFoundError:
         pass
 
