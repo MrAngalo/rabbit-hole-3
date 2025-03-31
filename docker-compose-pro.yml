@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  django:
+  web:
     image: mrangalo/rabbit-hole-3-docker:master
     pull_policy: always
     build: .
@@ -10,3 +10,23 @@ services:
     env_file:
       - path: .env
         required: true
+    networks:
+      - postgres-network
+  database:
+    image: 'postgres:17.4-alpine3.21'
+    ports:
+      - 8432:5432
+    env_file:
+      - path: .env
+        required: true
+    networks:
+      - postgres-network
+    volumes:
+      - db-data:/var/lib/postgresql/data/
+
+volumes:
+  db-data:
+  
+networks:
+  postgres-network:
+    driver: bridge
