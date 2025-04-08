@@ -27,8 +27,21 @@ jobs:
                   push: true
                   tags: "${{ steps.meta.outputs.tags }}"
                   labels: "${{ steps.meta.outputs.labels }}"
+            - name: Discord notification
+              env:
+                DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                DISCORD_EMBEDS: >
+                  [
+                    {
+                      "title": "Github Workflow",
+                      "url": "https://rabbit.guisilva.com/",
+                      "description": "Push Docker image to Docker Hub",
+                      "color": 45824
+                    }
+                  ]
+              uses: Ilshidur/action-discord@0.3.2
     run_pull:
-        name: Run Pull
+        name: Run and Pull
         needs: push_to_registry
         runs-on: ubuntu-22.04
         environment: main
@@ -41,10 +54,23 @@ jobs:
             - name: Connect, Pull, and Restart docker
               run: >-
                   ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-                  "cd ${{secrets.WORK_DIR }} &&
+                  "cd ${{ secrets.WORK_DIR }} &&
                   wget https://github.com/MrAngalo/rabbit-hole-3/raw/refs/heads/master/docker-compose-pro.yml -O docker-compose-pro.yml &&
                   docker compose -f "docker-compose-pro.yml" up -d &&
                   docker system prune -f &&
                   exit"
             - name: cleanup
               run: rm -rf ~/.ssh
+            - name: Discord notification
+              env:
+                DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                DISCORD_EMBEDS: >
+                  [
+                    {
+                      "title": "Github Workflow",
+                      "url": "https://rabbit.guisilva.com",
+                      "description": "Run and Pull",
+                      "color": 45824
+                    }
+                  ]
+              uses: Ilshidur/action-discord@0.3.2
