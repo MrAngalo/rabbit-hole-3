@@ -32,6 +32,7 @@ SECRET_KEY = "django-insecure-3u0^ia49jq=mwk12eid#u86$2^^2n0%gqyu01g9o-w20ac4#*-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = [os.getenv("HOST_IP")]
 CSRF_TRUSTED_ORIGINS = ["https://rabbit.guisilva.com"]
 
