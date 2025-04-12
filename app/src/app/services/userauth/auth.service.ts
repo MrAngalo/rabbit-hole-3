@@ -1,7 +1,12 @@
 import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { CookieService } from "ngx-cookie-service";
-import { User, UserToken } from "./userauth-types";
+import {
+    LoginResponse,
+    RegisterResponse,
+    User,
+    UserInfoResponse
+} from "./userauth-types";
 import { Observable, ReplaySubject, tap } from "rxjs";
 import { DeclaredData } from "../../app.config";
 
@@ -60,7 +65,7 @@ export class AuthService {
 
     login(email: string, password: string) {
         return this.http
-            .post<UserToken>(
+            .post<LoginResponse>(
                 `${this.apiUrl}login/`,
                 {
                     email,
@@ -85,7 +90,7 @@ export class AuthService {
 
     register(username: string, email: string, password: string) {
         return this.http
-            .post<UserToken>(
+            .post<RegisterResponse>(
                 `${this.apiUrl}register/`,
                 {
                     username,
@@ -111,8 +116,8 @@ export class AuthService {
 
     logout() {
         return this.http
-            .post<UserToken>(
-                `${this.apiUrl}login/`,
+            .post(
+                `${this.apiUrl}logout/`,
                 {},
                 {
                     headers: {
@@ -123,7 +128,7 @@ export class AuthService {
                 }
             )
             .pipe(
-                tap((data) => {
+                tap(() => {
                     this._token = null;
                     this._user = null;
                     this.cookie.delete("token");
@@ -133,7 +138,7 @@ export class AuthService {
     }
 
     private userInfo(t: string) {
-        return this.http.get<{ user: User }>(`${this.apiUrl}user-info/`, {
+        return this.http.get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `token ${t}`

@@ -3,7 +3,16 @@ export type User = {
     email: string;
 };
 
-export type UserToken = {
+export type LoginResponse = {
     user: User;
     token: string;
+};
+
+export type RegisterResponse = {
+    user: User;
+    token: string;
+};
+
+export type UserInfoResponse = {
+    user: User;
 };
