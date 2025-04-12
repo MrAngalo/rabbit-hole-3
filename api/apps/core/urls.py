@@ -30,9 +30,10 @@ urlpatterns = [
     re_path(r"^create/[0-9]+/$", home),
     re_path(r"^login/$", home),
     re_path(r"^test_token/$", home),
-    # API routes
+    # Admin routes
     path("admin/", admin.site.urls),
+    # API routes
     path("api/", include("api.urls")),
-    path("api/", include("userauth.urls")),
+    path("api/auth/", include("userauth.urls")),
     path("api/tenor/", include("tenor.urls")),
 ]

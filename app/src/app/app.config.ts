@@ -4,6 +4,16 @@ import { provideRouter } from "@angular/router";
 import { routes } from "./app.routes";
 import { provideHttpClient } from "@angular/common/http";
 
+export type DeclaredData = {
+    csrf_token: string;
+};
+
+declare const __DATA__: DeclaredData;
+
 export const appConfig: ApplicationConfig = {
-    providers: [provideRouter(routes), provideHttpClient()]
+    providers: [
+        { provide: "DATA", useValue: __DATA__ },
+        provideRouter(routes),
+        provideHttpClient()
+    ]
 };

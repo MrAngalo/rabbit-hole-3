@@ -6,7 +6,13 @@
         <base href="/"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="icon" type="image/x-icon" href="static/dist/app/browser/favicon.ico"/>
-    <link rel="stylesheet" href="{{ styles_css }}"></head>
+        <link rel="stylesheet" href="{{ styles_css }}">
+        <script>
+            const __DATA__ = {
+                csrf_token: "{{ csrf_token }}"
+            }
+        </script>
+    </head>
     <body>
         <app-root></app-root>
     <script src="{{ polyfills_js }}" type="module"></script><script src="{{ main_js }}" type="module"></script></body>

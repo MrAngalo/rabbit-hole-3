@@ -1,14 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { CookieService } from "ngx-cookie-service";
 import { User, UserToken } from "./userauth-types";
 import { Observable, ReplaySubject, tap } from "rxjs";
+import { DeclaredData } from "../../app.config";
 
 @Injectable({
     providedIn: "root"
 })
 export class AuthService {
-    private readonly apiUrl = "/api";
+    private readonly apiUrl = "/api/auth/";
 
     private _token: string | null;
     private _user: User | null;
@@ -18,7 +19,8 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
-        private cookie: CookieService
+        private cookie: CookieService,
+        @Inject("DATA") private data: DeclaredData
     ) {
         this.userSubject = new ReplaySubject<User | null>(1);
         this.user$ = this.userSubject.asObservable();
@@ -51,11 +53,15 @@ export class AuthService {
     login(email: string, password: string) {
         return this.http
             .post<UserToken>(
-                `${this.apiUrl}/login/`,
-                JSON.stringify({ email, password }),
+                `${this.apiUrl}login/`,
+                {
+                    email,
+                    password
+                },
                 {
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.data.csrf_token
                     }
                 }
             )

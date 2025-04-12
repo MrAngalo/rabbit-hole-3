@@ -21,7 +21,6 @@ from userauth.authentication import ExpiringTokenAuthentication
 # Create your views here.
 
 
-@csrf_exempt
 @api_view(["POST"])
 def login(request: Request):
     user = User.objects.get_safe(email=request.data["email"])
