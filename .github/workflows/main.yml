@@ -8,6 +8,19 @@ jobs:
         runs-on: ubuntu-22.04
         environment: main
         steps:
+            - name: Discord notification
+              env:
+                DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                DISCORD_EMBEDS: >
+                  [
+                    {
+                      "title": "Github Workflow",
+                      "url": "https://rabbit.guisilva.com",
+                      "description": "Starting Workflow",
+                      "color": 45824
+                    }
+                  ]
+              uses: Ilshidur/action-discord@0.3.2
             - name: Check out the repo
               uses: actions/checkout@v3
             - name: Log in to Docker Hub
