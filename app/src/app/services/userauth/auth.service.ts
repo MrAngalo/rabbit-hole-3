@@ -24,18 +24,26 @@ export class AuthService {
     ) {
         this.userSubject = new ReplaySubject<User | null>(1);
         this.user$ = this.userSubject.asObservable();
+        this._token = null;
+        this._user = null;
 
-        const t = this.cookie.get("token");
-        const u = this.cookie.get("user");
-        if (t !== "" && u !== "") {
-            this._token = t;
-            this._user = JSON.parse(u);
-        } else {
-            this._token = null;
-            this._user = null;
+        if (!this.cookie.check("token")) {
+            this.userSubject.next(this._user);
+            return;
         }
 
-        this.userSubject.next(this._user);
+        const t = this.cookie.get("token");
+        this.userInfo(t).subscribe({
+            next: (data) => {
+                this._token = t;
+                this._user = data.user;
+                this.userSubject.next(this._user);
+            },
+            error: (data) => {
+                this.cookie.delete("token");
+                this.userSubject.next(this._user);
+            }
+        });
     }
 
     get token() {
@@ -69,10 +77,67 @@ export class AuthService {
                 tap((data) => {
                     this._token = data.token;
                     this._user = data.user;
-                    this.cookie.set("token", data.token);
-                    this.cookie.set("user", JSON.stringify(data.user));
+                    this.cookie.set("token", data.token, { path: "/" });
                     this.userSubject.next(this._user);
                 })
             );
+    }
+
+    register(username: string, email: string, password: string) {
+        return this.http
+            .post<UserToken>(
+                `${this.apiUrl}register/`,
+                {
+                    username,
+                    email,
+                    password
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.data.csrf_token
+                    }
+                }
+            )
+            .pipe(
+                tap((data) => {
+                    this._token = data.token;
+                    this._user = data.user;
+                    this.cookie.set("token", data.token, { path: "/" });
+                    this.userSubject.next(this._user);
+                })
+            );
+    }
+
+    logout() {
+        return this.http
+            .post<UserToken>(
+                `${this.apiUrl}login/`,
+                {},
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.data.csrf_token,
+                        Authorization: `token ${this._token}`
+                    }
+                }
+            )
+            .pipe(
+                tap((data) => {
+                    this._token = null;
+                    this._user = null;
+                    this.cookie.delete("token");
+                    this.userSubject.next(this._user);
+                })
+            );
+    }
+
+    private userInfo(t: string) {
+        return this.http.get<{ user: User }>(`${this.apiUrl}user-info/`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `token ${t}`
+            }
+        });
     }
 }

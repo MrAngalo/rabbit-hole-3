@@ -43,7 +43,6 @@ def login(request: Request):
     return Response({"token": token.key, "user": serializer.data})
 
 
-@csrf_exempt
 @api_view(["POST"])
 def register(request: Request):
     serializer = UserSerializer(
@@ -56,7 +55,6 @@ def register(request: Request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -66,14 +64,21 @@ def logout(request: Request):
         request.user.auth_token.delete()
     except:
         pass
-    return Response({"error": "Successfully logged out."}, status=status.HTTP_200_OK)
+    return Response({"success": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
 @api_view(["GET"])
 @authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def testToken(request: Request):
     return Response(
-        {"error", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
+        {"success", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
     )
+
+
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def userInfo(request: Request):
+    serializer = UserSerializer(instance=request.user, fields=("username", "email"))
+    return Response({"user": serializer.data}, status=status.HTTP_200_OK)
