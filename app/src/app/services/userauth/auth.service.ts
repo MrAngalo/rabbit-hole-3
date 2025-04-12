@@ -23,9 +23,9 @@ export class AuthService {
     user$: Observable<User | null>;
 
     constructor(
+        @Inject("DATA") private data: DeclaredData,
         private http: HttpClient,
-        private cookie: CookieService,
-        @Inject("DATA") private data: DeclaredData
+        private cookie: CookieService
     ) {
         this.userSubject = new ReplaySubject<User | null>(1);
         this.user$ = this.userSubject.asObservable();

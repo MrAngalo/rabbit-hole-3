@@ -1,8 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { SceneGlobalsResponse, SceneResponse } from "./scene-types";
 import { Observable } from "rxjs";
 import { AuthService } from "../userauth/auth.service";
+import { DeclaredData } from "../../app.config";
 
 @Injectable({
     providedIn: "root"
@@ -10,14 +11,11 @@ import { AuthService } from "../userauth/auth.service";
 export class SceneService {
     private readonly API_URL = "/api";
 
-    globals$: Observable<SceneGlobalsResponse>;
-
     constructor(
+        @Inject("DATA") private data: DeclaredData,
         private authService: AuthService,
         private http: HttpClient
-    ) {
-        this.globals$ = this.fetchSceneGlobals();
-    }
+    ) {}
 
     fetchScene(id: number) {
         return this.http.get<SceneResponse>(`${this.API_URL}/scene/${id}`, {
@@ -40,17 +38,6 @@ export class SceneService {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `token ${token}`
-                }
-            }
-        );
-    }
-
-    private fetchSceneGlobals() {
-        return this.http.get<SceneGlobalsResponse>(
-            `${this.API_URL}/scene-globals`,
-            {
-                headers: {
-                    "Content-Type": "application/json"
                 }
             }
         );

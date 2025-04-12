@@ -24,14 +24,6 @@ from userauth.models import User
 
 @csrf_exempt
 @api_view(["GET"])
-def sceneGlobals(request: Request):
-    maxId = Scene.objects.latest("id").id
-    count = Scene.objects.count()
-    return Response({"maxId": maxId, "count": count}, status=status.HTTP_200_OK)
-
-
-@csrf_exempt
-@api_view(["GET"])
 def notImplemented(request: Request):
     return Response({"error": "Not Implemented."}, status=status.HTTP_400_BAD_REQUEST)
 

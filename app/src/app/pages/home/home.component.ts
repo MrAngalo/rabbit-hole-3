@@ -1,9 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { SceneService } from "../../services/scene/scene.service";
-import { Observable } from "rxjs";
-import { SceneGlobalsResponse } from "../../services/scene/scene-types";
 import { CommonModule } from "@angular/common";
+import { DeclaredData } from "../../app.config";
 
 @Component({
     selector: "app-home",
@@ -13,9 +11,5 @@ import { CommonModule } from "@angular/common";
     styleUrl: "./home.component.scss"
 })
 export class HomeComponent {
-    globals$: Observable<SceneGlobalsResponse>;
-
-    constructor(private sceneService: SceneService) {
-        this.globals$ = this.sceneService.globals$;
-    }
+    constructor(@Inject("DATA") public data: DeclaredData) {}
 }

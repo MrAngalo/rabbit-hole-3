@@ -29,8 +29,6 @@
                 >Join The Discord</a
             >
         </div>
-        <p class="total" *ngIf="globals$ | async as globals">
-            There are a total of {{ globals.count }} paths
-        </p>
+        <p class="total">There are a total of {{ data.count }} paths</p>
     </div>
 </div>

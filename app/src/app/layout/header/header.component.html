@@ -16,11 +16,9 @@
                         type="number"
                         [(ngModel)]="sceneId"
                         [min]="0"
-                        [max]="(globals$ | async)?.maxId || 0"
+                        [max]="data.maxId"
                     />
-                    <div class="hint">
-                        Highest ID is {{ (globals$ | async)?.maxId }}!
-                    </div>
+                    <div class="hint">Highest ID is {{ data.maxId }}!</div>
                 </div>
                 <div>
                     <button
