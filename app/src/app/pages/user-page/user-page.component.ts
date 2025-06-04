@@ -1,20 +1,16 @@
 import { Component } from "@angular/core";
 import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
-import { RouterModule } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth/auth.service";
 import { Observable } from "rxjs";
 import { User } from "../../services/auth/auth-types";
-
-export enum UserPremission {
-    VISITOR = 5,
-    TRUSTED = 10,
-    DONOR = 15,
-    MODERATOR = 80,
-    ADMINISTRATOR = 90,
-    OWNER = 100
-}
+import {
+    FetchUserResponse,
+    UserPremission
+} from "../../services/user/user-types";
+import { UserService } from "../../services/user/user.service";
 
 @Component({
     selector: "app-user-page",
@@ -25,7 +21,7 @@ export enum UserPremission {
 })
 export class UserPageComponent {
     UserPremission = UserPremission;
-    reqUser = {
+    reqUser: FetchUserResponse = {
         id: "1",
         username: "MrAngalo",
         permission: UserPremission.ADMINISTRATOR,
@@ -48,8 +44,20 @@ export class UserPageComponent {
 
     currentUser$: Observable<User | null>;
 
-    constructor(private auth: AuthService) {
+    constructor(
+        route: ActivatedRoute,
+        auth: AuthService,
+        userService: UserService
+    ) {
         this.currentUser$ = auth.user$;
+
+        route.params.subscribe((params) => {
+            const username = params["username"];
+            userService.fetchUser(username).subscribe((user) => {
+                console.log("success!");
+                console.log(user);
+            });
+        });
     }
 
     // Save form action="/modify/usersettings/<%= locals.user2.username %>" method="POST"
