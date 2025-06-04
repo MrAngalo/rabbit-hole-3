@@ -7,6 +7,7 @@ import { SceneInfoComponent } from "./pages/scene-info/scene-info.component";
 import { SceneCreateComponent } from "./pages/scene-create/scene-create.component";
 import { AccountComponent } from "./pages/account/account.component";
 import { UserViewComponent } from "./pages/user-view/user-view.component";
+import { LogoutComponent } from "./pages/logout/logout.component";
 
 export const routes: Routes = [
     {
@@ -36,6 +37,11 @@ export const routes: Routes = [
         path: "login",
         component: LoginComponent,
         canActivate: [notAuthGuard]
+    },
+    {
+        path: "logout",
+        component: LogoutComponent,
+        canActivate: [authGuard]
     },
     {
         path: "test_token",
