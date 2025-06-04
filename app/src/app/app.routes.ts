@@ -5,6 +5,8 @@ import { TestTokenComponent } from "./pages/test-token/test-token.component";
 import { authGuard, notAuthGuard } from "./guards/auth.guard";
 import { SceneInfoComponent } from "./pages/scene-info/scene-info.component";
 import { SceneCreateComponent } from "./pages/scene-create/scene-create.component";
+import { AccountComponent } from "./pages/account/account.component";
+import { UserViewComponent } from "./pages/user-view/user-view.component";
 
 export const routes: Routes = [
     {
@@ -39,6 +41,15 @@ export const routes: Routes = [
         path: "test_token",
         component: TestTokenComponent,
         canActivate: [authGuard]
+    },
+    {
+        path: "account",
+        component: AccountComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: "user/:username",
+        component: UserViewComponent
     },
     {
         path: "**",
