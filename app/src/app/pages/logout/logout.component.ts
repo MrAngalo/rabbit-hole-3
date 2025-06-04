@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { AuthService } from "../../services/userauth/auth.service";
-import { map } from "rxjs";
 import { Router } from "@angular/router";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 
