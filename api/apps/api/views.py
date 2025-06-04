@@ -24,7 +24,7 @@ from userauth.models import User
 
 @csrf_exempt
 @api_view(["GET"])
-def notImplemented(request: Request):
+def notImplemented(request: Request, **kwargs):
     return Response({"error": "Not Implemented."}, status=status.HTTP_400_BAD_REQUEST)
 
 
