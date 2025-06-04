@@ -5,6 +5,7 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
+from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -28,16 +29,15 @@ def notImplemented(request: Request, **kwargs):
     return Response({"error": "Not Implemented."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-@api_view(["GET"])
-def fetchScene(request: Request, id=0):
-    scene = Scene.objects.get_safe(id=id)
-    if scene == None:
-        return Response(
-            {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
-        )
-    scene_serializer = SceneSerializer(scene)
-    return Response(scene_serializer.data, status=status.HTTP_200_OK)
+class FetchSceneView(APIView):
+    def get(self, request: Request, id=0):
+        scene = Scene.objects.get_safe(id=id)
+        if scene == None:
+            return Response(
+                {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
+            )
+        scene_serializer = SceneSerializer(scene)
+        return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
