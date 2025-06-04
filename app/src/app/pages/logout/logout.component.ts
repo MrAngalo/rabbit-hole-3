@@ -20,7 +20,7 @@ export class LogoutComponent {
             router.navigate(["/"]);
             messageService.display({
                 message: "You have successfully logged off.",
-                color: "yellow"
+                color: "green"
             });
         });
     }
