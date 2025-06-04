@@ -6,7 +6,7 @@ import { authGuard, notAuthGuard } from "./guards/auth.guard";
 import { SceneInfoComponent } from "./pages/scene-info/scene-info.component";
 import { SceneCreateComponent } from "./pages/scene-create/scene-create.component";
 import { AccountComponent } from "./pages/account/account.component";
-import { UserViewComponent } from "./pages/user-view/user-view.component";
+import { UserPageComponent } from "./pages/user-page/user-page.component";
 import { LogoutComponent } from "./pages/logout/logout.component";
 
 export const routes: Routes = [
@@ -55,7 +55,7 @@ export const routes: Routes = [
     },
     {
         path: "user/:username",
-        component: UserViewComponent
+        component: UserPageComponent
     },
     {
         path: "**",

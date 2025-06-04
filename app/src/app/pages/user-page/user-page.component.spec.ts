@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { UserViewComponent } from "./user-view.component";
+import { UserPageComponent } from "./user-page.component";
 
 describe("UserViewComponent", () => {
-    let component: UserViewComponent;
-    let fixture: ComponentFixture<UserViewComponent>;
+    let component: UserPageComponent;
+    let fixture: ComponentFixture<UserPageComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [UserViewComponent]
+            imports: [UserPageComponent]
         }).compileComponents();
 
-        fixture = TestBed.createComponent(UserViewComponent);
+        fixture = TestBed.createComponent(UserPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
