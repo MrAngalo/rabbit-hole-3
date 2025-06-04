@@ -13,7 +13,7 @@ import { User } from "../../services/userauth/userauth-types";
 import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { FormsModule } from "@angular/forms";
-import { FetchPostPipe } from "../../pipes/tenor/pipes/fetch-post.pipe";
+import { FetchPostPipe } from "../../pipes/tenor/fetch-post/fetch-post.pipe";
 import { TenorService } from "../../services/tenor/tenor.service";
 import { TenorResponseObject } from "../../services/tenor/tenor-types";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
@@ -28,7 +28,6 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
         TenorPipesModule,
         FormsModule
     ],
-    providers: [FetchPostPipe],
     templateUrl: "./scene-create.component.html",
     styleUrl: "./scene-create.component.scss"
 })

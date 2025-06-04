@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FetchPostPipe } from "./pipes/fetch-post.pipe";
+import { FetchPostPipe } from "./fetch-post/fetch-post.pipe";
 
 @NgModule({
     declarations: [FetchPostPipe],
