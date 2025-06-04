@@ -59,10 +59,6 @@ export class AuthService {
         return this._user;
     }
 
-    get isAuthenticated() {
-        return this._token !== null;
-    }
-
     login(email: string, password: string) {
         return this.http
             .post<LoginResponse>(
