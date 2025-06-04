@@ -1,8 +1,8 @@
 import { Component, Inject } from "@angular/core";
-import { AuthService } from "../../services/userauth/auth.service";
+import { AuthService } from "../../services/auth/auth.service";
 import { CommonModule } from "@angular/common";
 import { ActivationEnd, Router, RouterModule } from "@angular/router";
-import { User } from "../../services/userauth/userauth-types";
+import { User } from "../../services/auth/auth-types";
 import { Observable, filter, map } from "rxjs";
 import { SceneGlobalsResponse } from "../../services/scene/scene-types";
 import { SceneService } from "../../services/scene/scene.service";

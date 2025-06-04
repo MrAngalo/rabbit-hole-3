@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { AuthService } from "../../services/userauth/auth.service";
+import { AuthService } from "../../services/auth/auth.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ErrorResponse } from "../../services/scene/scene-types";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";

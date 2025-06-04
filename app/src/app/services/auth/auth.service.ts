@@ -6,7 +6,7 @@ import {
     RegisterResponse,
     User,
     UserInfoResponse
-} from "./userauth-types";
+} from "./auth-types";
 import { Observable, ReplaySubject, tap } from "rxjs";
 import { DeclaredData } from "../../app.config";
 

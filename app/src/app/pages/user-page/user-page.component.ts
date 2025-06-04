@@ -3,9 +3,9 @@ import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { RouterModule } from "@angular/router";
 import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
-import { AuthService } from "../../services/userauth/auth.service";
+import { AuthService } from "../../services/auth/auth.service";
 import { Observable } from "rxjs";
-import { User } from "../../services/userauth/userauth-types";
+import { User } from "../../services/auth/auth-types";
 
 export enum UserPremission {
     VISITOR = 5,

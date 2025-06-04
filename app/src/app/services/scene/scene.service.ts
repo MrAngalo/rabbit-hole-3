@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { SceneGlobalsResponse, SceneResponse } from "./scene-types";
 import { Observable } from "rxjs";
-import { AuthService } from "../userauth/auth.service";
+import { AuthService } from "../auth/auth.service";
 import { DeclaredData } from "../../app.config";
 
 @Injectable({

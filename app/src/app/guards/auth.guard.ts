@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
-import { AuthService } from "../services/userauth/auth.service";
+import { AuthService } from "../services/auth/auth.service";
 import { PopupMessagesService } from "../services/popup-messages/popup-messages.service";
 import { firstValueFrom } from "rxjs";
 
