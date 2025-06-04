@@ -22,18 +22,12 @@ from django.urls import include
 from .views import home
 
 urlpatterns = [
-    # Angular routes
-    path("", home),
-    re_path(r"^scene/$", home),
-    re_path(r"^scene/[0-9]+/$", home),
-    re_path(r"^create/$", home),
-    re_path(r"^create/[0-9]+/$", home),
-    re_path(r"^login/$", home),
-    re_path(r"^test_token/$", home),
     # Admin routes
     path("admin/", admin.site.urls),
     # API routes
     path("api/", include("api.urls")),
     path("api/auth/", include("userauth.urls")),
     path("api/tenor/", include("tenor.urls")),
+    # Angular routes
+    re_path(r"^.*$", home),
 ]
