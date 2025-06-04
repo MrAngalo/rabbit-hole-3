@@ -14,14 +14,23 @@ export const authGuard: CanActivateFn = async (route, state) => {
         const url = route.pathFromRoot
             .map((v) => v.url.map((s) => s.toString()).join("/"))
             .join("/");
-        router.navigate(["/login"], {
-            queryParams: { ref: url }
-        });
-        messageService.display({
-            message: "You must be logged in to access this.",
-            color: "yellow"
-        });
-        return false;
+        if (url.startsWith("/logout")) {
+            router.navigate(["/"]);
+            messageService.display({
+                message: "You are already logged out",
+                color: "yellow"
+            });
+            return false;
+        } else {
+            router.navigate(["/login"], {
+                queryParams: { ref: url }
+            });
+            messageService.display({
+                message: "You must be logged in to access this.",
+                color: "yellow"
+            });
+            return false;
+        }
     }
     return true;
 };
