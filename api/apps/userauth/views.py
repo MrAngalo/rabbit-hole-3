@@ -69,16 +69,6 @@ class LogoutView(APIView):
         )
 
 
-class TestTokenView(APIView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response(
-            {"success", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
-        )
-
-
 class UserInfoView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
