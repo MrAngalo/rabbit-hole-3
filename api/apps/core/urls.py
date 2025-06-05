@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.urls import include
 
-from .views import home
+from .views import HomeView
 
 urlpatterns = [
     # Admin routes
@@ -29,5 +29,5 @@ urlpatterns = [
     path("api/auth/", include("userauth.urls")),
     path("api/tenor/", include("tenor.urls")),
     # Angular routes
-    re_path(r"^.*$", home),
+    re_path(r"^.*$", HomeView.as_view()),
 ]
