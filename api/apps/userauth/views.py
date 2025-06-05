@@ -1,17 +1,18 @@
-from datetime import datetime, timezone
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login as django_login
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
 )
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.views import APIView
 
 
 from api.models import User
@@ -21,26 +22,29 @@ from userauth.authentication import ExpiringTokenAuthentication
 # Create your views here.
 
 
-@api_view(["POST"])
-def login(request: Request):
-    user = User.objects.get_safe(email=request.data["email"])
-    if user == None:
-        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    if not user.check_password(request.data["password"]):
-        return Response(
-            {"error": "Incorrect Password."}, status=status.HTTP_404_NOT_FOUND
-        )
+class LoginView(APIView):
+    authentication_classes = []
+    permission_classes = []
 
-    token, created = Token.objects.get_or_create(user=user)
-    if not created:
-        utc_now = datetime.now(timezone.utc)
-        # Regenerate token if it used more than half of its lifetime
-        if token.created < utc_now - settings.TOKEN_EXPIRE_TIME / 2:
-            token.delete()
-            token = Token.objects.create(user=user)
+    # Optional: disable CSRF for login
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-    serializer = UserSerializer(instance=user, fields=("username", "email"))
-    return Response({"token": token.key, "user": serializer.data})
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        user = authenticate(request, email=email, password=password)
+        if user == None:
+            return Response(
+                {"error": "User not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Creates session cookie
+        django_login(request, user)
+        serializer = UserSerializer(instance=user, fields=("username", "email"))
+        return Response({"user": serializer.data})
 
 
 @api_view(["POST"])
