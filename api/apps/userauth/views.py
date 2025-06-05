@@ -41,41 +41,48 @@ class LoginView(APIView):
         return Response({"user": serializer.data})
 
 
-@api_view(["POST"])
-def register(request: Request):
-    serializer = UserSerializer(
-        data=request.data, fields=("username", "password", "email")
-    )
-    if serializer.is_valid():
-        user = User.objects.create_user(**serializer.data)
-        token = Token.objects.create(user=user)
-        return Response({"token": token.key, "user": serializer.data})
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = UserSerializer(
+            data=request.data, fields=("username", "password", "email")
+        )
+        if serializer.is_valid():
+            User.objects.create_user(**serializer.data)
+            return Response({"user": serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["POST"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def logout(request):
-    try:
-        django_logout(request)
-    except:
-        pass
-    return Response({"success": "Successfully logged out."}, status=status.HTTP_200_OK)
+class LogoutView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            django_logout(request)
+        except:
+            pass
+        return Response(
+            {"success": "Successfully logged out."}, status=status.HTTP_200_OK
+        )
 
 
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def testToken(request: Request):
-    return Response(
-        {"success", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
-    )
+class TestTokenView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(
+            {"success", f"passed for {request.user.email}"}, status=status.HTTP_200_OK
+        )
 
 
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def userInfo(request: Request):
-    serializer = UserSerializer(instance=request.user, fields=("username", "email"))
-    return Response({"user": serializer.data}, status=status.HTTP_200_OK)
+class UserInfoView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request):
+        serializer = UserSerializer(instance=request.user, fields=("username", "email"))
+        return Response({"user": serializer.data}, status=status.HTTP_200_OK)
