@@ -11,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from tenor.views import API_KEY, API_URL, CLIENT_KEY
-from userauth.authentication import ExpiringTokenAuthentication
 from api.models import Scene
 from api.serializers import SceneSerializer
 from api.models import SceneStatus
@@ -42,7 +41,7 @@ class FetchSceneView(APIView):
 
 @csrf_exempt
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
+@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def createScene(request: Request, parentId=0):
     data: dict[str, str] = request.data  # type: ignore

@@ -17,7 +17,6 @@ from rest_framework.views import APIView
 
 from api.models import User
 from userauth.serializers import UserSerializer
-from userauth.authentication import ExpiringTokenAuthentication
 
 # Create your views here.
 
@@ -60,7 +59,7 @@ def register(request: Request):
 
 
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 # Does not validate if token is expired, just tries to delete information given
 def logout(request: Request):
@@ -72,7 +71,7 @@ def logout(request: Request):
 
 
 @api_view(["GET"])
-@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
+@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def testToken(request: Request):
     return Response(
@@ -81,7 +80,7 @@ def testToken(request: Request):
 
 
 @api_view(["GET"])
-@authentication_classes([SessionAuthentication, ExpiringTokenAuthentication])
+@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def userInfo(request: Request):
     serializer = UserSerializer(instance=request.user, fields=("username", "email"))
