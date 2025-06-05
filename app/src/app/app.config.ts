@@ -5,7 +5,6 @@ import { routes } from "./app.routes";
 import { provideHttpClient } from "@angular/common/http";
 
 export type DeclaredData = {
-    csrf_token: string;
     maxId: number;
     count: number;
 };

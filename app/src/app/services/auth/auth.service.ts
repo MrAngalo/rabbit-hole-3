@@ -18,6 +18,7 @@ export class AuthService {
 
     private _token: string | null;
     private _user: User | null;
+    readonly csrf_token: string;
 
     private userSubject: ReplaySubject<User | null>;
     user$: Observable<User | null>;
@@ -27,6 +28,8 @@ export class AuthService {
         private http: HttpClient,
         private cookie: CookieService
     ) {
+        this.csrf_token = this.cookie.get("csrftoken");
+
         this.userSubject = new ReplaySubject<User | null>(1);
         this.user$ = this.userSubject.asObservable();
         this._token = null;
@@ -70,7 +73,7 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.data.csrf_token
+                        "X-CSRFToken": this.csrf_token
                     }
                 }
             )
@@ -96,7 +99,7 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.data.csrf_token
+                        "X-CSRFToken": this.csrf_token
                     }
                 }
             )
@@ -118,7 +121,7 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.data.csrf_token,
+                        "X-CSRFToken": this.csrf_token,
                         Authorization: `token ${this._token}`
                     }
                 }
