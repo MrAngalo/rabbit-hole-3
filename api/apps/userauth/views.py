@@ -1,14 +1,16 @@
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import (
+    authenticate,
+    login as django_login,
+    logout as django_logout,
+)
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
 )
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -18,17 +20,10 @@ from rest_framework.views import APIView
 from api.models import User
 from userauth.serializers import UserSerializer
 
-# Create your views here.
-
 
 class LoginView(APIView):
     authentication_classes = []
     permission_classes = []
-
-    # Optional: disable CSRF for login
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def post(self, request):
         email = request.data.get("email")
@@ -61,10 +56,9 @@ def register(request: Request):
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-# Does not validate if token is expired, just tries to delete information given
-def logout(request: Request):
+def logout(request):
     try:
-        request.user.auth_token.delete()
+        django_logout(request)
     except:
         pass
     return Response({"success": "Successfully logged out."}, status=status.HTTP_200_OK)

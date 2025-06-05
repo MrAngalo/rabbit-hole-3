@@ -5,12 +5,10 @@ export type User = {
 
 export type LoginResponse = {
     user: User;
-    token: string;
 };
 
 export type RegisterResponse = {
     user: User;
-    token: string;
 };
 
 export type UserInfoResponse = {

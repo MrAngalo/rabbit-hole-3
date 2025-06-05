@@ -20,13 +20,9 @@ export class UserService {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": this.auth.csrf_token,
-                    ...(this.auth.token
-                        ? {
-                              Authorization: `token ${this.auth.token}`
-                          }
-                        : {})
-                }
+                    "X-CSRFToken": this.auth.csrf_token
+                },
+                withCredentials: this.auth.isAuthenticated
             }
         );
     }

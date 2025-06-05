@@ -16,9 +16,8 @@ import { DeclaredData } from "../../app.config";
 export class AuthService {
     private readonly apiUrl = "/api/auth/";
 
-    private _token: string | null;
+    private _csrf_token: string;
     private _user: User | null;
-    readonly csrf_token: string;
 
     private userSubject: ReplaySubject<User | null>;
     user$: Observable<User | null>;
@@ -28,38 +27,34 @@ export class AuthService {
         private http: HttpClient,
         private cookie: CookieService
     ) {
-        this.csrf_token = this.cookie.get("csrftoken");
+        this._csrf_token = this.data.csrf_token;
+        this._user = null;
 
         this.userSubject = new ReplaySubject<User | null>(1);
         this.user$ = this.userSubject.asObservable();
-        this._token = null;
-        this._user = null;
 
-        if (!this.cookie.check("token")) {
-            this.userSubject.next(this._user);
-            return;
-        }
-
-        const t = this.cookie.get("token");
-        this.userInfo(t).subscribe({
+        this.userInfo().subscribe({
             next: (data) => {
-                this._token = t;
                 this._user = data.user;
                 this.userSubject.next(this._user);
             },
-            error: (data) => {
-                this.cookie.delete("token");
+            error: (_) => {
+                this._user = null;
                 this.userSubject.next(this._user);
             }
         });
     }
 
-    get token() {
-        return this._token;
+    get csrf_token() {
+        return this._csrf_token;
     }
 
     get user() {
         return this._user;
+    }
+
+    get isAuthenticated() {
+        return this._user !== null;
     }
 
     login(email: string, password: string) {
@@ -74,14 +69,13 @@ export class AuthService {
                     headers: {
                         "Content-Type": "application/json",
                         "X-CSRFToken": this.csrf_token
-                    }
+                    },
+                    withCredentials: false
                 }
             )
             .pipe(
                 tap((data) => {
-                    this._token = data.token;
                     this._user = data.user;
-                    this.cookie.set("token", data.token, { path: "/" });
                     this.userSubject.next(this._user);
                 })
             );
@@ -100,14 +94,13 @@ export class AuthService {
                     headers: {
                         "Content-Type": "application/json",
                         "X-CSRFToken": this.csrf_token
-                    }
+                    },
+                    withCredentials: false
                 }
             )
             .pipe(
                 tap((data) => {
-                    this._token = data.token;
                     this._user = data.user;
-                    this.cookie.set("token", data.token, { path: "/" });
                     this.userSubject.next(this._user);
                 })
             );
@@ -121,27 +114,26 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.csrf_token,
-                        Authorization: `token ${this._token}`
-                    }
+                        "X-CSRFToken": this.csrf_token
+                    },
+                    withCredentials: true
                 }
             )
             .pipe(
                 tap(() => {
-                    this._token = null;
                     this._user = null;
-                    this.cookie.delete("token");
                     this.userSubject.next(this._user);
                 })
             );
     }
 
-    private userInfo(t: string) {
+    private userInfo() {
         return this.http.get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `token ${t}`
-            }
+                "X-CSRFToken": this.csrf_token
+            },
+            withCredentials: true
         });
     }
 }
