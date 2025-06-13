@@ -1,5 +1,8 @@
+from userauth.models import User
 from core.serializers import DynamicFieldsModelSerializer
-from api.models import Badge, Scene
+from .models import Badge, Scene
+
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 
 class BadgeSerializer(DynamicFieldsModelSerializer):
@@ -126,3 +129,24 @@ class SceneSerializer(DynamicFieldsModelSerializer):
 #     g_place_id = models.CharField(max_length=20,primary_key=True)
 #     json = models.TextField(null=True)
 #     name = models.CharField(max_length=40)
+
+
+class FetchUserSerializer(ModelSerializer):
+    scenes = SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "created",
+            "bio",
+            "ppf_gifId",
+            "scenes",
+        ]
+
+    def get_scenes(self, obj):
+        return [
+            {"id": scene.id, "title": scene.title, "gifId": scene.gifId}
+            for scene in obj.scenes.all()
+        ]

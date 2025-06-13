@@ -11,13 +11,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from tenor.views import API_KEY, API_URL, CLIENT_KEY
-from api.models import Scene
-from api.serializers import SceneSerializer
-from api.models import SceneStatus
+
+import re
 import requests
 from urllib.parse import quote
-import re
 from userauth.models import User
+
+from .models import Scene
+from .serializers import FetchUserSerializer, SceneSerializer
+from .models import SceneStatus
 
 
 class NotImplementedView(APIView):
@@ -138,3 +140,19 @@ class CreateSceneView(APIView):
         scene_serializer = SceneSerializer(scene)
 
         return Response(scene_serializer.data, status=status.HTTP_200_OK)
+
+
+class FetchUserView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = []
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = FetchUserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
