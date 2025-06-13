@@ -4,10 +4,11 @@ import { Pipe, PipeTransform } from "@angular/core";
     name: "ordinalDate"
 })
 export class OrdinalDatePipe implements PipeTransform {
-    transform(value: Date): string {
-        const day = value.getDate();
-        const month = value.toLocaleString("default", { month: "long" });
-        const year = value.getFullYear();
+    transform(value: string): string {
+        const date = new Date(value);
+        const day = date.getDate();
+        const month = date.toLocaleString("default", { month: "long" });
+        const year = date.getFullYear();
 
         const suffix = (d: number) => {
             if (d > 3 && d < 21) return "th";

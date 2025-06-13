@@ -143,7 +143,7 @@ class CreateSceneView(APIView):
 
 
 class FetchUserView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = []
     permission_classes = []
 
     def get(self, request, username):
@@ -151,7 +151,8 @@ class FetchUserView(APIView):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error": f"User {username} not found"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         serializer = FetchUserSerializer(user)

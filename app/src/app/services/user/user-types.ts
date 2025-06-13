@@ -11,7 +11,7 @@ export type FetchUserResponse = {
     id: string;
     username: string;
     permission: UserPremission;
-    created: Date;
+    created: string;
     bio: string;
     ppf_gifId: string;
     scenes: {
