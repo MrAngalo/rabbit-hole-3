@@ -33,71 +33,23 @@
 .tabs-wrapper {
     width: 100%;
     min-width: 500px;
-    height: 600px;
+    padding: 20px;
+    box-sizing: border-box;
     min-height: calc(100vh - 400px);
     border-radius: 10px;
     overflow: hidden;
     background: #a8c6b4;
 }
 
-.tabs-header {
-    display: flex;
-    position: relative;
-    padding-top: 10px;
-    height: 45px;
-    background: #298d4a;
+.tabs-wrapper h2:first-child {
+    margin-top: 0;
 }
 
-.tab-button {
-    display: none;
-}
-
-.tab-spacer {
-    width: 30px;
-}
-
-.tab-label {
-    cursor: pointer;
-    padding: 10px 20px;
-    margin-right: 5px;
-    box-sizing: border-box;
-    height: 40px;
-    border-radius: 5px;
-    background-color: #f2f2f2;
-    border: none;
-    font-family: inherit;
-    font-size: inherit;
-    color: black;
-    -webkit-text-fill-color: black;
-}
-
-.tab-content {
-    position: absolute;
-    top: 100%;
-    padding: 0px 30px;
-    width: 100%;
-    height: 545px;
-    min-height: calc(100vh - 455px);
-    box-sizing: border-box;
-    display: none;
-    overflow-y: scroll;
-}
-
-.tab-button:checked + .tab-label {
-    height: 45px;
-    background: #a8c6b4;
-    border-radius: 5px 5px 0px 0px;
-}
-
-.tab-button:checked + .tab-label + .tab-content {
-    display: block;
-}
-
-.tab-content h4 {
+h4 {
     margin: 15px 0;
 }
 
-.tab-content button {
+button {
     height: 34px;
     margin: 1px;
     padding: 0 15px;
@@ -108,79 +60,34 @@
     background-color: #e91e63;
 }
 
-.tab-content button:hover,
-.tab-content button:active,
-.tab-content button:disabled {
+button:hover,
+button:active,
+button:disabled {
     color: white;
     background-color: #680929;
 }
 
-.tab-content button:disabled {
+button:disabled {
     cursor: progress;
 }
 
-.tab-content textarea,
-.tab-content input[type="Text"] {
+textarea,
+input[type="Text"] {
     border: none;
     outline: none;
     padding: 10px 15px;
     border-radius: 10px;
 }
 
-.tab-content textarea {
+textarea {
     box-sizing: border-box;
     width: 650px;
     max-width: 100%;
     height: 120px;
 }
-.tab-content input[type="Text"] {
+
+input[type="Text"] {
     width: 200px;
-}
-
-.gallery {
-    margin-top: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    border-radius: 10px;
-    padding-bottom: 50px;
-    justify-content: center;
-}
-
-.gallery .scene {
-    width: 185px;
-    height: 185px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.gallery .scene .scene-gif {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-    background: lightgray;
-}
-
-.gallery .scene .scene-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #799ce6;
-    padding: 5px;
-    box-sizing: border-box;
-    margin-bottom: 0;
-}
-
-.gallery .scene.placeholder {
-    height: 0px;
-    margin-bottom: 0px;
-}
-
-.tab-content.settings {
-    padding-right: 35%;
 }
 
 .checkbox-wrapper {
@@ -269,17 +176,6 @@
     margin-top: 10px;
 }
 
-.tenor-selector .pic {
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-    margin-top: 5px;
-    cursor: pointer;
-    margin-left: 5px;
-    object-fit: cover;
-    border: 1px solid lightgrey;
-}
-
 .rabbit-gif-wrapper {
     position: absolute;
     left: calc(100% + 25px);
@@ -294,9 +190,6 @@
 }
 
 @media only screen and (max-width: 1000px) {
-    .tab-content.settings {
-        padding: 0px 30px;
-    }
     .rabbit-gif-wrapper {
         position: initial;
         margin: 30px 0;
