@@ -19,152 +19,19 @@
         </div>
     </div>
     <div class="tabs-wrapper">
-        <div class="tabs-header">
-            <div class="tab-spacer"></div>
-            <!-- Scenes Tab -->
-            <input
-                type="radio"
-                name="tab"
-                id="tab1"
-                class="tab-button"
-                checked
-            />
-            <label for="tab1" class="tab-label">Scenes</label>
-            <div class="tab-content">
-                <div class="gallery">
-                    @for (scene of reqUser.scenes; track $index) {
-                        <a class="scene" [routerLink]="['/scene', scene.id]">
-                            <img
-                                class="scene-gif tenor-load"
-                                src=""
-                                [src]="scene.gifId | fetchPost | async"
-                            />
-                            <h4 class="scene-title">{{ scene.title }}</h4>
-                        </a>
-                    }
-                    @for (i of 10 | range; track $index) {
-                        <div class="scene placeholder"></div>
-                    }
-                </div>
-            </div>
-            <!-- Settings Tab -->
-            @if (currentUser$ | async; as currentUser) {
-                <input type="radio" name="tab" id="tab2" class="tab-button" />
-                <label for="tab2" class="tab-label">Settings</label>
-                <div class="tab-content settings">
-                    <form class="save-form">
-                        <h2>Settings</h2>
-                        <div>
-                            The following are your account setings. They are
-                            subjected to the
-                            <a [routerLink]="['/guidelines']"
-                                >Community Guidelines</a
-                            >.
-                        </div>
-                        <br />
-                        <h4>Profile Picture Gif:</h4>
-                        <div class="tenor-selector-wrapper">
-                            <div class="tenor-selector">
-                                <div class="flex">
-                                    <input
-                                        id="tenor-search"
-                                        type="text"
-                                        placeholder="Search Tenor"
-                                        class="text"
-                                    />
-                                    <button type="button">Search</button>
-                                </div>
-                                <div class="searched_content"></div>
-                            </div>
-                            <img
-                                class="tenor-footer"
-                                src="/img/tenor/PB_tenor_logo_blue_horizontal.svg"
-                                alt="Tenor Footer"
-                            />
-                            <div class="rabbit-gif-wrapper">
-                                <img
-                                    class="profile-picture rabbit-gif preview-gif"
-                                    src="/img/no-gif.png"
-                                    alt="Rabbit Gif"
-                                />
-                                <img
-                                    class="tenor-footer"
-                                    src="/img/tenor/PB_tenor_logo_blue_horizontal.svg"
-                                    alt="Tenor Footer"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            Cannot find your GIF? enter the ID bellow directly.
-                            It is the numbers at the end of the URL. Ex.
-                            (https://tenor.com/view/bruh-moment-gif-<span
-                                style="color: rgb(201, 0, 0)"
-                                >23616422</span
-                            >)
-                        </div>
-                        <br />
-                        <div>
-                            <label for="gifId"><b>Gif id:</b></label>
-                            <input
-                                type="text"
-                                id="gifId"
-                                name="gifId"
-                                placeholder="23616422"
-                                value="{{ reqUser.ppf_gifId }}"
-                                required
-                            />
-                            <button type="button">Reset Gif</button>
-                        </div>
-                        <div>
-                            <h4>Biography:</h4>
-                            <textarea
-                                id="bio"
-                                name="bio"
-                                placeholder="Enter something curious about you without revealing personal information"
-                                maxlength="400"
-                                >{{ reqUser.bio }}</textarea
-                            ><br />
-                        </div>
-                        <div>400 max characters</div>
-                        <label class="checkbox-wrapper" for="viewarev">
-                            <h4>View "Awaiting Review" Scenes</h4>
-                            <input
-                                type="checkbox"
-                                id="viewarev"
-                                name="viewarev"
-                                value="1"
-                            />
-                            <div class="switch"><div></div></div>
-                        </label>
-                        <div>
-                            This setting allows you to view new user's scenes
-                            that have not yet been approved by a moderator and
-                            released to the public. The content of these scenes
-                            is unknown and may not be suitable for all
-                            audiences. Please proceed with caution and be on the
-                            lookout for any
-                            <a href="/guidelines" target="_blank"
-                                >Community Guidelines</a
-                            >
-                            violations.
-                        </div>
-                        <br />
-                        <button type="submit">Save Settings</button>
-                        <button type="reset">Reset Settings</button>
-                        <br />
-                        <br />
-                    </form>
-                </div>
-                <!-- Log Out Action -->
-                <form>
-                    <button type="submit" class="tab-label">Log Out</button>
-                </form>
-                <!-- Go To Admin Panel -->
-                @if (reqUser.permission === UserPremission.ADMINISTRATOR) {
-                    <form>
-                        <button type="submit" class="tab-label">Admin</button>
-                    </form>
-                }
+        <div class="gallery">
+            @for (scene of reqUser.scenes; track $index) {
+                <a class="scene" [routerLink]="['/scene', scene.id]">
+                    <img
+                        class="scene-gif tenor-load"
+                        src=""
+                        [src]="scene.gifId | fetchPost | async"
+                    />
+                    <h4 class="scene-title">{{ scene.title }}</h4>
+                </a>
+            }
+            @for (i of 10 | range; track $index) {
+                <div class="scene placeholder"></div>
             }
         </div>
     </div>

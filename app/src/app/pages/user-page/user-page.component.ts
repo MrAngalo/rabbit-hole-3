@@ -3,9 +3,7 @@ import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
-import { AuthService } from "../../services/auth/auth.service";
 import { mergeMap, Observable } from "rxjs";
-import { User } from "../../services/auth/auth-types";
 import {
     FetchUserResponse,
     UserPremission
@@ -24,17 +22,12 @@ export class UserPageComponent {
     UserPremission = UserPremission;
     reqUser$: Observable<FetchUserResponse>;
 
-    currentUser$: Observable<User | null>;
-
     constructor(
         router: Router,
         route: ActivatedRoute,
-        auth: AuthService,
         userService: UserService,
         popupService: PopupMessagesService
     ) {
-        this.currentUser$ = auth.user$;
-
         this.reqUser$ = route.params.pipe(
             mergeMap((params) => userService.fetchUser(params["username"]))
         );
