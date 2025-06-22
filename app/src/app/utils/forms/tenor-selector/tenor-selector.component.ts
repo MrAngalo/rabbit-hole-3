@@ -19,12 +19,11 @@ import { CommonModule } from "@angular/common";
     ]
 })
 export class TenorSelectorComponent implements ControlValueAccessor {
-    value = "";
     isDisabled = false;
 
     previewGifUrl = this.tenorService.defaultUrl;
     tenorResults: TenorResponseObject[] = [];
-    newGifId = "";
+    gifId = "";
 
     constructor(private tenorService: TenorService) {}
 
@@ -32,7 +31,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
     onTouched = () => {};
 
     writeValue(value: any): void {
-        this.value = value;
+        this.gifId = value;
     }
 
     registerOnChange(fn: any): void {
@@ -47,22 +46,25 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         this.isDisabled = isDisabled;
     }
 
-    handleInput(event: Event): void {
-        this.updateGifPreview(event);
-        const target = event.target as HTMLInputElement;
-        this.value = target.value;
-        this.onChange(this.value);
-    }
-
     handleBlur(): void {
         this.onTouched();
     }
 
+    manualGifIdInput(event: Event): void {
+        const target = event.target as HTMLInputElement;
+        this.gifId = target.value;
+        this.updateGifPreview(event);
+        this.onChange(this.gifId);
+    }
+
+    tenorResultClick(result: TenorResponseObject) {
+        this.gifId = result.id;
+        this.previewGifUrl = result.media_formats.gif.url;
+        this.onChange(this.gifId);
+    }
+
     async updateGifSearch(event: Event) {
         const target = event.target as HTMLInputElement;
-
-        // Trim all spaces of input field
-        target.value = target.value.trimStart().replaceAll(/\s\s+/g, " ");
 
         // Reject all inputs that have been modified quickly, only allow last
         const cached = target.value;
@@ -72,18 +74,20 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         }
 
         // Logic starts here
-        const query = target.value;
+        const query = target.value.trim();
 
         if (query === undefined || query === null || query === "") {
-            this.previewGifUrl = this.tenorService.defaultUrl;
+            this.tenorResults = [];
             return;
         }
-        this.tenorService.search(query).subscribe({
+        const s = this.tenorService.search(query).subscribe({
             next: (data) => {
                 this.tenorResults = data.results;
+                s.unsubscribe();
             },
             error: (_) => {
                 this.tenorResults = [];
+                s.unsubscribe();
             }
         });
     }
@@ -91,9 +95,6 @@ export class TenorSelectorComponent implements ControlValueAccessor {
     async updateGifPreview(event: Event) {
         const target = event.target as HTMLInputElement;
 
-        // Trim all spaces of input field
-        target.value = target.value.replaceAll(/\s+/g, "");
-
         // Reject all inputs that have been modified quickly, only allow last
         const cached = target.value;
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -102,7 +103,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         }
 
         // Logic starts here
-        const value = target.value;
+        const value = target.value.trim();
 
         if (value === undefined || value === null || value === "") {
             this.previewGifUrl = this.tenorService.defaultUrl;
@@ -119,10 +120,5 @@ export class TenorSelectorComponent implements ControlValueAccessor {
                 this.previewGifUrl = this.tenorService.defaultUrl;
             }
         });
-    }
-
-    tenorResultClick(result: TenorResponseObject) {
-        this.newGifId = result.id;
-        this.previewGifUrl = result.media_formats.gif.url;
     }
 }
