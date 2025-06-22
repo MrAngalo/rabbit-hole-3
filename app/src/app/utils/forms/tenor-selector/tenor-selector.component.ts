@@ -19,19 +19,34 @@ import { CommonModule } from "@angular/common";
     ]
 })
 export class TenorSelectorComponent implements ControlValueAccessor {
-    isDisabled = false;
+    private _isDisabled = false;
+    private _previewGifUrl = this.tenorService.defaultUrl;
+    private _tenorResults: TenorResponseObject[] = [];
+    private _gifId = "";
 
-    previewGifUrl = this.tenorService.defaultUrl;
-    tenorResults: TenorResponseObject[] = [];
-    gifId = "";
+    private onChange = (value: any) => {};
+    private onTouched = () => {};
 
     constructor(private tenorService: TenorService) {}
 
-    onChange = (value: any) => {};
-    onTouched = () => {};
+    get isDisabled() {
+        return this._isDisabled;
+    }
+
+    get previewGifUrl() {
+        return this._previewGifUrl;
+    }
+
+    get tenorResults() {
+        return this._tenorResults;
+    }
+
+    get gifId() {
+        return this._gifId;
+    }
 
     writeValue(value: any): void {
-        this.gifId = value;
+        this._gifId = value;
     }
 
     registerOnChange(fn: any): void {
@@ -43,7 +58,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
     }
 
     setDisabledState(isDisabled: boolean): void {
-        this.isDisabled = isDisabled;
+        this._isDisabled = isDisabled;
     }
 
     handleBlur(): void {
@@ -52,15 +67,15 @@ export class TenorSelectorComponent implements ControlValueAccessor {
 
     manualGifIdInput(event: Event): void {
         const target = event.target as HTMLInputElement;
-        this.gifId = target.value;
+        this._gifId = target.value;
         this.updateGifPreview(event);
-        this.onChange(this.gifId);
+        this.onChange(this._gifId);
     }
 
     tenorResultClick(result: TenorResponseObject) {
-        this.gifId = result.id;
-        this.previewGifUrl = result.media_formats.gif.url;
-        this.onChange(this.gifId);
+        this._gifId = result.id;
+        this._previewGifUrl = result.media_formats.gif.url;
+        this.onChange(this._gifId);
     }
 
     async updateGifSearch(event: Event) {
@@ -77,16 +92,16 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         const query = target.value.trim();
 
         if (query === undefined || query === null || query === "") {
-            this.tenorResults = [];
+            this._tenorResults = [];
             return;
         }
         const s = this.tenorService.search(query).subscribe({
             next: (data) => {
-                this.tenorResults = data.results;
+                this._tenorResults = data.results;
                 s.unsubscribe();
             },
             error: (_) => {
-                this.tenorResults = [];
+                this._tenorResults = [];
                 s.unsubscribe();
             }
         });
@@ -106,18 +121,18 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         const value = target.value.trim();
 
         if (value === undefined || value === null || value === "") {
-            this.previewGifUrl = this.tenorService.defaultUrl;
+            this._previewGifUrl = this.tenorService.defaultUrl;
             return;
         }
         this.tenorService.posts([value]).subscribe({
             next: (data) => {
-                this.previewGifUrl =
+                this._previewGifUrl =
                     data.results.length != 0
                         ? data.results[0].media_formats.gif.url
                         : this.tenorService.defaultUrl;
             },
             error: (_) => {
-                this.previewGifUrl = this.tenorService.defaultUrl;
+                this._previewGifUrl = this.tenorService.defaultUrl;
             }
         });
     }
