@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { concatWith, map, Observable, tap } from "rxjs";
 import {
@@ -15,6 +15,7 @@ import {
     ReactiveFormsModule,
     Validators
 } from "@angular/forms";
+import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 
 @Component({
     selector: "app-account",
@@ -37,14 +38,18 @@ export class AccountComponent {
 
     private originalSettings!: FetchSettingsResponse;
 
-    constructor(userService: UserService) {
+    constructor(
+        private userService: UserService,
+        private router: Router,
+        private popupService: PopupMessagesService
+    ) {
         this.myForm = new FormGroup({
             gifId: new FormControl([Validators.required]),
             biography: new FormControl([Validators.required]),
             awaiting_review: new FormControl([Validators.required])
         });
 
-        this.settings$ = userService.fetchSettings().pipe(
+        this.settings$ = this.userService.fetchSettings().pipe(
             tap((s) => {
                 this.originalSettings = s;
                 this.myForm.setValue({
@@ -67,7 +72,25 @@ export class AccountComponent {
     }
 
     onSubmit() {
-        console.log("submit");
+        const { gifId, biography, awaiting_review } = this.myForm.value;
+        this.userService
+            .saveSettings(gifId, biography, awaiting_review)
+            .subscribe({
+                next: (res) => {
+                    this.popupService.clear();
+                    this.popupService.display({
+                        message: "Successfully saved settings",
+                        color: "red"
+                    });
+                },
+                error: (res: any) => {
+                    this.popupService.clear();
+                    this.popupService.display({
+                        message: res.error.error,
+                        color: "red"
+                    });
+                }
+            });
     }
 
     initialValues() {
@@ -80,6 +103,4 @@ export class AccountComponent {
             })
         );
     }
-
-    // Save form action="/modify/usersettings/<%= locals.user2.username %>" method="POST"
 }

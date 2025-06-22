@@ -30,3 +30,5 @@ export type FetchSettingsResponse = {
     ppf_gifId: string;
     view_await_review: string;
 };
+
+export type SaveSettingsResponse = {};
