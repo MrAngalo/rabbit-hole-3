@@ -1,0 +1,55 @@
+<p>
+    Your GIF should go along with your title and description. We use
+    <a href="https://tenor.com/" target="_blank" rel="noopener noreferrer"
+        >Tenor</a
+    >
+    to source them. Use the selector bellow or paste in the URL (URLs must be
+    from tenor.com).
+</p>
+<div class="tenor-selector">
+    <div class="flex">
+        <input
+            type="text"
+            placeholder="Search Tenor"
+            class="text"
+            (input)="updateGifSearch($event)"
+        />
+        <button type="button">Search</button>
+    </div>
+    <div class="searched_content">
+        <img
+            class="pic"
+            *ngFor="let result of tenorResults"
+            [src]="result.media_formats.gif.url"
+            (click)="tenorResultClick(result)"
+        />
+    </div>
+</div>
+<img
+    class="tenor-footer"
+    src="/static/img/tenor/PB_tenor_logo_blue_horizontal.svg"
+    alt="Tenor Footer"
+/>
+<div class="rabbit-gif-wrapper">
+    <img
+        class="rabbit-gif preview-gif"
+        [src]="previewGifUrl"
+        alt="Rabbit Gif"
+    />
+    <img
+        class="tenor-footer"
+        src="/static/img/tenor/PB_tenor_logo_blue_horizontal.svg"
+        alt="Tenor Footer"
+    />
+</div>
+<p>
+    Cannot find your GIF? enter the ID bellow directly. It is the numbers at the
+    end of the URL. Ex. (https://tenor.com/view/bruh-moment-gif-<span
+        style="color: rgb(201, 0, 0)"
+        >23616422</span
+    >)
+</p>
+<div class="input-wrapper">
+    <label for="gifId"><b>Gif id:</b></label>
+    <input name="gifId" [value]="value" (input)="handleInput($event)" />
+</div>
