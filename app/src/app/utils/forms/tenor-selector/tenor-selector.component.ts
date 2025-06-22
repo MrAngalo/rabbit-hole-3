@@ -47,6 +47,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
 
     writeValue(value: any): void {
         this._gifId = value;
+        this.updateGifPreview(value);
     }
 
     registerOnChange(fn: any): void {
@@ -68,7 +69,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
     manualGifIdInput(event: Event): void {
         const target = event.target as HTMLInputElement;
         this._gifId = target.value;
-        this.updateGifPreview(event);
+        this.updateGifPreviewEvent(event);
         this.onChange(this._gifId);
     }
 
@@ -78,7 +79,7 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         this.onChange(this._gifId);
     }
 
-    async updateGifSearch(event: Event) {
+    async updateGifSearchEvent(event: Event) {
         const target = event.target as HTMLInputElement;
 
         // Reject all inputs that have been modified quickly, only allow last
@@ -89,8 +90,23 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         }
 
         // Logic starts here
-        const query = target.value.trim();
+        this.updateGifSearch(target.value.trim());
+    }
 
+    async updateGifPreviewEvent(event: Event) {
+        const target = event.target as HTMLInputElement;
+
+        // Reject all inputs that have been modified quickly, only allow last
+        const cached = target.value;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (cached !== target.value) {
+            return;
+        }
+
+        this.updateGifPreview(target.value.trim());
+    }
+
+    private updateGifSearch(query: string) {
         if (query === undefined || query === null || query === "") {
             this._tenorResults = [];
             return;
@@ -107,32 +123,22 @@ export class TenorSelectorComponent implements ControlValueAccessor {
         });
     }
 
-    async updateGifPreview(event: Event) {
-        const target = event.target as HTMLInputElement;
-
-        // Reject all inputs that have been modified quickly, only allow last
-        const cached = target.value;
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (cached !== target.value) {
-            return;
-        }
-
-        // Logic starts here
-        const value = target.value.trim();
-
+    private updateGifPreview(value: string) {
         if (value === undefined || value === null || value === "") {
             this._previewGifUrl = this.tenorService.defaultUrl;
             return;
         }
-        this.tenorService.posts([value]).subscribe({
+        const s = this.tenorService.posts([value]).subscribe({
             next: (data) => {
                 this._previewGifUrl =
                     data.results.length != 0
                         ? data.results[0].media_formats.gif.url
                         : this.tenorService.defaultUrl;
+                s.unsubscribe();
             },
             error: (_) => {
                 this._previewGifUrl = this.tenorService.defaultUrl;
+                s.unsubscribe();
             }
         });
     }
