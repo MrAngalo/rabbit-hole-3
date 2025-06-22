@@ -66,7 +66,20 @@ export class AccountComponent {
         );
     }
 
-    onSubmit() {}
+    onSubmit() {
+        console.log("submit");
+    }
+
+    initialValues() {
+        const s = this.originalSettings;
+        setTimeout(() =>
+            this.myForm.setValue({
+                gifId: s.ppf_gifId,
+                biography: s.bio,
+                awaiting_review: s.view_await_review
+            })
+        );
+    }
 
     // Save form action="/modify/usersettings/<%= locals.user2.username %>" method="POST"
 }

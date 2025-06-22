@@ -19,7 +19,11 @@
         </div>
     </div>
     <div class="tabs-wrapper">
-        <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <form
+            [formGroup]="myForm"
+            (ngSubmit)="onSubmit()"
+            (reset)="initialValues()"
+        >
             <h2>Profile Settings</h2>
             <div>
                 The following are your account setings. They are subjected to
