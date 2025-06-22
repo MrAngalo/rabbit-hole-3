@@ -2,12 +2,11 @@
     width: 40%;
     max-width: 300px;
     margin-right: 40px;
-}
-
-.rabbit-gif-wrapper .rabbit-gif {
-    width: 100%;
-    border-radius: 10px;
-    border: 2px solid black;
+    .rabbit-gif {
+        width: 100%;
+        border-radius: 10px;
+        border: 2px solid black;
+    }
 }
 
 .tenor-selector {
@@ -19,49 +18,54 @@
     margin: auto;
     margin-top: 30px;
     margin-bottom: 30px;
+    .text {
+        border: none;
+        outline: none;
+        background: #e9edff;
+        padding: 10px 15px;
+        width: 100%;
+        border-radius: 10px 0 0 10px;
+    }
+    .flex {
+        display: flex;
+    }
+    button {
+        border: none;
+        outline: none;
+        background: #e91e63;
+        padding: 10px 15px;
+        color: white;
+        border-radius: 0px 10px 10px 0;
+    }
+    .searched_content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 10px;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+    .pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        margin-top: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+        object-fit: cover;
+        border: 1px solid lightgrey;
+    }
 }
 
-.tenor-selector .text {
-    border: none;
-    outline: none;
-    background: #e9edff;
-    padding: 10px 15px;
-    width: 100%;
-    border-radius: 10px 0 0 10px;
+label {
+    margin-right: 10px;
 }
 
-.tenor-selector .flex {
-    display: flex;
-}
-
-.tenor-selector button {
-    border: none;
-    outline: none;
-    background: #e91e63;
-    padding: 10px 15px;
-    color: white;
-    border-radius: 0px 10px 10px 0;
-}
-
-.tenor-selector .searched_content {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+input {
+    width: 60%;
     padding: 10px;
-    max-height: 50vh;
-    overflow-y: auto;
-}
-
-.tenor-selector .pic {
-    width: 100px;
-    height: 100px;
     border-radius: 10px;
-    margin-top: 5px;
-    cursor: pointer;
-    margin-left: 5px;
-    object-fit: cover;
-    border: 1px solid lightgrey;
 }
 
 @media only screen and (max-width: 1000px) {
