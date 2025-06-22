@@ -11,11 +11,18 @@ import {
     UserPremission
 } from "../../services/user/user-types";
 import { UserService } from "../../services/user/user.service";
+import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-selector.component";
 
 @Component({
     selector: "app-account",
     standalone: true,
-    imports: [CommonModule, RouterModule, TenorPipesModule, UtilsPipeModule],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TenorPipesModule,
+        UtilsPipeModule,
+        TenorSelectorComponent
+    ],
     templateUrl: "./account.component.html",
     styleUrl: "./account.component.scss"
 })

@@ -29,58 +29,7 @@
                 </div>
                 <br />
                 <h4>Profile Picture Gif:</h4>
-                <div class="tenor-selector-wrapper">
-                    <div class="tenor-selector">
-                        <div class="flex">
-                            <input
-                                id="tenor-search"
-                                type="text"
-                                placeholder="Search Tenor"
-                                class="text"
-                            />
-                            <button type="button">Search</button>
-                        </div>
-                        <div class="searched_content"></div>
-                    </div>
-                    <img
-                        class="tenor-footer"
-                        src="/img/tenor/PB_tenor_logo_blue_horizontal.svg"
-                        alt="Tenor Footer"
-                    />
-                    <div class="rabbit-gif-wrapper">
-                        <img
-                            class="profile-picture rabbit-gif preview-gif"
-                            src="/img/no-gif.png"
-                            alt="Rabbit Gif"
-                        />
-                        <img
-                            class="tenor-footer"
-                            src="/img/tenor/PB_tenor_logo_blue_horizontal.svg"
-                            alt="Tenor Footer"
-                        />
-                    </div>
-                </div>
-                <div>
-                    Cannot find your GIF? enter the ID bellow directly. It is
-                    the numbers at the end of the URL. Ex.
-                    (https://tenor.com/view/bruh-moment-gif-<span
-                        style="color: rgb(201, 0, 0)"
-                        >23616422</span
-                    >)
-                </div>
-                <br />
-                <div>
-                    <label for="gifId"><b>Gif id:</b></label>
-                    <input
-                        type="text"
-                        id="gifId"
-                        name="gifId"
-                        placeholder="23616422"
-                        value="{{ reqUser.ppf_gifId }}"
-                        required
-                    />
-                    <button type="button">Reset Gif</button>
-                </div>
+                <app-tenor-selector></app-tenor-selector>
                 <div>
                     <h4>Biography:</h4>
                     <textarea
