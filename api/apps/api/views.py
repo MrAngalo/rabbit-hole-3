@@ -50,7 +50,7 @@ class CreateSceneView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, parentId=0):
+    def post(self, request, parentId=0):
         data: dict[str, str] = request.data  # type: ignore
         if not ("title" in data and "desc" in data and "gifId" in data):
             return Response(

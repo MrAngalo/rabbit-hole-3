@@ -23,7 +23,6 @@ export class SceneService {
     }
 
     createScene(parentId: number, title: string, desc: string, gifId: string) {
-        console.log(this.auth.csrf_token);
         return this.http.post<SceneResponse>(
             `${this.API_URL}/create/${parentId}`,
             {
