@@ -80,18 +80,19 @@ export class SceneCreateComponent implements OnInit {
     create() {
         const { title, description, gifId } = this.myForm.value;
 
-        this.sceneService.createScene(this.parentId, title, description, gifId);
-        // .subscribe({
-        //     next: (scene) => {
-        //         this.router.navigate(["scene", scene.id]);
-        //     },
-        //     error: (res: ErrorResponse) => {
-        //         this.popupService.clear();
-        //         this.popupService.display({
-        //             message: res.error.error,
-        //             color: "red"
-        //         });
-        //     }
-        // });
+        this.sceneService
+            .createScene(this.parentId, title, description, gifId)
+            .subscribe({
+                next: (scene) => {
+                    this.router.navigate(["scene", scene.id]);
+                },
+                error: (res: ErrorResponse) => {
+                    this.popupService.clear();
+                    this.popupService.display({
+                        message: res.error.error,
+                        color: "red"
+                    });
+                }
+            });
     }
 }
