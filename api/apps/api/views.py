@@ -160,3 +160,54 @@ class FetchSettingsView(APIView):
     def get(self, request):
         serializer = FetchSettingsSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+        print(data)
+
+        gifId: str = data["gifId"].strip()
+        biography: str = data["biography"].strip()
+        awaiting_review: str = data["awaiting_review"]
+
+        if not ("gifId" in data and "biography" in data and "awaiting_review" in data):
+            return Response(
+                {"error": "At least one of the fields is empty!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not (len(biography) < 400):
+            return Response(
+                {"error": "Biography must be less than 400 characters!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if type(awaiting_review) is not bool:
+            return Response(
+                {"error": "Awaiting Review must be a boolean!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        full_url = (
+            f"{API_URL}/posts/?key={API_KEY}&client_key={CLIENT_KEY}&ids={quote(gifId)}"
+        )
+        try:
+            response = requests.get(full_url)
+            response.raise_for_status()
+            json = response.json()
+            if len(json["results"]) == 0:
+                raise ValueError()
+        except:
+            return Response(
+                {"error": "Tenor GIF ID is invalid!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user: User = request.user
+
+        user.ppf_gifId = gifId
+        user.bio = biography
+        user.view_await_review = awaiting_review
+
+        user.save()
+
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)

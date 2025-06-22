@@ -80,7 +80,7 @@ export class AccountComponent {
                     this.popupService.clear();
                     this.popupService.display({
                         message: "Successfully saved settings",
-                        color: "red"
+                        color: "green"
                     });
                 },
                 error: (res: any) => {
