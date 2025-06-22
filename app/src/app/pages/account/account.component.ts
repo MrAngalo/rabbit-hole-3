@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { Observable, tap } from "rxjs";
+import { concatWith, map, Observable, tap } from "rxjs";
 import {
     FetchSettingsResponse,
     UserPremission
@@ -35,6 +35,8 @@ export class AccountComponent {
 
     myForm!: FormGroup;
 
+    private originalSettings!: FetchSettingsResponse;
+
     constructor(userService: UserService) {
         this.myForm = new FormGroup({
             gifId: new FormControl([Validators.required]),
@@ -44,12 +46,23 @@ export class AccountComponent {
 
         this.settings$ = userService.fetchSettings().pipe(
             tap((s) => {
+                this.originalSettings = s;
                 this.myForm.setValue({
                     gifId: s.ppf_gifId,
                     biography: s.bio,
                     awaiting_review: s.view_await_review
                 });
-            })
+            }),
+            concatWith(
+                this.myForm.valueChanges.pipe(
+                    map((values) => ({
+                        ...this.originalSettings,
+                        gifId: values.gifId,
+                        bio: values.biography,
+                        view_await_review: values.awaiting_review
+                    }))
+                )
+            )
         );
     }
 
