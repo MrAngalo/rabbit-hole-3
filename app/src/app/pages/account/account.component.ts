@@ -57,7 +57,7 @@ export class AccountComponent {
                 this.myForm.valueChanges.pipe(
                     map((values) => ({
                         ...this.originalSettings,
-                        gifId: values.gifId,
+                        ppf_gifId: values.gifId,
                         bio: values.biography,
                         view_await_review: values.awaiting_review
                     }))
