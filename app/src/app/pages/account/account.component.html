@@ -3,7 +3,7 @@
         <div class="profile-picture-wrapper">
             <img
                 class="profile-picture rabbit-gif preview-gif tenor-load"
-                [src]="settings.ppf_gifId | fetchPost | async"
+                [src]="tenorSelector.previewGifUrl"
             />
         </div>
         <div class="profile-info">
@@ -28,7 +28,10 @@
             </div>
             <br />
             <h4>Profile Picture Gif:</h4>
-            <app-tenor-selector formControlName="gifId"></app-tenor-selector>
+            <app-tenor-selector
+                #tenorSelector
+                formControlName="gifId"
+            ></app-tenor-selector>
             <div>
                 <h4>Biography:</h4>
                 <textarea

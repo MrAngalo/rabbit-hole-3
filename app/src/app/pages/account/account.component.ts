@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
 import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { RouterModule } from "@angular/router";
-import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
-import { AuthService } from "../../services/auth/auth.service";
 import { Observable, tap } from "rxjs";
 import {
     FetchSettingsResponse,
@@ -24,7 +22,6 @@ import {
     imports: [
         CommonModule,
         RouterModule,
-        TenorPipesModule,
         UtilsPipeModule,
         ReactiveFormsModule,
         TenorSelectorComponent
@@ -40,9 +37,9 @@ export class AccountComponent {
 
     constructor(userService: UserService) {
         this.myForm = new FormGroup({
-            gifId: new FormControl("", [Validators.required]),
-            biography: new FormControl("", [Validators.required]),
-            awaiting_review: new FormControl("", [Validators.required])
+            gifId: new FormControl([Validators.required]),
+            biography: new FormControl([Validators.required]),
+            awaiting_review: new FormControl([Validators.required])
         });
 
         this.settings$ = userService.fetchSettings().pipe(
