@@ -54,16 +54,16 @@
     <form [formGroup]="myForm">
         <div class="description-wrapper">
             <div class="rabbit-gif-wrapper">
-                <!-- <img
+                <img
                     class="rabbit-gif preview-gif"
-                    [src]="previewGifUrl"
+                    [src]="tenorSelector.previewGifUrl"
                     alt="Rabbit Gif"
                 />
                 <img
                     class="tenor-footer"
                     src="/static/img/tenor/PB_tenor_logo_blue_horizontal.svg"
                     alt="Tenor Footer"
-                /> -->
+                />
             </div>
             <div class="description">
                 <h2>Title:</h2>
@@ -139,6 +139,7 @@
             <div class="description">
                 <h2>GIF:</h2>
                 <app-tenor-selector
+                    #tenorSelector
                     formControlName="gifId"
                 ></app-tenor-selector>
                 <p>You are all done! Make sure to review before you submit!</p>
