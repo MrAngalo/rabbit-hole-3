@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { FetchUserResponse } from "./user-types";
+import { FetchSettingsResponse, FetchUserResponse } from "./user-types";
 import { AuthService } from "../auth/auth.service";
 
 @Injectable({
@@ -22,8 +22,18 @@ export class UserService {
                     "Content-Type": "application/json",
                     "X-CSRFToken": this.auth.csrf_token
                 },
-                withCredentials: this.auth.isAuthenticated
+                withCredentials: false
             }
         );
+    }
+
+    fetchSettings() {
+        return this.http.get<FetchSettingsResponse>(`${this.apiUrl}account/`, {
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.auth.csrf_token
+            },
+            withCredentials: true
+        });
     }
 }

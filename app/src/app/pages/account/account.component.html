@@ -1,73 +1,69 @@
-@if (reqUser$ | async; as reqUser) {
+@if (settings$ | async; as settings) {
     <div class="profile-banner">
         <div class="profile-picture-wrapper">
             <img
                 class="profile-picture rabbit-gif preview-gif tenor-load"
-                [src]="reqUser.ppf_gifId | fetchPost | async"
+                [src]="settings.ppf_gifId | fetchPost | async"
             />
         </div>
         <div class="profile-info">
-            <h1>{{ reqUser.username }}</h1>
-            <div>Joined: {{ reqUser.created | ordinalDate }}</div>
+            <h1>{{ settings.username }}</h1>
+            <div>Joined: {{ settings.created | ordinalDate }}</div>
             <div>
                 Permission Level:
-                {{ UserPremission[reqUser.permission] | lowercase }}
+                {{ UserPremission[settings.permission] | lowercase }}
             </div>
-            @if (reqUser.bio) {
-                <p>Bio: {{ reqUser.bio }}</p>
+            @if (settings.bio) {
+                <p>Bio: {{ settings.bio }}</p>
             }
         </div>
     </div>
     <div class="tabs-wrapper">
-        @if (currentUser$ | async; as currentUser) {
-            <form class="save-form">
-                <h2>Settings</h2>
-                <div>
-                    The following are your account setings. They are subjected
-                    to the
-                    <a [routerLink]="['/guidelines']">Community Guidelines</a>.
-                </div>
-                <br />
-                <h4>Profile Picture Gif:</h4>
-                <app-tenor-selector></app-tenor-selector>
-                <div>
-                    <h4>Biography:</h4>
-                    <textarea
-                        id="bio"
-                        name="bio"
-                        placeholder="Enter something curious about you without revealing personal information"
-                        maxlength="400"
-                        >{{ reqUser.bio }}</textarea
-                    ><br />
-                </div>
-                <div>400 max characters</div>
-                <label class="checkbox-wrapper" for="viewarev">
-                    <h4>View "Awaiting Review" Scenes</h4>
-                    <input
-                        type="checkbox"
-                        id="viewarev"
-                        name="viewarev"
-                        value="1"
-                    />
-                    <div class="switch"><div></div></div>
-                </label>
-                <div>
-                    This setting allows you to view new user's scenes that have
-                    not yet been approved by a moderator and released to the
-                    public. The content of these scenes is unknown and may not
-                    be suitable for all audiences. Please proceed with caution
-                    and be on the lookout for any
-                    <a href="/guidelines" target="_blank"
-                        >Community Guidelines</a
-                    >
-                    violations.
-                </div>
-                <br />
-                <button type="submit">Save Settings</button>
-                <button type="reset">Reset Settings</button>
-                <br />
-                <br />
-            </form>
-        }
+        <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+            <h2>Profile Settings</h2>
+            <div>
+                The following are your account setings. They are subjected to
+                the
+                <a [routerLink]="['/guidelines']">Community Guidelines</a>.
+            </div>
+            <br />
+            <h4>Profile Picture Gif:</h4>
+            <app-tenor-selector formControlName="gifId"></app-tenor-selector>
+            <div>
+                <h4>Biography:</h4>
+                <textarea
+                    id="bio"
+                    formControlName="biography"
+                    placeholder="Enter something curious about you without revealing personal information"
+                    maxlength="400"
+                    >{{ settings.bio }}</textarea
+                ><br />
+            </div>
+            <div>400 max characters</div>
+            <h2>Preferences</h2>
+            <label class="checkbox-wrapper" for="viewarev">
+                <h4>View "Awaiting Review" Scenes</h4>
+                <input
+                    id="viewarev"
+                    type="checkbox"
+                    formControlName="awaiting_review"
+                />
+                <div class="switch"><div></div></div>
+            </label>
+            <div>
+                This setting allows you to view new user's scenes that have not
+                yet been approved by a moderator and released to the public. The
+                content of these scenes is unknown and may not be suitable for
+                all audiences. Please proceed with caution and be on the lookout
+                for any
+                <a href="/guidelines" target="_blank">Community Guidelines</a>
+                violations.
+            </div>
+            <br />
+            <button type="submit">Save Settings</button>
+            <button type="reset">Reset Settings</button>
+            <br />
+            <br />
+        </form>
     </div>
 }

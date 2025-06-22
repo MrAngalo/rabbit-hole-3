@@ -150,3 +150,9 @@ class FetchUserSerializer(ModelSerializer):
             {"id": scene.id, "title": scene.title, "gifId": scene.gifId}
             for scene in obj.scenes.all()
         ]
+
+
+class FetchSettingsSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "created", "bio", "ppf_gifId", "view_await_review"]

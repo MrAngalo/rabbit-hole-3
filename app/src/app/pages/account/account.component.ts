@@ -4,14 +4,19 @@ import { RouterModule } from "@angular/router";
 import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth/auth.service";
-import { mergeMap, Observable } from "rxjs";
-import { User } from "../../services/auth/auth-types";
+import { Observable, tap } from "rxjs";
 import {
-    FetchUserResponse,
+    FetchSettingsResponse,
     UserPremission
 } from "../../services/user/user-types";
 import { UserService } from "../../services/user/user.service";
 import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-selector.component";
+import {
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators
+} from "@angular/forms";
 
 @Component({
     selector: "app-account",
@@ -21,6 +26,7 @@ import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-s
         RouterModule,
         TenorPipesModule,
         UtilsPipeModule,
+        ReactiveFormsModule,
         TenorSelectorComponent
     ],
     templateUrl: "./account.component.html",
@@ -28,16 +34,29 @@ import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-s
 })
 export class AccountComponent {
     UserPremission = UserPremission;
-    reqUser$: Observable<FetchUserResponse>;
+    settings$: Observable<FetchSettingsResponse>;
 
-    currentUser$: Observable<User | null>;
+    myForm!: FormGroup;
 
-    constructor(auth: AuthService, userService: UserService) {
-        this.currentUser$ = auth.user$;
-        this.reqUser$ = this.currentUser$.pipe(
-            mergeMap((user) => userService.fetchUser(user!.username))
+    constructor(userService: UserService) {
+        this.myForm = new FormGroup({
+            gifId: new FormControl("", [Validators.required]),
+            biography: new FormControl("", [Validators.required]),
+            awaiting_review: new FormControl("", [Validators.required])
+        });
+
+        this.settings$ = userService.fetchSettings().pipe(
+            tap((s) => {
+                this.myForm.setValue({
+                    gifId: s.ppf_gifId,
+                    biography: s.bio,
+                    awaiting_review: s.view_await_review
+                });
+            })
         );
     }
+
+    onSubmit() {}
 
     // Save form action="/modify/usersettings/<%= locals.user2.username %>" method="POST"
 }

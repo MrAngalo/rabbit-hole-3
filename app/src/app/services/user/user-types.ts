@@ -20,3 +20,13 @@ export type FetchUserResponse = {
         gifId: string;
     }[];
 };
+
+export type FetchSettingsResponse = {
+    id: string;
+    username: string;
+    permission: UserPremission;
+    created: string;
+    bio: string;
+    ppf_gifId: string;
+    view_await_review: string;
+};

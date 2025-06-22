@@ -1,5 +1,11 @@
 from django.urls import re_path
-from api.views import CreateSceneView, NotImplementedView, FetchSceneView, FetchUserView
+from api.views import (
+    CreateSceneView,
+    FetchSettingsView,
+    NotImplementedView,
+    FetchSceneView,
+    FetchUserView,
+)
 
 urlpatterns = [
     # Scene
@@ -16,4 +22,5 @@ urlpatterns = [
     re_path(r"^pwnew/$", NotImplementedView.as_view()),
     # User
     re_path(r"^user/(?P<username>\w+)$", FetchUserView.as_view()),
+    re_path(r"^account/$", FetchSettingsView.as_view()),
 ]

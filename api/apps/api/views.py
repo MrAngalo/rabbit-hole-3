@@ -12,7 +12,7 @@ from urllib.parse import quote
 from userauth.models import User
 
 from .models import Scene
-from .serializers import FetchUserSerializer, SceneSerializer
+from .serializers import FetchUserSerializer, FetchSettingsSerializer, SceneSerializer
 from .models import SceneStatus
 
 
@@ -150,4 +150,13 @@ class FetchUserView(APIView):
             )
 
         serializer = FetchUserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FetchSettingsView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = FetchSettingsSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
