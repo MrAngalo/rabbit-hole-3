@@ -18,7 +18,11 @@ from rest_framework.views import APIView
 
 
 from api.models import User
-from userauth.serializers import UserSerializer
+from userauth.serializers import (
+    UserInfoSerializer,
+    UserLoginSerializer,
+    UserRegisterSerializer,
+)
 
 
 class LoginView(APIView):
@@ -37,7 +41,7 @@ class LoginView(APIView):
 
         # Creates session cookie
         django_login(request, user)
-        serializer = UserSerializer(instance=user, fields=("username", "email"))
+        serializer = UserLoginSerializer(instance=user)
         return Response({"user": serializer.data})
 
 
@@ -46,11 +50,9 @@ class RegisterView(APIView):
     permission_classes = []
 
     def post(self, request):
-        serializer = UserSerializer(
-            data=request.data, fields=("username", "password", "email")
-        )
+        serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            User.objects.create_user(**serializer.data)
+            User.objects.create_user(**serializer.data)  # type: ignore
             return Response({"user": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -74,5 +76,5 @@ class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
-        serializer = UserSerializer(instance=request.user, fields=("username", "email"))
+        serializer = UserInfoSerializer(instance=request.user)
         return Response({"user": serializer.data}, status=status.HTTP_200_OK)
