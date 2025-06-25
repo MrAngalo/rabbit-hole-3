@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
-import { Router, RouterModule } from "@angular/router";
+import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { concatWith, map, Observable, tap } from "rxjs";
 import {
@@ -40,7 +40,6 @@ export class AccountComponent {
 
     constructor(
         private userService: UserService,
-        private router: Router,
         private popupService: PopupMessagesService
     ) {
         this.myForm = new FormGroup({
