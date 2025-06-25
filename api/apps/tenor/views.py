@@ -1,6 +1,7 @@
 import os
-from typing import List
 import requests
+
+from typing import List
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request

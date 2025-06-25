@@ -1,3 +1,6 @@
+import re
+import requests
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
@@ -6,8 +9,6 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from tenor.views import API_KEY, API_URL, CLIENT_KEY
 
-import re
-import requests
 from urllib.parse import quote
 from userauth.models import User
 
