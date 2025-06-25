@@ -12,7 +12,12 @@ from urllib.parse import quote
 from userauth.models import User
 
 from .models import Scene
-from .serializers import FetchUserSerializer, FetchSettingsSerializer, SceneSerializer
+from .serializers import (
+    CreateSceneSerializer,
+    FetchSceneSerializer,
+    FetchUserSerializer,
+    FetchSettingsSerializer,
+)
 from .models import SceneStatus
 
 
@@ -36,7 +41,7 @@ class FetchSceneView(APIView):
             return Response(
                 {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
             )
-        scene_serializer = SceneSerializer(scene)
+        scene_serializer = FetchSceneSerializer(scene)
         return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 
@@ -131,8 +136,7 @@ class CreateSceneView(APIView):
             status=sceneStatus,
         )
 
-        scene_serializer = SceneSerializer(scene)
-
+        scene_serializer = CreateSceneSerializer(scene)
         return Response(scene_serializer.data, status=status.HTTP_200_OK)
 
 

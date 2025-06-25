@@ -1,17 +1,16 @@
 from userauth.models import User
-from core.serializers import DynamicFieldsModelSerializer
 from .models import Badge, Scene
 
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework import serializers
 
 
-class BadgeSerializer(DynamicFieldsModelSerializer):
+class BadgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge
         fields = ("id", "name", "bg_color", "description", "data_uri")
 
 
-class SceneParentSerializer(DynamicFieldsModelSerializer):
+class SceneParentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scene
         fields = (
@@ -20,7 +19,7 @@ class SceneParentSerializer(DynamicFieldsModelSerializer):
         )
 
 
-class SceneChildSerializer(DynamicFieldsModelSerializer):
+class SceneChildSerializer(serializers.ModelSerializer):
     badges = BadgeSerializer(many=True, required=False)
 
     class Meta:
@@ -36,14 +35,10 @@ class SceneChildSerializer(DynamicFieldsModelSerializer):
         )
 
 
-class SceneSerializer(DynamicFieldsModelSerializer):
+class FetchSceneSerializer(serializers.ModelSerializer):
     parent = SceneParentSerializer(many=False, required=False)
     children = SceneChildSerializer(many=True, required=False)
     badges = BadgeSerializer(many=True, required=False)
-    # parent_id = serializers.CharField(source='parent.id')
-    # children_title = serializers.CharField(source='children.title')
-    # children_title = serializers.ReadOnlyField(source='children.title')
-    # children_title = serializers.RelatedField(source='children.title', read_only=True)
 
     class Meta:
         model = Scene
@@ -61,36 +56,23 @@ class SceneSerializer(DynamicFieldsModelSerializer):
             "dislikes",
             "status",
             "badges",
-            #     'parent.status',
-            #     'children.id',
-            # 'children_title',
-            #     'children.likes',
-            #     'children.dislikes',
-            #     'children.status',
-            #     'children.creator.id',
-            #     'children.badges',
         )
 
-        # .leftJoinAndSelect('scene.creator', 'creator')
-        # .leftJoinAndSelect('scene.badges', 'badges')
-        # .leftJoinAndSelect('scene.parent', 'parent')
-        # .leftJoinAndSelect('scene.children', 'children')
-        # .leftJoinAndSelect('children.creator', 'children_creator')
-        # .leftJoinAndSelect('children.badges', 'children_badges')
-        # .select([
-        #     'scene',
-        #     'badges',
-        #     'creator.id',
-        #     'parent.id',
-        #     'parent.status',
-        #     'children.id',
-        #     'children.title',
-        #     'children.likes',
-        #     'children.dislikes',
-        #     'children.status',
-        #     'children.creator.id',
-        #     'children.badges',
-        # ])
+
+class CreateSceneSerializer(serializers.ModelSerializer):
+    parent = SceneParentSerializer(many=False, required=False)
+
+    class Meta:
+        model = Scene
+        fields = (
+            "parent",
+            "creator",
+            "creator_name",
+            "title",
+            "description",
+            "gifId",
+            "status",
+        )
 
 
 # @api_view(['GET', 'PATCH'])
@@ -131,8 +113,8 @@ class SceneSerializer(DynamicFieldsModelSerializer):
 #     name = models.CharField(max_length=40)
 
 
-class FetchUserSerializer(ModelSerializer):
-    scenes = SerializerMethodField()
+class FetchUserSerializer(serializers.ModelSerializer):
+    scenes = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -152,7 +134,7 @@ class FetchUserSerializer(ModelSerializer):
         ]
 
 
-class FetchSettingsSerializer(ModelSerializer):
+class FetchSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "created", "bio", "ppf_gifId", "view_await_review"]
