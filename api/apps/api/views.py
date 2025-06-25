@@ -36,7 +36,7 @@ class FetchSceneView(APIView):
     permission_classes = []
 
     def get(self, request: Request, id=0):
-        scene = Scene.objects.get_safe(id=id)
+        scene = Scene.objects.get(id=id)
         if scene == None:
             return Response(
                 {"error": "Scene not found."}, status=status.HTTP_400_BAD_REQUEST
@@ -81,7 +81,7 @@ class CreateSceneView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        parent = Scene.objects.get_safe(id=parentId)
+        parent = Scene.objects.get(id=parentId)
         if parent == None:
             return Response(
                 {
