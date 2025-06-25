@@ -24,10 +24,9 @@
 
 .profile-info {
     text-align: left;
-}
-
-.profile-info h1 {
-    margin-top: 0px;
+    h1 {
+        margin-top: 0px;
+    }
 }
 
 .tabs-wrapper {
@@ -39,10 +38,11 @@
     border-radius: 10px;
     overflow: hidden;
     background: #a8c6b4;
-}
-
-.tabs-wrapper h2:first-child {
-    margin-top: 0;
+    h2 {
+        &:first-child {
+            margin-top: 0;
+        }
+    }
 }
 
 h4 {
@@ -58,28 +58,28 @@ button {
     cursor: pointer;
     color: white;
     background-color: #e91e63;
+    &:hover {
+        color: white;
+        background-color: #680929;
+    }
+
+    &:active {
+        color: white;
+        background-color: #680929;
+    }
+
+    &:disabled {
+        color: white;
+        background-color: #680929;
+        cursor: progress;
+    }
 }
 
-button:hover,
-button:active,
-button:disabled {
-    color: white;
-    background-color: #680929;
-}
-
-button:disabled {
-    cursor: progress;
-}
-
-textarea,
-input[type="Text"] {
+textarea {
     border: none;
     outline: none;
     padding: 10px 15px;
     border-radius: 10px;
-}
-
-textarea {
     box-sizing: border-box;
     width: 650px;
     max-width: 100%;
@@ -87,6 +87,10 @@ textarea {
 }
 
 input[type="Text"] {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    border-radius: 10px;
     width: 200px;
 }
 
@@ -94,40 +98,40 @@ input[type="Text"] {
     display: flex;
     align-items: center;
     width: fit-content;
-}
+    input {
+        margin: 0;
+        width: 0;
+        height: 0;
+        display: none;
+        &:checked {
+            ~ {
+                .switch {
+                    background: #298d4a;
+                    div {
+                        margin-left: calc(100% - 20px);
+                    }
+                }
+            }
+        }
+    }
 
-.checkbox-wrapper input {
-    margin: 0;
-    width: 0;
-    height: 0;
-    display: none;
-}
-
-.checkbox-wrapper .switch {
-    width: 50px;
-    height: 28px;
-    padding: 4px;
-    box-sizing: border-box;
-    margin-left: 10px;
-    border-radius: 14px;
-    background: gray;
-    transition: 0.3s;
-}
-
-.checkbox-wrapper .switch div {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: white;
-    transition: 0.3s;
-}
-
-.checkbox-wrapper input:checked ~ .switch {
-    background: #298d4a;
-}
-
-.checkbox-wrapper input:checked ~ .switch div {
-    margin-left: calc(100% - 20px);
+    .switch {
+        width: 50px;
+        height: 28px;
+        padding: 4px;
+        box-sizing: border-box;
+        margin-left: 10px;
+        border-radius: 14px;
+        background: gray;
+        transition: 0.3s;
+        div {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: 0.3s;
+        }
+    }
 }
 
 .tenor-selector-wrapper {
@@ -142,38 +146,37 @@ input[type="Text"] {
     background: #298d4a;
     margin: auto;
     font-size: 0.8em;
-}
+    * {
+        font: inherit;
+    }
 
-.tenor-selector * {
-    font: inherit;
-}
+    .flex {
+        display: flex;
+    }
 
-.tenor-selector .flex {
-    display: flex;
-}
+    input[type="Text"] {
+        width: 100%;
+        border-radius: 10px 0 0 10px;
+    }
 
-.tenor-selector input[type="Text"] {
-    width: 100%;
-    border-radius: 10px 0 0 10px;
-}
+    button {
+        border: none;
+        outline: none;
+        height: auto;
+        margin: 0px;
+        padding: 10px 15px;
+        border-radius: 0px 10px 10px 0;
+    }
 
-.tenor-selector button {
-    border: none;
-    outline: none;
-    height: auto;
-    margin: 0px;
-    padding: 10px 15px;
-    border-radius: 0px 10px 10px 0;
-}
-
-.tenor-selector .searched_content {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-height: 50vh;
-    overflow-y: auto;
-    margin-top: 10px;
+    .searched_content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-height: 50vh;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
 }
 
 .rabbit-gif-wrapper {
@@ -182,11 +185,10 @@ input[type="Text"] {
     top: 0px;
     width: 100%;
     max-width: 200px;
-}
-
-.rabbit-gif-wrapper .rabbit-gif {
-    width: 100%;
-    border-radius: 10px;
+    .rabbit-gif {
+        width: 100%;
+        border-radius: 10px;
+    }
 }
 
 @media only screen and (max-width: 1000px) {
