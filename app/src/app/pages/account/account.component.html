@@ -25,11 +25,15 @@
             (reset)="initialValues()"
         >
             <h2>Profile Settings</h2>
-            <div>
+            <p>
+                Click <a [routerLink]="['/user', username]">Here</a> to view
+                your public profile.
+            </p>
+            <p>
                 The following are your account setings. They are subjected to
                 the
                 <a [routerLink]="['/guidelines']">Community Guidelines</a>.
-            </div>
+            </p>
             <br />
             <h4>Profile Picture Gif:</h4>
             <app-tenor-selector

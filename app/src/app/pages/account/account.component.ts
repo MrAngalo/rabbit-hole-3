@@ -16,6 +16,7 @@ import {
     Validators
 } from "@angular/forms";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
+import { AuthService } from "../../services/auth/auth.service";
 
 @Component({
     selector: "app-account",
@@ -33,15 +34,18 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
 export class AccountComponent {
     UserPremission = UserPremission;
     settings$: Observable<FetchSettingsResponse>;
-
     myForm!: FormGroup;
+
+    username: string;
 
     private originalSettings!: FetchSettingsResponse;
 
     constructor(
         private userService: UserService,
+        private authService: AuthService,
         private popupService: PopupMessagesService
     ) {
+        this.username = this.authService.user!.username;
         this.myForm = new FormGroup({
             gifId: new FormControl([Validators.required]),
             biography: new FormControl([Validators.required]),
