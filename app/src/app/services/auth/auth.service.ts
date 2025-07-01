@@ -141,6 +141,30 @@ export class AuthService {
         );
     }
 
+    passwordVerify(
+        email: string,
+        password1: string,
+        password2: string,
+        token: string
+    ) {
+        return this.http.post<LoginResponse>(
+            `${this.apiUrl}pwverify/`,
+            {
+                email,
+                password1,
+                password2,
+                token
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": this.csrf_token
+                },
+                withCredentials: false
+            }
+        );
+    }
+
     private userInfo() {
         return this.http.get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
             headers: {

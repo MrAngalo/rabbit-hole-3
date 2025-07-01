@@ -12,7 +12,9 @@ import { RouterModule } from "@angular/router";
 })
 export class PasswordResetComponent {
     email = "";
-    password = "";
+    password1 = "";
+    password2 = "";
+    token = "";
 
     constructor(private authService: AuthService) {}
 
@@ -30,5 +32,28 @@ export class PasswordResetComponent {
                 // });
             }
         });
+    }
+
+    passwordVerify() {
+        this.authService
+            .passwordVerify(
+                this.email,
+                this.password1,
+                this.password2,
+                this.token
+            )
+            .subscribe({
+                next: () => {
+                    // const ref = this.route.snapshot.queryParams["ref"];
+                    // this.router.navigate([ref || "/"]);
+                },
+                error: () => {
+                    // this.popupService.clear();
+                    // this.popupService.display({
+                    //     message: res.error.error,
+                    //     color: "red"
+                    // });
+                }
+            });
     }
 }
