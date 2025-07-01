@@ -127,6 +127,22 @@ export class AuthService {
             );
     }
 
+    passwordReset(email: string) {
+        return this.http.post<LoginResponse>(
+            `${this.apiUrl}pwreset/`,
+            {
+                email
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": this.csrf_token
+                },
+                withCredentials: false
+            }
+        );
+    }
+
     private userInfo() {
         return this.http.get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
             headers: {

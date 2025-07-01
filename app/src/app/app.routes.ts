@@ -7,6 +7,7 @@ import { SceneCreateComponent } from "./pages/scene-create/scene-create.componen
 import { AccountComponent } from "./pages/account/account.component";
 import { UserPageComponent } from "./pages/user-page/user-page.component";
 import { LogoutComponent } from "./pages/logout/logout.component";
+import { PasswordResetComponent } from "./pages/password-reset/password-reset.component";
 
 export const routes: Routes = [
     {
@@ -41,6 +42,11 @@ export const routes: Routes = [
         path: "logout",
         component: LogoutComponent,
         canActivate: [authGuard]
+    },
+    {
+        path: "pwreset",
+        component: PasswordResetComponent,
+        canActivate: [notAuthGuard]
     },
     {
         path: "account",
