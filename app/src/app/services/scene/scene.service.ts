@@ -7,7 +7,7 @@ import { AuthService } from "../auth/auth.service";
     providedIn: "root"
 })
 export class SceneService {
-    private readonly API_URL = "/api";
+    private readonly apiUrl = "/api/";
 
     constructor(
         private auth: AuthService,
@@ -15,7 +15,7 @@ export class SceneService {
     ) {}
 
     fetchScene(id: number) {
-        return this.http.get<SceneResponse>(`${this.API_URL}/scene/${id}`, {
+        return this.http.get<SceneResponse>(`${this.apiUrl}scene/${id}`, {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -24,7 +24,7 @@ export class SceneService {
 
     createScene(parentId: number, title: string, desc: string, gifId: string) {
         return this.http.post<SceneResponse>(
-            `${this.API_URL}/create/${parentId}`,
+            `${this.apiUrl}create/${parentId}`,
             {
                 title,
                 desc,

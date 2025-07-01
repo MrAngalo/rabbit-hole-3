@@ -1,6 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { CookieService } from "ngx-cookie-service";
 import {
     LoginResponse,
     RegisterResponse,
@@ -24,8 +23,7 @@ export class AuthService {
 
     constructor(
         @Inject("DATA") private data: DeclaredData,
-        private http: HttpClient,
-        private cookie: CookieService
+        private http: HttpClient
     ) {
         this._csrf_token = this.data.csrf_token;
         this._user = null;

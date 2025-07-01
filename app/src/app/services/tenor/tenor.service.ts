@@ -6,7 +6,7 @@ import { TenorPostsResponse } from "./tenor-types";
     providedIn: "root"
 })
 export class TenorService {
-    private readonly apiUrl = "/api/tenor";
+    private readonly apiUrl = "/api/tenor/";
     private readonly clientKey = "webclient";
 
     readonly defaultUrl = "/static/img/no-gif.png";
@@ -15,7 +15,7 @@ export class TenorService {
 
     posts(ids: string[]) {
         return this.http.get<TenorPostsResponse>(
-            `${this.apiUrl}/posts/?client_key=${this.clientKey}&ids=${ids.join()}`,
+            `${this.apiUrl}posts/?client_key=${this.clientKey}&ids=${ids.join()}`,
             {
                 headers: {
                     "Content-Type": "application/json"
@@ -26,7 +26,7 @@ export class TenorService {
 
     search(query: string) {
         return this.http.get<TenorPostsResponse>(
-            `${this.apiUrl}/search/?client_key=${this.clientKey}&q=${query}`,
+            `${this.apiUrl}search/?client_key=${this.clientKey}&q=${query}`,
             {
                 headers: {
                     "Content-Type": "application/json"
