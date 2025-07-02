@@ -3,7 +3,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from api.models import User
+from .models import User, UserToken
 
 
 @admin.register(User)
@@ -48,6 +48,13 @@ class CustomUserAdmin(BaseUserAdmin):
             },
         ),
     )
+
+
+@admin.register(UserToken)
+class UserTokenAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "created_at", "expires_at", "token")
+    search_fields = ("token", "user__email")
+    readonly_fields = ("id", "user", "created_at", "expires_at", "token")
 
 
 @admin.register(Permission)

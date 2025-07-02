@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
 from core.models import CustomManager
@@ -83,3 +85,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.username} - {self.email}"
+
+
+class UserToken(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tokens")
+    created_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    token = models.CharField(max_length=16, unique=True)
+
+    def __str__(self):
+        return f"Token for {self.user.email} - {self.token}"
+
+    class Meta:
+        verbose_name = "User Token"
+        verbose_name_plural = "User Tokens"
+        indexes = [
+            models.Index(fields=["token"]),
+            models.Index(fields=["expires_at"]),
+        ]

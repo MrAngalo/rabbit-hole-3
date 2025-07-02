@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authentication",
-    "rest_framework.authtoken",
     "userauth",
     "tenor",
     "api",
