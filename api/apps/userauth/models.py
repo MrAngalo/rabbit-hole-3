@@ -58,6 +58,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     ppf_gifId = models.CharField(max_length=32, blank=True)
     bio = models.CharField(max_length=400, blank=True)
     view_await_review = models.BooleanField(default=False)
+
+    last_received_email = models.DateTimeField(null=True)
     # scenes: Scenes[]
     # rated_by: UserRating[] @OneToMany(() => UserRating, rating => rating.recipient)
     # user_ratings: UserRating[] @OneToMany(() => UserRating, rating => rating.owner)
