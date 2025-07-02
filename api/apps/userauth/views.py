@@ -71,3 +71,37 @@ class UserInfoView(APIView):
     def get(self, request: Request):
         serializer = UserInfoSerializer(instance=request.user)
         return Response({"user": serializer.data}, status=status.HTTP_200_OK)
+
+
+class PasswordCodeView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+
+        email: str = data["email"].strip()
+
+        print(email)
+
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
+class PasswordNewView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+
+        email: str = data["email"].strip()
+        password1: str = data["password1"].strip()
+        password2: str = data["password2"].strip()
+        token: str = data["token"].strip()
+
+        print(email)
+        print(password1)
+        print(password2)
+        print(token)
+
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)

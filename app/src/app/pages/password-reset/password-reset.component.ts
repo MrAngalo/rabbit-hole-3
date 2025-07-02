@@ -35,14 +35,14 @@ export class PasswordResetComponent {
         });
     }
 
-    passwordReset() {
+    passwordCode() {
         if (this.formReset.invalid) {
             this.formReset.markAsUntouched();
             this.showErrorsReset = true;
             return;
         }
         const { email } = this.formReset.value;
-        this.authService.passwordReset(email).subscribe({
+        this.authService.passwordCode(email).subscribe({
             next: () => {
                 // const ref = this.route.snapshot.queryParams["ref"];
                 // this.router.navigate([ref || "/"]);
@@ -57,7 +57,7 @@ export class PasswordResetComponent {
         });
     }
 
-    passwordVerify() {
+    passwordNew() {
         if (this.formReset.invalid || this.formVerify.invalid) {
             this.formReset.markAsUntouched();
             this.formVerify.markAsUntouched();
@@ -68,7 +68,7 @@ export class PasswordResetComponent {
         const { email } = this.formReset.value;
         const { password1, password2, token } = this.formVerify.value;
         this.authService
-            .passwordVerify(email, password1, password2, token)
+            .passwordNew(email, password1, password2, token)
             .subscribe({
                 next: () => {
                     // const ref = this.route.snapshot.queryParams["ref"];

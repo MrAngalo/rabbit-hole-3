@@ -168,7 +168,6 @@ class FetchSettingsView(APIView):
 
     def post(self, request):
         data: dict[str, str] = request.data  # type: ignore
-        print(data)
 
         gifId: str = data["gifId"].strip()
         biography: str = data["biography"].strip()
