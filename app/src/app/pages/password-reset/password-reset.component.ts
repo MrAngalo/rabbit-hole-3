@@ -7,17 +7,21 @@ import {
 } from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
 import { RouterModule } from "@angular/router";
+import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 
 @Component({
     selector: "app-password-reset",
-    standalone: true,
-    imports: [ReactiveFormsModule, RouterModule],
+    imports: [ReactiveFormsModule, RouterModule, PipeUtilsModule],
     templateUrl: "./password-reset.component.html",
-    styleUrl: "./password-reset.component.scss"
+    styleUrl: "./password-reset.component.scss",
+    standalone: true
 })
 export class PasswordResetComponent {
     formReset: FormGroup;
     formVerify: FormGroup;
+
+    showErrorsReset = false;
+    showErrorsVerify = false;
 
     constructor(private authService: AuthService) {
         this.formReset = new FormGroup({
@@ -32,6 +36,11 @@ export class PasswordResetComponent {
     }
 
     passwordReset() {
+        if (this.formReset.invalid) {
+            this.formReset.markAsUntouched();
+            this.showErrorsReset = true;
+            return;
+        }
         const { email } = this.formReset.value;
         this.authService.passwordReset(email).subscribe({
             next: () => {
@@ -50,8 +59,9 @@ export class PasswordResetComponent {
 
     passwordVerify() {
         if (this.formReset.invalid || this.formVerify.invalid) {
-            this.formReset.markAsTouched();
-            this.formVerify.markAsTouched();
+            this.formReset.markAsUntouched();
+            this.formVerify.markAsUntouched();
+            this.showErrorsVerify = true;
             return;
         }
 
