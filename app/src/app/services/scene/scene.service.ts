@@ -23,20 +23,22 @@ export class SceneService {
     }
 
     createScene(parentId: number, title: string, desc: string, gifId: string) {
-        return this.http.post<SceneResponse>(
-            `${this.apiUrl}create/${parentId}`,
-            {
-                title,
-                desc,
-                gifId
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": this.auth.csrf_token
+        return this.http
+            .post<SceneResponse>(
+                `${this.apiUrl}create/${parentId}`,
+                {
+                    title,
+                    desc,
+                    gifId
                 },
-                withCredentials: true
-            }
-        );
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.auth.csrfToken
+                    },
+                    withCredentials: true
+                }
+            )
+            .pipe(this.auth.discartCsrfToken());
     }
 }

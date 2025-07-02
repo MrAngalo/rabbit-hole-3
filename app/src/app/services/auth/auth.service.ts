@@ -6,8 +6,9 @@ import {
     User,
     UserInfoResponse
 } from "./auth-types";
-import { Observable, ReplaySubject, tap } from "rxjs";
+import { Observable, OperatorFunction, ReplaySubject, tap } from "rxjs";
 import { DeclaredData } from "../../app.config";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable({
     providedIn: "root"
@@ -15,7 +16,7 @@ import { DeclaredData } from "../../app.config";
 export class AuthService {
     private readonly apiUrl = "/api/auth/";
 
-    private _csrf_token: string;
+    private _csrfToken: string | null;
     private _user: User | null;
 
     private userSubject: ReplaySubject<User | null>;
@@ -23,9 +24,10 @@ export class AuthService {
 
     constructor(
         @Inject("DATA") private data: DeclaredData,
+        private cookie: CookieService,
         private http: HttpClient
     ) {
-        this._csrf_token = this.data.csrf_token;
+        this._csrfToken = this.data.csrf_token;
         this._user = null;
 
         this.userSubject = new ReplaySubject<User | null>(1);
@@ -43,8 +45,11 @@ export class AuthService {
         });
     }
 
-    get csrf_token() {
-        return this._csrf_token;
+    get csrfToken() {
+        if (this._csrfToken === null) {
+            this._csrfToken = this.cookie.get("csrftoken");
+        }
+        return this._csrfToken;
     }
 
     get user() {
@@ -53,6 +58,10 @@ export class AuthService {
 
     get isAuthenticated() {
         return this._user !== null;
+    }
+
+    discartCsrfToken<T>(): OperatorFunction<T, T> {
+        return tap((_) => (this._csrfToken = null));
     }
 
     login(email: string, password: string) {
@@ -66,12 +75,13 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.csrf_token
+                        "X-CSRFToken": this.csrfToken
                     },
                     withCredentials: false
                 }
             )
             .pipe(
+                this.discartCsrfToken(),
                 tap((data) => {
                     this._user = data.user;
                     this.userSubject.next(this._user);
@@ -91,12 +101,13 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.csrf_token
+                        "X-CSRFToken": this.csrfToken
                     },
                     withCredentials: false
                 }
             )
             .pipe(
+                this.discartCsrfToken(),
                 tap((data) => {
                     this._user = data.user;
                     this.userSubject.next(this._user);
@@ -112,12 +123,13 @@ export class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": this.csrf_token
+                        "X-CSRFToken": this.csrfToken
                     },
                     withCredentials: true
                 }
             )
             .pipe(
+                this.discartCsrfToken(),
                 tap(() => {
                     this._user = null;
                     this.userSubject.next(this._user);
@@ -126,19 +138,21 @@ export class AuthService {
     }
 
     passwordReset(email: string) {
-        return this.http.post<LoginResponse>(
-            `${this.apiUrl}pwreset/`,
-            {
-                email
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": this.csrf_token
+        return this.http
+            .post<LoginResponse>(
+                `${this.apiUrl}pwreset/`,
+                {
+                    email
                 },
-                withCredentials: false
-            }
-        );
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.csrfToken
+                    },
+                    withCredentials: false
+                }
+            )
+            .pipe(this.discartCsrfToken());
     }
 
     passwordVerify(
@@ -147,31 +161,35 @@ export class AuthService {
         password2: string,
         token: string
     ) {
-        return this.http.post<LoginResponse>(
-            `${this.apiUrl}pwverify/`,
-            {
-                email,
-                password1,
-                password2,
-                token
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": this.csrf_token
+        return this.http
+            .post<LoginResponse>(
+                `${this.apiUrl}pwverify/`,
+                {
+                    email,
+                    password1,
+                    password2,
+                    token
                 },
-                withCredentials: false
-            }
-        );
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.csrfToken
+                    },
+                    withCredentials: false
+                }
+            )
+            .pipe(this.discartCsrfToken());
     }
 
     private userInfo() {
-        return this.http.get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": this.csrf_token
-            },
-            withCredentials: true
-        });
+        return this.http
+            .get<UserInfoResponse>(`${this.apiUrl}user-info/`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": this.csrfToken
+                },
+                withCredentials: true
+            })
+            .pipe(this.discartCsrfToken());
     }
 }
