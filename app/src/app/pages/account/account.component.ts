@@ -34,7 +34,7 @@ import { AuthService } from "../../services/auth/auth.service";
 export class AccountComponent {
     UserPremission = UserPremission;
     settings$: Observable<FetchSettingsResponse>;
-    myForm!: FormGroup;
+    form: FormGroup;
 
     username: string;
 
@@ -46,7 +46,7 @@ export class AccountComponent {
         private popupService: PopupMessagesService
     ) {
         this.username = this.authService.user!.username;
-        this.myForm = new FormGroup({
+        this.form = new FormGroup({
             gifId: new FormControl([Validators.required]),
             biography: new FormControl([Validators.required]),
             awaiting_review: new FormControl([Validators.required])
@@ -55,14 +55,14 @@ export class AccountComponent {
         this.settings$ = this.userService.fetchSettings().pipe(
             tap((s) => {
                 this.originalSettings = s;
-                this.myForm.setValue({
+                this.form.setValue({
                     gifId: s.ppf_gifId,
                     biography: s.bio,
                     awaiting_review: s.view_await_review
                 });
             }),
             concatWith(
-                this.myForm.valueChanges.pipe(
+                this.form.valueChanges.pipe(
                     map((values) => ({
                         ...this.originalSettings,
                         ppf_gifId: values.gifId,
@@ -75,7 +75,7 @@ export class AccountComponent {
     }
 
     onSubmit() {
-        const { gifId, biography, awaiting_review } = this.myForm.value;
+        const { gifId, biography, awaiting_review } = this.form.value;
         this.userService
             .saveSettings(gifId, biography, awaiting_review)
             .subscribe({
@@ -99,7 +99,7 @@ export class AccountComponent {
     initialValues() {
         const s = this.originalSettings;
         setTimeout(() =>
-            this.myForm.setValue({
+            this.form.setValue({
                 gifId: s.ppf_gifId,
                 biography: s.bio,
                 awaiting_review: s.view_await_review

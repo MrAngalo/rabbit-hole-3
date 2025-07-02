@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import {
     ErrorResponse,
     SceneResponse,
@@ -35,7 +35,7 @@ import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-s
     templateUrl: "./scene-create.component.html",
     styleUrl: "./scene-create.component.scss"
 })
-export class SceneCreateComponent implements OnInit {
+export class SceneCreateComponent {
     user$: Observable<User>;
     SceneStatus = SceneStatus;
 
@@ -43,7 +43,7 @@ export class SceneCreateComponent implements OnInit {
     parent: SceneResponse | null = null;
     options = 3;
 
-    myForm!: FormGroup;
+    form: FormGroup;
 
     constructor(
         private router: Router,
@@ -67,10 +67,8 @@ export class SceneCreateComponent implements OnInit {
                 }
             });
         });
-    }
 
-    ngOnInit(): void {
-        this.myForm = new FormGroup({
+        this.form = new FormGroup({
             title: new FormControl("", [Validators.required]),
             description: new FormControl("", [Validators.required]),
             gifId: new FormControl("", [Validators.required])
@@ -78,7 +76,7 @@ export class SceneCreateComponent implements OnInit {
     }
 
     create() {
-        const { title, description, gifId } = this.myForm.value;
+        const { title, description, gifId } = this.form.value;
 
         this.sceneService
             .createScene(this.parentId, title, description, gifId)
