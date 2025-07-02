@@ -1,25 +1,39 @@
 import { Component } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import {
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators
+} from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
 import { RouterModule } from "@angular/router";
 
 @Component({
     selector: "app-password-reset",
     standalone: true,
-    imports: [FormsModule, RouterModule],
+    imports: [ReactiveFormsModule, RouterModule],
     templateUrl: "./password-reset.component.html",
     styleUrl: "./password-reset.component.scss"
 })
 export class PasswordResetComponent {
-    email = "";
-    password1 = "";
-    password2 = "";
-    token = "";
+    formReset: FormGroup;
+    formVerify: FormGroup;
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) {
+        this.formReset = new FormGroup({
+            email: new FormControl("", [Validators.required])
+        });
+
+        this.formVerify = new FormGroup({
+            password1: new FormControl("", [Validators.required]),
+            password2: new FormControl("", [Validators.required]),
+            token: new FormControl("", [Validators.required])
+        });
+    }
 
     passwordReset() {
-        this.authService.passwordReset(this.email).subscribe({
+        const { email } = this.formReset.value;
+        this.authService.passwordReset(email).subscribe({
             next: () => {
                 // const ref = this.route.snapshot.queryParams["ref"];
                 // this.router.navigate([ref || "/"]);
@@ -35,13 +49,16 @@ export class PasswordResetComponent {
     }
 
     passwordVerify() {
+        if (this.formReset.invalid || this.formVerify.invalid) {
+            this.formReset.markAsTouched();
+            this.formVerify.markAsTouched();
+            return;
+        }
+
+        const { email } = this.formReset.value;
+        const { password1, password2, token } = this.formVerify.value;
         this.authService
-            .passwordVerify(
-                this.email,
-                this.password1,
-                this.password2,
-                this.token
-            )
+            .passwordVerify(email, password1, password2, token)
             .subscribe({
                 next: () => {
                     // const ref = this.route.snapshot.queryParams["ref"];
