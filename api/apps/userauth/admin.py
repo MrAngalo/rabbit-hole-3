@@ -56,6 +56,9 @@ class UserTokenAdmin(admin.ModelAdmin):
     search_fields = ("token", "user__email")
     readonly_fields = ("id", "user", "created_at", "expires_at", "token")
 
+    def has_add_permission(self, request):
+        return False
+
 
 @admin.register(Permission)
 class CustomPermissionAdmin(admin.ModelAdmin):
