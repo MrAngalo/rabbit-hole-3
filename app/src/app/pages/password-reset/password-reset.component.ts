@@ -25,7 +25,7 @@ export class PasswordResetComponent {
 
     constructor(private authService: AuthService) {
         this.formReset = new FormGroup({
-            email: new FormControl("", [Validators.required])
+            email: new FormControl("", [Validators.required, Validators.email])
         });
 
         this.formVerify = new FormGroup({

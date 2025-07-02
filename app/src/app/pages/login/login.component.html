@@ -1,23 +1,37 @@
 <div class="container">
     <h1>Login</h1>
-    <form>
-        <div>
+    <form [formGroup]="form">
+        <div class="field">
             <input
                 type="email"
-                [(ngModel)]="email"
+                formControlName="email"
                 name="email"
                 placeholder="Email"
-                required
             />
+            @if (showErrors && form.get("email")!.invalid) {
+                @for (
+                    error of form.get("email")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
         </div>
-        <div>
+        <div class="field">
             <input
                 type="password"
-                [(ngModel)]="password"
+                formControlName="password"
                 name="password"
                 placeholder="Password"
-                required
             />
+            @if (showErrors && form.get("password")!.invalid) {
+                @for (
+                    error of form.get("password")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
         </div>
         <button type="button" (click)="login()">Login</button>
     </form>

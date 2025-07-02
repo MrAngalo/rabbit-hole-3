@@ -1,12 +1,15 @@
 .container {
-    input {
-        padding: 10px;
-        width: 250px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        outline: none;
+    .field {
         margin-bottom: 10px;
-        display: block;
+
+        input {
+            padding: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            display: block;
+        }
     }
 
     button {
