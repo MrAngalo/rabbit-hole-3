@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { concatWith, map, Observable, tap } from "rxjs";
@@ -17,6 +16,7 @@ import {
 } from "@angular/forms";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 import { AuthService } from "../../services/auth/auth.service";
+import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 
 @Component({
     selector: "app-account",
@@ -24,7 +24,7 @@ import { AuthService } from "../../services/auth/auth.service";
     imports: [
         CommonModule,
         RouterModule,
-        UtilsPipeModule,
+        PipeUtilsModule,
         ReactiveFormsModule,
         TenorSelectorComponent
     ],

@@ -10,7 +10,6 @@ import { SceneService } from "../../services/scene/scene.service";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth/auth.service";
 import { User } from "../../services/auth/auth-types";
-import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import {
     FormControl,
@@ -28,7 +27,6 @@ import { TenorSelectorComponent } from "../../utils/forms/tenor-selector/tenor-s
         CommonModule,
         RouterModule,
         PipeUtilsModule,
-        TenorPipesModule,
         ReactiveFormsModule,
         TenorSelectorComponent
     ],

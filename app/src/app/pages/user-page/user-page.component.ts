@@ -1,7 +1,5 @@
 import { Component } from "@angular/core";
-import { UtilsPipeModule } from "../../pipes/utils/utils-pipe.module";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { TenorPipesModule } from "../../pipes/tenor/tenor-pipes.module";
 import { CommonModule } from "@angular/common";
 import { mergeMap, Observable } from "rxjs";
 import {
@@ -10,11 +8,12 @@ import {
 } from "../../services/user/user-types";
 import { UserService } from "../../services/user/user.service";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
+import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 
 @Component({
     selector: "app-user-page",
     standalone: true,
-    imports: [CommonModule, RouterModule, TenorPipesModule, UtilsPipeModule],
+    imports: [CommonModule, RouterModule, PipeUtilsModule],
     templateUrl: "./user-page.component.html",
     styleUrl: "./user-page.component.scss"
 })
