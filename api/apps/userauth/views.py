@@ -10,12 +10,15 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from api.models import User
+from .models import User, UserToken
 from userauth.serializers import (
     UserInfoSerializer,
     UserLoginSerializer,
     UserRegisterSerializer,
 )
+
+from django.utils import timezone
+from datetime import timedelta
 
 
 class LoginView(APIView):
@@ -81,9 +84,50 @@ class PasswordCodeView(APIView):
         data: dict[str, str] = request.data  # type: ignore
 
         email: str = data["email"].strip()
+        user = User.objects.get(email=email)
+        if user == None:
+            print("Failed to send email - User Does Not Exist")
+            return Response(
+                {
+                    "status": "We have sent you a code via your email if it matches with our system."
+                },
+                status=status.HTTP_200_OK,
+            )
 
-        print(email)
+        now = timezone.now()
 
+        # Check if more than 30 seconds have passed
+        if user.last_received_email != None and (
+            now - user.last_received_email
+        ) < timedelta(seconds=30):
+            print(
+                f"Failed to send email - Too Many Requests (delta={now - user.last_received_email})"
+            )
+            return Response(
+                {
+                    "status": "We have sent you a code via your email if it matches with our system."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        token = UserToken.objects.get(user=user)
+        if token == None:
+            token = UserToken.objects.create(
+                user=user, expires_at=now + timedelta(minutes=15)
+            )
+        else:
+            lifetime = token.expires_at - token.created_at
+            halfway = token.created_at + (lifetime / 2)
+            if halfway < now:
+                token.delete()
+                token = UserToken.objects.create(
+                    user=user, expires_at=now + timedelta(minutes=15)
+                )
+
+        user.last_received_email = timezone.now()
+        user.save()
+
+        print(f"Successfully sent email to {user.username} ({email})")
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 

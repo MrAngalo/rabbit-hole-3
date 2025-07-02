@@ -1,4 +1,5 @@
 import uuid
+import random
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
@@ -15,7 +16,7 @@ UserPremission = {
 }
 
 
-class CustomUserManager(CustomManager, UserManager):
+class CustomUserManager(CustomManager["User"], UserManager):
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("You have not provided a valid email address.")
@@ -40,7 +41,7 @@ class CustomUserManager(CustomManager, UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    objects: CustomUserManager = CustomUserManager()
+    objects = CustomUserManager()
     id = models.AutoField(primary_key=True)
 
     is_active = models.BooleanField(default=True)
@@ -87,15 +88,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.username} - {self.email}"
 
 
+def generate_safe_token(length=12):
+    characters = "0123456789ACDEFHJKLMNPQRTUVWXY"  # excludes: B, G, I, L, O, S, Z
+    return "".join(random.choice(characters) for _ in range(length))
+
+
 class UserToken(models.Model):
+    objects = CustomManager["UserToken"]()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tokens")
     created_at = models.DateTimeField(default=timezone.now)
     expires_at = models.DateTimeField()
-    token = models.CharField(max_length=16, unique=True)
+    token = models.CharField(default=generate_safe_token, max_length=16, unique=True)  # type: ignore
 
     def __str__(self):
-        return f"Token for {self.user.email} - {self.token}"
+        return f"Token for {self.user.email} - (Expires {self.expires_at})"
 
     class Meta:
         verbose_name = "User Token"

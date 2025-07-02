@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from .models import User, UserToken
 
@@ -52,12 +53,39 @@ class CustomUserAdmin(BaseUserAdmin):
 
 @admin.register(UserToken)
 class UserTokenAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "created_at", "expires_at", "token")
+    list_display = (
+        "token",
+        "user",
+        "created_at",
+        "expires_at",
+        "duration",
+        "remaining",
+        "is_valid",
+    )
     search_fields = ("token", "user__email")
-    readonly_fields = ("id", "user", "created_at", "expires_at", "token")
+    readonly_fields = ("id", "token")
 
-    def has_add_permission(self, request):
-        return False
+    def is_valid(self, obj):
+        return "🔴" if obj.expires_at < timezone.now() else "🟢"
+
+    def duration(self, obj):
+        return self.format_time(obj.expires_at - obj.created_at)
+
+    def remaining(self, obj):
+        return self.format_time(obj.expires_at - timezone.now())
+
+    def format_time(self, delta):
+        minutes, seconds = divmod(delta.total_seconds(), 60)
+        hours, minutes = divmod(minutes, 60)
+        days, hours = divmod(hours, 24)
+
+        parts = [
+            f"{int(days)}d" if days else "",
+            f"{int(hours)}h" if hours else "",
+            f"{int(minutes)}m" if minutes else "",
+            f"{int(seconds)}s" if seconds else "",
+        ]
+        return " ".join(part for part in parts if part)
 
 
 @admin.register(Permission)
