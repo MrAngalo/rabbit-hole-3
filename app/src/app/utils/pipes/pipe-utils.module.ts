@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { DateSuffixPipe } from "./pipes/date-suffix.pipe";
-import { SplitPipe } from "./pipes/split.pipe";
+import { DateSuffixPipe } from "./date-suffix/date-suffix.pipe";
+import { SplitPipe } from "./split/split.pipe";
 
 @NgModule({
     declarations: [DateSuffixPipe, SplitPipe],
