@@ -20,3 +20,15 @@ class HomeView(APIView):
             },
         }
         return render(request, "home.html", context)
+
+
+def preview_verification_email(request):
+    return render(
+        request,
+        "emails/verify_email.html",
+        {
+            "username": "Alice",
+            "verification_code": "123456",
+            "verification_link": "https://example.com/verify?token=abc123",
+        },
+    )

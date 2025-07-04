@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.urls import include
 
-from .views import HomeView
+from .views import HomeView, preview_verification_email
 
 urlpatterns = [
     # Admin routes
@@ -28,6 +28,8 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path("api/auth/", include("userauth.urls")),
     path("api/tenor/", include("tenor.urls")),
+    # TEMP
+    path("temp-email-preview/", preview_verification_email),
     # Angular routes
     re_path(r"^.*$", HomeView.as_view()),
 ]
