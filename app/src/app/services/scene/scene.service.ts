@@ -14,7 +14,7 @@ export class SceneService {
         private http: HttpClient
     ) {}
 
-    fetchScene(id: number) {
+    fetchScene(id: number | string) {
         return this.http.get<SceneResponse>(`${this.apiUrl}scene/${id}`, {
             headers: {
                 "Content-Type": "application/json"
@@ -22,7 +22,12 @@ export class SceneService {
         });
     }
 
-    createScene(parentId: number, title: string, desc: string, gifId: string) {
+    createScene(
+        parentId: number | string,
+        title: string,
+        desc: string,
+        gifId: string
+    ) {
         return this.http
             .post<SceneResponse>(
                 `${this.apiUrl}create/${parentId}`,

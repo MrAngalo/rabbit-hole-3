@@ -37,7 +37,7 @@ export class SceneCreateComponent {
     user$: Observable<User>;
     SceneStatus = SceneStatus;
 
-    parentId!: number;
+    parentId: string;
     parent: SceneResponse | null = null;
     options = 3;
 
@@ -51,19 +51,17 @@ export class SceneCreateComponent {
         private popupService: PopupMessagesService
     ) {
         this.user$ = this.authService.user$ as Observable<User>;
-        this.route.params.subscribe((params) => {
-            this.parentId = params["id"];
-            this.sceneService.fetchScene(this.parentId).subscribe({
-                next: (parent) => (this.parent = parent),
-                error: (res: ErrorResponse) => {
-                    this.router.navigate(["/"]);
-                    this.popupService.clear();
-                    this.popupService.display({
-                        message: `Cannot load parent scene. ${res.error.error}`,
-                        color: "red"
-                    });
-                }
-            });
+        this.parentId = this.route.snapshot.paramMap.get("id")!;
+        this.sceneService.fetchScene(this.parentId).subscribe({
+            next: (parent) => (this.parent = parent),
+            error: (res: ErrorResponse) => {
+                this.router.navigate(["/"]);
+                this.popupService.clear();
+                this.popupService.display({
+                    message: `Cannot load parent scene. ${res.error.error}`,
+                    color: "red"
+                });
+            }
         });
 
         this.form = new FormGroup({
