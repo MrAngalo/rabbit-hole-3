@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import {
     FormControl,
     FormGroup,
@@ -8,6 +8,7 @@ import {
 import { AuthService } from "../../services/auth/auth.service";
 import { RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
     selector: "app-password-reset",
@@ -16,14 +17,21 @@ import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
     styleUrl: "./password-reset.component.scss",
     standalone: true
 })
-export class PasswordResetComponent {
+export class PasswordResetComponent implements OnDestroy {
     formReset: FormGroup;
     formVerify: FormGroup;
 
     showErrorsReset = false;
     showErrorsVerify = false;
 
-    constructor(private authService: AuthService) {
+    readonly codeCooldownCookie = "pwreset_next";
+    codeCooldownInterval: any | null = null;
+    codeCooldown = 0;
+
+    constructor(
+        private authService: AuthService,
+        private cookie: CookieService
+    ) {
         this.formReset = new FormGroup({
             email: new FormControl("", [Validators.required, Validators.email])
         });
@@ -33,6 +41,21 @@ export class PasswordResetComponent {
             password2: new FormControl("", [Validators.required]),
             token: new FormControl("", [Validators.required])
         });
+
+        const next = parseInt(this.cookie.get(this.codeCooldownCookie)) ?? 0;
+        const cooldown = Math.round((next - Date.now()) / 1000);
+        if (cooldown > 0) {
+            this.tickCooldown(cooldown);
+        } else {
+            this.cookie.delete(this.codeCooldownCookie);
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.codeCooldownInterval !== null) {
+            clearInterval(this.codeCooldownInterval);
+            this.codeCooldownInterval = null;
+        }
     }
 
     passwordCode() {
@@ -43,17 +66,8 @@ export class PasswordResetComponent {
         }
         const { email } = this.formReset.value;
         this.authService.passwordCode(email).subscribe({
-            next: () => {
-                // const ref = this.route.snapshot.queryParams["ref"];
-                // this.router.navigate([ref || "/"]);
-            },
-            error: () => {
-                // this.popupService.clear();
-                // this.popupService.display({
-                //     message: res.error.error,
-                //     color: "red"
-                // });
-            }
+            next: () => this.tickCooldown(60),
+            error: () => this.tickCooldown(60)
         });
     }
 
@@ -82,5 +96,24 @@ export class PasswordResetComponent {
                     // });
                 }
             });
+    }
+
+    private tickCooldown(seconds: number) {
+        this.codeCooldown = seconds;
+        const next = Date.now() + seconds * 1000;
+        this.cookie.set(this.codeCooldownCookie, next + "");
+        if (this.codeCooldownInterval !== null) {
+            return;
+        }
+        this.codeCooldownInterval = setInterval(() => {
+            if (this.codeCooldown > 0) {
+                this.codeCooldown -= 1;
+                this.cookie.set(this.codeCooldownCookie, next + "");
+            } else if (this.codeCooldownInterval !== null) {
+                clearInterval(this.codeCooldownInterval);
+                this.codeCooldownInterval = null;
+                this.cookie.delete(this.codeCooldownCookie);
+            }
+        }, 1000);
     }
 }
