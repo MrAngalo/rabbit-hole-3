@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { ValidationErrors } from "@angular/forms";
+import { fixPlural } from "../../fix-plural";
 
 @Pipe({
     name: "formatError"
@@ -13,7 +14,14 @@ export class FormatErrorPipe implements PipeTransform {
         email: () => "Invalid email address.",
         minlength: (error) => `Minimum length is ${error.requiredLength}.`,
         maxlength: (error) => `Maximum length is ${error.requiredLength}.`,
-        pattern: () => "Invalid format."
+        pattern: () => "Invalid format.",
+        passwordsMismatch: () => "Passwords do not match.",
+        passwordFewCharacters: (error) =>
+            `Password must have at least ${error.requiredLength} ${fixPlural("character", "characters", error.requiredLength)}.`,
+        passwordNoNumbers: (error) =>
+            `Password must have at least ${error.requiredNumbers} ${fixPlural("number", "numbers", error.requiredNumbers)}.`,
+        passwordNoLetter: (error) =>
+            `Password must have at least ${error.requiredLetters} ${fixPlural("letter", "letters", error.requiredLetters)}.`
     };
 
     transform(errors: ValidationErrors | null | undefined): string[] {

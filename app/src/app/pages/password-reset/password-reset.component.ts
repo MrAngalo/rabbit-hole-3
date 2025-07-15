@@ -10,6 +10,8 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { CookieService } from "ngx-cookie-service";
 import { CooldownTimer } from "../../utils/cooldown";
+import { strongPasswordValidator } from "../../utils/validators/strong-password-validator";
+import { passwordMatchValidator } from "../../utils/validators/password-match-validator";
 
 @Component({
     selector: "app-password-reset",
@@ -37,11 +39,14 @@ export class PasswordResetComponent implements OnDestroy {
             email: new FormControl("", [Validators.required, Validators.email])
         });
 
-        this.formVerify = new FormGroup({
-            password1: new FormControl("", [Validators.required]),
-            password2: new FormControl("", [Validators.required]),
-            token: new FormControl("", [Validators.required])
-        });
+        this.formVerify = new FormGroup(
+            {
+                password1: new FormControl("", [Validators.required]),
+                password2: new FormControl("", [Validators.required]),
+                token: new FormControl("", [Validators.required])
+            },
+            { validators: [passwordMatchValidator, strongPasswordValidator] }
+        );
 
         if (this.route.snapshot.queryParamMap.has("email")) {
             this.formReset.setValue({
