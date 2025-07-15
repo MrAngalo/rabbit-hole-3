@@ -6,7 +6,7 @@ import {
     Validators
 } from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
-import { RouterModule } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { CookieService } from "ngx-cookie-service";
 import { CooldownTimer } from "../../utils/cooldown";
@@ -30,7 +30,8 @@ export class PasswordResetComponent implements OnDestroy {
 
     constructor(
         private authService: AuthService,
-        private cookie: CookieService
+        private cookie: CookieService,
+        private route: ActivatedRoute
     ) {
         this.formReset = new FormGroup({
             email: new FormControl("", [Validators.required, Validators.email])
@@ -41,6 +42,20 @@ export class PasswordResetComponent implements OnDestroy {
             password2: new FormControl("", [Validators.required]),
             token: new FormControl("", [Validators.required])
         });
+
+        if (this.route.snapshot.queryParamMap.has("email")) {
+            this.formReset.setValue({
+                email: this.route.snapshot.queryParamMap.get("email")
+            });
+        }
+
+        if (this.route.snapshot.queryParamMap.has("token")) {
+            this.formVerify.setValue({
+                password1: "",
+                password2: "",
+                token: this.route.snapshot.queryParamMap.get("token")
+            });
+        }
 
         this.cooldownTimer = new CooldownTimer();
         this.cooldownTimer.onTick = (seconds) => {
