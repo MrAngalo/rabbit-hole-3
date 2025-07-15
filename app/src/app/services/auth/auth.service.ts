@@ -2,6 +2,8 @@ import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
     LoginResponse,
+    PasswordCodeResponse,
+    PasswordNewResponse,
     RegisterResponse,
     User,
     UserInfoResponse
@@ -139,7 +141,7 @@ export class AuthService {
 
     passwordCode(email: string) {
         return this.http
-            .post<LoginResponse>(
+            .post<PasswordCodeResponse>(
                 `${this.apiUrl}pwcode/`,
                 {
                     email
@@ -162,7 +164,7 @@ export class AuthService {
         token: string
     ) {
         return this.http
-            .post<LoginResponse>(
+            .post<PasswordNewResponse>(
                 `${this.apiUrl}pwnew/`,
                 {
                     email,

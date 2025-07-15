@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth import (
     authenticate,
     login as django_login,
@@ -10,7 +12,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
 
 from apps.core import settings
 from apps.core.utils import send_password_reset_email
@@ -148,9 +149,86 @@ class PasswordNewView(APIView):
         password2: str = data["password2"].strip()
         token: str = data["token"].strip()
 
-        print(email)
-        print(password1)
-        print(password2)
-        print(token)
+        if password1 != password2:
+            return Response(
+                {
+                    "error": "Passwords do not match.",
+                    "validators": {"": {"passwordsMismatch": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+        if len(password1) < 8:
+            return Response(
+                {
+                    "error": "Password must have at least 8 characters.",
+                    "validators": {"": {"passwordFewCharacters": 8}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not re.search(r"\d", password1):
+            return Response(
+                {
+                    "error": "Password must have at least 1 number.",
+                    "validators": {"": {"passwordNoNumbers": 1}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not re.search(r"[A-Za-z]", password1):
+            return Response(
+                {
+                    "error": "Password must have at least 1 letter.",
+                    "validators": {"": {"passwordNoLetter": 1}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        token_obj = UserToken.objects.get(token=token)
+        if token_obj == None:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        now = timezone.now()
+        if token_obj.expires_at < now:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = token_obj.user
+        if user == None:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user.email != email:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(password1)
+        user.save()
+        token_obj.delete()
+
+        return Response(
+            {"status": "Your password has been successfully changed!"},
+            status=status.HTTP_200_OK,
+        )

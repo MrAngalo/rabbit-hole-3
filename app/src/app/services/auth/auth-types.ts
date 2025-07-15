@@ -11,6 +11,14 @@ export type RegisterResponse = {
     user: User;
 };
 
+export type PasswordCodeResponse = {
+    status: string;
+};
+
+export type PasswordNewResponse = {
+    status: string;
+};
+
 export type UserInfoResponse = {
     user: User;
 };

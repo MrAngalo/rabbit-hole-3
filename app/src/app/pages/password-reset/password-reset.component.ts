@@ -3,15 +3,17 @@ import {
     FormControl,
     FormGroup,
     ReactiveFormsModule,
+    ValidationErrors,
     Validators
 } from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { CookieService } from "ngx-cookie-service";
 import { CooldownTimer } from "../../utils/cooldown";
 import { strongPasswordValidator } from "../../utils/validators/strong-password-validator";
 import { passwordMatchValidator } from "../../utils/validators/password-match-validator";
+import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 
 @Component({
     selector: "app-password-reset",
@@ -33,7 +35,9 @@ export class PasswordResetComponent implements OnDestroy {
     constructor(
         private authService: AuthService,
         private cookie: CookieService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router,
+        private popupService: PopupMessagesService
     ) {
         this.formReset = new FormGroup({
             email: new FormControl("", [Validators.required, Validators.email])
@@ -94,10 +98,11 @@ export class PasswordResetComponent implements OnDestroy {
             this.showErrorsReset = true;
             return;
         }
+        this.cooldownTimer.start(60);
         const { email } = this.formReset.value;
         this.authService.passwordCode(email).subscribe({
-            next: () => this.cooldownTimer.start(60),
-            error: () => this.cooldownTimer.start(60)
+            next: () => {},
+            error: () => {}
         });
     }
 
@@ -114,16 +119,28 @@ export class PasswordResetComponent implements OnDestroy {
         this.authService
             .passwordNew(email, password1, password2, token)
             .subscribe({
-                next: () => {
-                    // const ref = this.route.snapshot.queryParams["ref"];
-                    // this.router.navigate([ref || "/"]);
+                next: (res) => {
+                    this.router.navigate(["/login"], {
+                        queryParams: { email: email }
+                    });
+                    this.popupService.clear();
+                    this.popupService.display({
+                        message: res.status,
+                        color: "green"
+                    });
                 },
-                error: () => {
-                    // this.popupService.clear();
-                    // this.popupService.display({
-                    //     message: res.error.error,
-                    //     color: "red"
-                    // });
+                error: (res) => {
+                    const validators = res.error.validators;
+                    Object.entries(validators).forEach(([field, objs]) => {
+                        if (field === "") {
+                            this.formVerify.setErrors(objs as ValidationErrors);
+                        } else {
+                            this.formVerify
+                                .get(field)
+                                ?.setErrors(objs as ValidationErrors);
+                        }
+                    });
+                    this.showErrorsVerify = true;
                 }
             });
     }

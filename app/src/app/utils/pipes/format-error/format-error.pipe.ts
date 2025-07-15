@@ -21,7 +21,8 @@ export class FormatErrorPipe implements PipeTransform {
         passwordNoNumbers: (error) =>
             `Password must have at least ${error.requiredNumbers} ${fixPlural("number", "numbers", error.requiredNumbers)}.`,
         passwordNoLetter: (error) =>
-            `Password must have at least ${error.requiredLetters} ${fixPlural("letter", "letters", error.requiredLetters)}.`
+            `Password must have at least ${error.requiredLetters} ${fixPlural("letter", "letters", error.requiredLetters)}.`,
+        tokenInvalid: () => "Token is invalid or expired."
     };
 
     transform(errors: ValidationErrors | null | undefined): string[] {

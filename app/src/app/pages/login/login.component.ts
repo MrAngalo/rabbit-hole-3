@@ -32,6 +32,13 @@ export class LoginComponent {
             email: new FormControl("", [Validators.required, Validators.email]),
             password: new FormControl("", [Validators.required])
         });
+
+        if (this.route.snapshot.queryParamMap.has("email")) {
+            this.form.setValue({
+                email: this.route.snapshot.queryParamMap.get("email"),
+                password: ""
+            });
+        }
     }
 
     login() {
