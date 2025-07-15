@@ -25,7 +25,7 @@ class HomeView(APIView):
 def preview_verification_email(request):
     return render(
         request,
-        "emails/verify_email.html",
+        "emails/password_reset_email.html",
         {
             "username": "Alice",
             "verification_code": "123456",

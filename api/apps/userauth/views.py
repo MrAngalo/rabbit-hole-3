@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 
 from apps.core import settings
-from apps.core.utils import send_verification_email
+from apps.core.utils import send_password_reset_email
 
 from .models import User, UserToken
 from userauth.serializers import (
@@ -132,7 +132,7 @@ class PasswordCodeView(APIView):
         user.last_received_email = timezone.now()
         user.save()
 
-        send_verification_email(email, user.username, token.token)
+        send_password_reset_email(email, user.username, token.token)
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 
