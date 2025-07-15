@@ -3,7 +3,6 @@ from django.contrib.auth import (
     login as django_login,
     logout as django_logout,
 )
-from django.core.mail import send_mail
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
@@ -14,6 +13,8 @@ from rest_framework.views import APIView
 
 
 from apps.core import settings
+from apps.core.utils import send_verification_email
+
 from .models import User, UserToken
 from userauth.serializers import (
     UserInfoSerializer,
@@ -131,14 +132,7 @@ class PasswordCodeView(APIView):
         user.last_received_email = timezone.now()
         user.save()
 
-        subject = "Verify Your Email"
-        message = f"Hello {user.username}, you must verify your email to enter the rabbit hole. Click the button below or copy the following code: {token.token}"
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [user.email]
-
-        send_mail(subject, message, from_email, recipient_list)
-
-        print(f"Successfully sent email to {user.username} ({email})")
+        send_verification_email(email, user.username, token.token)
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 
