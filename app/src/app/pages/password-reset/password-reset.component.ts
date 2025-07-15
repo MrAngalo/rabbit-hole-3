@@ -9,6 +9,7 @@ import { AuthService } from "../../services/auth/auth.service";
 import { RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { CookieService } from "ngx-cookie-service";
+import { CooldownTimer } from "../../utils/cooldown";
 
 @Component({
     selector: "app-password-reset",
@@ -24,9 +25,8 @@ export class PasswordResetComponent implements OnDestroy {
     showErrorsReset = false;
     showErrorsVerify = false;
 
-    readonly codeCooldownCookie = "pwreset_next";
-    codeCooldownInterval: any | null = null;
-    codeCooldown = 0;
+    readonly cooldownCookie = "pwreset_next";
+    cooldownTimer: CooldownTimer;
 
     constructor(
         private authService: AuthService,
@@ -42,20 +42,30 @@ export class PasswordResetComponent implements OnDestroy {
             token: new FormControl("", [Validators.required])
         });
 
-        const next = parseInt(this.cookie.get(this.codeCooldownCookie)) ?? 0;
-        const cooldown = Math.round((next - Date.now()) / 1000);
-        if (cooldown > 0) {
-            this.tickCooldown(cooldown);
-        } else {
-            this.cookie.delete(this.codeCooldownCookie);
+        this.cooldownTimer = new CooldownTimer();
+        this.cooldownTimer.onTick = (seconds) => {
+            if (this.cookie.get(this.cooldownCookie) === "") {
+                const next = Date.now() + seconds * 1000;
+                this.cookie.set(this.cooldownCookie, next + "");
+            }
+        };
+        this.cooldownTimer.onFinish = () => {
+            this.cookie.delete(this.cooldownCookie);
+        };
+
+        if (this.cookie.get(this.cooldownCookie) !== "") {
+            const next = parseInt(this.cookie.get(this.cooldownCookie));
+            const cooldown = Math.round((next - Date.now()) / 1000);
+            if (cooldown > 0) {
+                this.cooldownTimer.start(cooldown);
+            } else {
+                this.cookie.delete(this.cooldownCookie);
+            }
         }
     }
 
     ngOnDestroy(): void {
-        if (this.codeCooldownInterval !== null) {
-            clearInterval(this.codeCooldownInterval);
-            this.codeCooldownInterval = null;
-        }
+        this.cooldownTimer.stop();
     }
 
     passwordCode() {
@@ -66,8 +76,8 @@ export class PasswordResetComponent implements OnDestroy {
         }
         const { email } = this.formReset.value;
         this.authService.passwordCode(email).subscribe({
-            next: () => this.tickCooldown(60),
-            error: () => this.tickCooldown(60)
+            next: () => this.cooldownTimer.start(60),
+            error: () => this.cooldownTimer.start(60)
         });
     }
 
@@ -96,24 +106,5 @@ export class PasswordResetComponent implements OnDestroy {
                     // });
                 }
             });
-    }
-
-    private tickCooldown(seconds: number) {
-        this.codeCooldown = seconds;
-        const next = Date.now() + seconds * 1000;
-        this.cookie.set(this.codeCooldownCookie, next + "");
-        if (this.codeCooldownInterval !== null) {
-            return;
-        }
-        this.codeCooldownInterval = setInterval(() => {
-            if (this.codeCooldown > 0) {
-                this.codeCooldown -= 1;
-                this.cookie.set(this.codeCooldownCookie, next + "");
-            } else if (this.codeCooldownInterval !== null) {
-                clearInterval(this.codeCooldownInterval);
-                this.codeCooldownInterval = null;
-                this.cookie.delete(this.codeCooldownCookie);
-            }
-        }, 1000);
     }
 }
