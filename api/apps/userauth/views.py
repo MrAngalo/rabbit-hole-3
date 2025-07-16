@@ -22,7 +22,6 @@ from .models import User, UserToken
 from userauth.serializers import (
     UserInfoSerializer,
     UserLoginSerializer,
-    UserRegisterSerializer,
 )
 
 from django.utils import timezone
@@ -42,7 +41,8 @@ class LoginView(APIView):
         user = authenticate(request, email=email.lower(), password=password)
         if user == None:
             return Response(
-                {"error": "User not found."}, status=status.HTTP_404_NOT_FOUND
+                {"error": "User not found or verified."},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         # Creates session cookie
