@@ -8,7 +8,7 @@
                 name="email"
                 placeholder="Email"
             />
-            @if (showErrorsReset && form.get("email")!.invalid) {
+            @if (showErrors && form.get("email")!.invalid) {
                 @for (
                     error of form.get("email")!.errors | formatError;
                     track error
@@ -30,7 +30,7 @@
                 name="username"
                 placeholder="Username"
             />
-            @if (showErrorsVerify && form.get("username")!.invalid) {
+            @if (showErrors && form.get("username")!.invalid) {
                 @for (
                     error of form.get("username")!.errors | formatError;
                     track error
@@ -46,7 +46,7 @@
                 name="password1"
                 placeholder="Password"
             />
-            @if (showErrorsVerify && form.get("password1")!.invalid) {
+            @if (showErrors && form.get("password1")!.invalid) {
                 @for (
                     error of form.get("password1")!.errors | formatError;
                     track error
@@ -62,7 +62,7 @@
                 name="password2"
                 placeholder="Repeat Password"
             />
-            @if (showErrorsVerify && form.get("password2")!.invalid) {
+            @if (showErrors && form.get("password2")!.invalid) {
                 @for (
                     error of form.get("password2")!.errors | formatError;
                     track error
@@ -70,7 +70,7 @@
                     <div>{{ error }}</div>
                 }
             }
-            @if (showErrorsVerify && form!.invalid) {
+            @if (showErrors && form!.invalid) {
                 @for (error of form!.errors | formatError; track error) {
                     <div>{{ error }}</div>
                 }

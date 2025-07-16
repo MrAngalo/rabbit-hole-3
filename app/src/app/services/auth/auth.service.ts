@@ -200,13 +200,7 @@ export class AuthService {
                     withCredentials: false
                 }
             )
-            .pipe(
-                this.discartCsrfToken(),
-                tap((data) => {
-                    this._user = data.user;
-                    this.userSubject.next(this._user);
-                })
-            );
+            .pipe(this.discartCsrfToken());
     }
 
     private userInfo() {

@@ -25,8 +25,7 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
 export class RegisterComponent implements OnDestroy {
     form: FormGroup;
 
-    showErrorsReset = false;
-    showErrorsVerify = false;
+    showErrors = false;
 
     readonly cooldownCookie = "register_next";
     cooldownTimer: CooldownTimer;
@@ -83,7 +82,7 @@ export class RegisterComponent implements OnDestroy {
     register() {
         if (this.form.invalid) {
             this.form.markAsUntouched();
-            this.showErrorsVerify = true;
+            this.showErrors = true;
             return;
         }
 
@@ -113,7 +112,7 @@ export class RegisterComponent implements OnDestroy {
                                 ?.setErrors(objs as ValidationErrors);
                         }
                     });
-                    this.showErrorsVerify = true;
+                    this.showErrors = true;
                 }
             });
     }
