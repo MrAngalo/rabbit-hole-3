@@ -47,8 +47,7 @@ export class RegisterComponent implements OnDestroy {
                 ]),
                 username: new FormControl("", [Validators.required]),
                 password1: new FormControl("", [Validators.required]),
-                password2: new FormControl("", [Validators.required]),
-                token: new FormControl("", [Validators.required])
+                password2: new FormControl("", [Validators.required])
             },
             { validators: [passwordMatchValidator, strongPasswordValidator] }
         );
@@ -86,10 +85,9 @@ export class RegisterComponent implements OnDestroy {
             return;
         }
 
-        const { email, username, password1, password2, token } =
-            this.form.value;
+        const { email, username, password1, password2 } = this.form.value;
         this.authService
-            .register(email, username, password1, password2, token)
+            .register(email, username, password1, password2)
             .subscribe({
                 next: (res) => {
                     this.router.navigate(["/"], {

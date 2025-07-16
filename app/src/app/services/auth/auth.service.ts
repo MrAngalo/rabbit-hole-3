@@ -179,8 +179,7 @@ export class AuthService {
         email: string,
         username: string,
         password1: string,
-        password2: string,
-        token: string
+        password2: string
     ) {
         return this.http
             .post<RegisterResponse>(
@@ -189,8 +188,7 @@ export class AuthService {
                     email,
                     username,
                     password1,
-                    password2,
-                    token
+                    password2
                 },
                 {
                     headers: {
