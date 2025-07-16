@@ -59,7 +59,7 @@ class LogoutView(APIView):
         except:
             pass
         return Response(
-            {"success": "Successfully logged out."}, status=status.HTTP_200_OK
+            {"status": "Successfully logged out."}, status=status.HTTP_200_OK
         )
 
 
@@ -125,6 +125,22 @@ class RegisterCodeView(APIView):
 
         send_registration_verification_email(email, user.username, token.token)
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
+class RegisterVerifyView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+
+        email: str = data["email"].strip()
+        token: str = data["token"].strip()
+
+        return Response(
+            {"status": "Successfully verified your account."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class RegisterView(APIView):

@@ -3,6 +3,7 @@ import {
     FormControl,
     FormGroup,
     ReactiveFormsModule,
+    ValidationErrors,
     Validators
 } from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
@@ -94,33 +95,31 @@ export class RegisterVerifyComponent implements OnDestroy {
         }
 
         const { email, token } = this.form.value;
-        console.log(email, token);
-        // this.authService
-        //     .passwordReset(email, password1, password2, token)
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.router.navigate(["/login"], {
-        //                 queryParams: { email: email }
-        //             });
-        //             this.popupService.clear();
-        //             this.popupService.display({
-        //                 message: res.status,
-        //                 color: "green"
-        //             });
-        //         },
-        //         error: (res) => {
-        //             const validators = res.error.validators;
-        //             Object.entries(validators).forEach(([field, objs]) => {
-        //                 if (field === "") {
-        //                     this.formReset.setErrors(objs as ValidationErrors);
-        //                 } else {
-        //                     this.formReset
-        //                         .get(field)
-        //                         ?.setErrors(objs as ValidationErrors);
-        //                 }
-        //             });
-        //             this.showErrors = true;
-        //         }
-        //     });
+        this.authService.registerVerify(email, token).subscribe({
+            next: (res) => {
+                this.router.navigate(["/login"], {
+                    queryParams: { email: email }
+                });
+                this.popupService.clear();
+                this.popupService.display({
+                    message: res.status,
+                    color: "green"
+                });
+            },
+            error: (res) => {
+                const validators = res.error.validators;
+                Object.entries(validators).forEach(([field, objs]) => {
+                    if (field === "") {
+                        this.form.setErrors(objs as ValidationErrors);
+                    } else {
+                        this.form
+                            .get(field)
+                            ?.setErrors(objs as ValidationErrors);
+                    }
+                });
+                this.showErrorsEmail = true;
+                this.showErrorsToken = true;
+            }
+        });
     }
 }

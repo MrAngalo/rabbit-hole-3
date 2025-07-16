@@ -2,9 +2,12 @@ import { Inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
     LoginResponse,
+    LogoutResponse,
     PasswordCodeResponse,
-    PasswordNewResponse,
+    PasswordResetResponse,
+    RegisterCodeResponse,
     RegisterResponse,
+    RegisterVerifyResponse,
     User,
     UserInfoResponse
 } from "./auth-types";
@@ -93,7 +96,7 @@ export class AuthService {
 
     logout() {
         return this.http
-            .post(
+            .post<LogoutResponse>(
                 `${this.apiUrl}logout/`,
                 {},
                 {
@@ -138,7 +141,7 @@ export class AuthService {
         token: string
     ) {
         return this.http
-            .post<PasswordNewResponse>(
+            .post<PasswordResetResponse>(
                 `${this.apiUrl}pwreset/`,
                 {
                     email,
@@ -159,10 +162,29 @@ export class AuthService {
 
     registerCode(email: string) {
         return this.http
-            .post<PasswordCodeResponse>(
+            .post<RegisterCodeResponse>(
                 `${this.apiUrl}rgcode/`,
                 {
                     email
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.csrfToken
+                    },
+                    withCredentials: false
+                }
+            )
+            .pipe(this.discartCsrfToken());
+    }
+
+    registerVerify(email: string, token: string) {
+        return this.http
+            .post<RegisterVerifyResponse>(
+                `${this.apiUrl}rgverify/`,
+                {
+                    email,
+                    token
                 },
                 {
                     headers: {
