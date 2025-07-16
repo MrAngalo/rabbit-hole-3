@@ -1,0 +1,38 @@
+.container {
+    .field {
+        margin-bottom: 10px;
+
+        input {
+            padding: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            display: block;
+        }
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        background-color: #799ce6;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #45a049;
+        }
+
+        &:disabled {
+            background-color: gray;
+            cursor: auto;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        margin-right: 10px;
+    }
+}

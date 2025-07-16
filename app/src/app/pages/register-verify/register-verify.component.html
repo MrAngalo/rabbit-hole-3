@@ -1,0 +1,92 @@
+<div class="container">
+    <h1>Reset Password</h1>
+    <form [formGroup]="formCode">
+        <div class="field">
+            <input
+                type="email"
+                formControlName="email"
+                name="email"
+                placeholder="Email"
+            />
+            @if (showErrorsReset && formCode.get("email")!.invalid) {
+                @for (
+                    error of formCode.get("email")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+            @if (cooldownTimer.cooldown > 0) {
+                <div>
+                    Code sent successfully! Please wait
+                    {{ cooldownTimer.cooldown }} to send another code.
+                </div>
+            }
+        </div>
+        <button
+            type="button"
+            (click)="passwordCode()"
+            [disabled]="cooldownTimer.cooldown > 0"
+        >
+            Send Code
+        </button>
+    </form>
+    <form [formGroup]="formReset">
+        <div class="field">
+            <input
+                type="password"
+                formControlName="password1"
+                name="password1"
+                placeholder="New Password"
+            />
+            @if (showErrorsVerify && formReset.get("password1")!.invalid) {
+                @for (
+                    error of formReset.get("password1")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <div class="field">
+            <input
+                type="password"
+                formControlName="password2"
+                name="password2"
+                placeholder="Repeat Password"
+            />
+            @if (showErrorsVerify && formReset.get("password2")!.invalid) {
+                @for (
+                    error of formReset.get("password2")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <div class="field">
+            <input
+                type="text"
+                formControlName="token"
+                name="token"
+                placeholder="Token"
+            />
+            @if (showErrorsVerify && formReset.get("token")!.invalid) {
+                @for (
+                    error of formReset.get("token")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+            @if (showErrorsVerify && formReset!.invalid) {
+                @for (error of formReset!.errors | formatError; track error) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <button type="button" (click)="passwordReset()">Reset Password</button>
+    </form>
+    <p><a [routerLink]="['/register']">Don't have an account?</a></p>
+    <p><a [routerLink]="['/login']">Remember your password?</a></p>
+</div>

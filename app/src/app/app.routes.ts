@@ -9,6 +9,7 @@ import { UserPageComponent } from "./pages/user-page/user-page.component";
 import { LogoutComponent } from "./pages/logout/logout.component";
 import { PasswordResetComponent } from "./pages/password-reset/password-reset.component";
 import { RegisterComponent } from "./pages/register/register.component";
+import { RegisterVerifyComponent } from "./pages/register-verify/register-verify.component";
 
 export const routes: Routes = [
     {
@@ -52,6 +53,11 @@ export const routes: Routes = [
     {
         path: "register",
         component: RegisterComponent,
+        canActivate: [notAuthGuard]
+    },
+    {
+        path: "rgverify",
+        component: RegisterVerifyComponent,
         canActivate: [notAuthGuard]
     },
     {
