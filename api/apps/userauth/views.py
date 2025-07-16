@@ -139,6 +139,49 @@ class RegisterVerifyView(APIView):
         email: str = data["email"].strip()
         token: str = data["token"].strip()
 
+        token_obj = UserToken.objects.get(token=token)
+        if token_obj == None:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        now = timezone.now()
+        if token_obj.expires_at < now:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = token_obj.user
+        if user == None:
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user.email != email.lower():
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.is_active = True
+        user.save()
+        token_obj.delete()
+
         return Response(
             {"status": "Successfully verified your account."},
             status=status.HTTP_200_OK,
