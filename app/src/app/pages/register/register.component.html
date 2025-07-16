@@ -1,1 +1,112 @@
-<p>register works!</p>
+<div class="container">
+    <h1>Register</h1>
+    <form [formGroup]="formCode">
+        <div class="field">
+            <input
+                type="email"
+                formControlName="email"
+                name="email"
+                placeholder="Email"
+            />
+            @if (showErrorsReset && formCode.get("email")!.invalid) {
+                @for (
+                    error of formCode.get("email")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+            @if (cooldownTimer.cooldown > 0) {
+                <div>
+                    Code sent successfully! Please wait
+                    {{ cooldownTimer.cooldown }} to send another code.
+                </div>
+            }
+        </div>
+        <button
+            type="button"
+            (click)="registerCode()"
+            [disabled]="cooldownTimer.cooldown > 0"
+        >
+            Send Code
+        </button>
+    </form>
+    <form [formGroup]="formRegister">
+        <div class="field">
+            <input
+                type="text"
+                formControlName="username"
+                name="username"
+                placeholder="Username"
+            />
+            @if (showErrorsVerify && formRegister.get("username")!.invalid) {
+                @for (
+                    error of formRegister.get("username")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <div class="field">
+            <input
+                type="password"
+                formControlName="password1"
+                name="password1"
+                placeholder="Password"
+            />
+            @if (showErrorsVerify && formRegister.get("password1")!.invalid) {
+                @for (
+                    error of formRegister.get("password1")!.errors
+                        | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <div class="field">
+            <input
+                type="password"
+                formControlName="password2"
+                name="password2"
+                placeholder="Repeat Password"
+            />
+            @if (showErrorsVerify && formRegister.get("password2")!.invalid) {
+                @for (
+                    error of formRegister.get("password2")!.errors
+                        | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <div class="field">
+            <input
+                type="text"
+                formControlName="token"
+                name="token"
+                placeholder="Token"
+            />
+            @if (showErrorsVerify && formRegister.get("token")!.invalid) {
+                @for (
+                    error of formRegister.get("token")!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+            @if (showErrorsVerify && formRegister!.invalid) {
+                @for (
+                    error of formRegister!.errors | formatError;
+                    track error
+                ) {
+                    <div>{{ error }}</div>
+                }
+            }
+        </div>
+        <button type="button" (click)="register()">Register</button>
+    </form>
+    <p><a [routerLink]="['/login']">Already have an account?</a></p>
+</div>

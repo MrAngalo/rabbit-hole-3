@@ -8,6 +8,7 @@ import { AccountComponent } from "./pages/account/account.component";
 import { UserPageComponent } from "./pages/user-page/user-page.component";
 import { LogoutComponent } from "./pages/logout/logout.component";
 import { PasswordResetComponent } from "./pages/password-reset/password-reset.component";
+import { RegisterComponent } from "./pages/register/register.component";
 
 export const routes: Routes = [
     {
@@ -46,6 +47,11 @@ export const routes: Routes = [
     {
         path: "pwreset",
         component: PasswordResetComponent,
+        canActivate: [notAuthGuard]
+    },
+    {
+        path: "register",
+        component: RegisterComponent,
         canActivate: [notAuthGuard]
     },
     {

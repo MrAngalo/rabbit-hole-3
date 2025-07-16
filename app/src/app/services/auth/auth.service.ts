@@ -91,32 +91,6 @@ export class AuthService {
             );
     }
 
-    register(username: string, email: string, password: string) {
-        return this.http
-            .post<RegisterResponse>(
-                `${this.apiUrl}register/`,
-                {
-                    username,
-                    email,
-                    password
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": this.csrfToken
-                    },
-                    withCredentials: false
-                }
-            )
-            .pipe(
-                this.discartCsrfToken(),
-                tap((data) => {
-                    this._user = data.user;
-                    this.userSubject.next(this._user);
-                })
-            );
-    }
-
     logout() {
         return this.http
             .post(
@@ -181,6 +155,58 @@ export class AuthService {
                 }
             )
             .pipe(this.discartCsrfToken());
+    }
+
+    registerCode(email: string) {
+        return this.http
+            .post<PasswordCodeResponse>(
+                `${this.apiUrl}rgcode/`,
+                {
+                    email
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.csrfToken
+                    },
+                    withCredentials: false
+                }
+            )
+            .pipe(this.discartCsrfToken());
+    }
+
+    register(
+        email: string,
+        username: string,
+        password1: string,
+        password2: string,
+        token: string
+    ) {
+        return this.http
+            .post<RegisterResponse>(
+                `${this.apiUrl}register/`,
+                {
+                    email,
+                    username,
+                    password1,
+                    password2,
+                    token
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": this.csrfToken
+                    },
+                    withCredentials: false
+                }
+            )
+            .pipe(
+                this.discartCsrfToken(),
+                tap((data) => {
+                    this._user = data.user;
+                    this.userSubject.next(this._user);
+                })
+            );
     }
 
     private userInfo() {
