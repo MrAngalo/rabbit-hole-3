@@ -34,10 +34,12 @@ class LoginView(APIView):
     permission_classes = []
 
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        data: dict[str, str] = request.data  # type: ignore
 
-        user = authenticate(request, email=email, password=password)
+        email: str = data["email"].strip()
+        password: str = data["password"].strip()
+
+        user = authenticate(request, email=email.lower(), password=password)
         if user == None:
             return Response(
                 {"error": "User not found."}, status=status.HTTP_404_NOT_FOUND
@@ -80,7 +82,7 @@ class RegisterCodeView(APIView):
         data: dict[str, str] = request.data  # type: ignore
 
         email: str = data["email"].strip()
-        user = User.objects.get(email=email)
+        user = User.objects.get(email=email.lower())
         if user == None:
             print("Failed to send email - User Does Not Exist")
             return Response(
@@ -240,7 +242,7 @@ class PasswordCodeView(APIView):
         data: dict[str, str] = request.data  # type: ignore
 
         email: str = data["email"].strip()
-        user = User.objects.get(email=email)
+        user = User.objects.get(email=email.lower())
         if user == None:
             print("Failed to send email - User Does Not Exist")
             return Response(
@@ -365,7 +367,7 @@ class PasswordResetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if user.email != email:
+        if user.email != email.lower():
             return Response(
                 {
                     "error": "Token is invalid or expired.",
