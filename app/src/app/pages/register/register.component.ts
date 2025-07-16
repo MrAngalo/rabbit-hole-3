@@ -23,8 +23,7 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
     standalone: true
 })
 export class RegisterComponent implements OnDestroy {
-    formCode: FormGroup;
-    formRegister: FormGroup;
+    form: FormGroup;
 
     showErrorsReset = false;
     showErrorsVerify = false;
@@ -39,12 +38,14 @@ export class RegisterComponent implements OnDestroy {
         private router: Router,
         private popupService: PopupMessagesService
     ) {
-        this.formCode = new FormGroup({
-            email: new FormControl("", [Validators.required, Validators.email])
-        });
+        const email = this.route.snapshot.queryParamMap.get("email") ?? "";
 
-        this.formRegister = new FormGroup(
+        this.form = new FormGroup(
             {
+                email: new FormControl(email, [
+                    Validators.required,
+                    Validators.email
+                ]),
                 username: new FormControl("", [Validators.required]),
                 password1: new FormControl("", [Validators.required]),
                 password2: new FormControl("", [Validators.required]),
@@ -52,21 +53,6 @@ export class RegisterComponent implements OnDestroy {
             },
             { validators: [passwordMatchValidator, strongPasswordValidator] }
         );
-
-        if (this.route.snapshot.queryParamMap.has("email")) {
-            this.formCode.setValue({
-                email: this.route.snapshot.queryParamMap.get("email")
-            });
-        }
-
-        if (this.route.snapshot.queryParamMap.has("token")) {
-            this.formRegister.setValue({
-                username: "",
-                password1: "",
-                password2: "",
-                token: this.route.snapshot.queryParamMap.get("token")
-            });
-        }
 
         this.cooldownTimer = new CooldownTimer();
         this.cooldownTimer.onTick = (seconds) => {
@@ -94,31 +80,15 @@ export class RegisterComponent implements OnDestroy {
         this.cooldownTimer.stop();
     }
 
-    registerCode() {
-        if (this.formCode.invalid) {
-            this.formCode.markAsUntouched();
-            this.showErrorsReset = true;
-            return;
-        }
-        this.cooldownTimer.start(60);
-        const { email } = this.formCode.value;
-        this.authService.registerCode(email).subscribe({
-            next: () => {},
-            error: () => {}
-        });
-    }
-
     register() {
-        if (this.formCode.invalid || this.formRegister.invalid) {
-            this.formCode.markAsUntouched();
-            this.formRegister.markAsUntouched();
+        if (this.form.invalid) {
+            this.form.markAsUntouched();
             this.showErrorsVerify = true;
             return;
         }
 
-        const { email } = this.formCode.value;
-        const { username, password1, password2, token } =
-            this.formRegister.value;
+        const { email, username, password1, password2, token } =
+            this.form.value;
         this.authService
             .register(email, username, password1, password2, token)
             .subscribe({
@@ -136,11 +106,9 @@ export class RegisterComponent implements OnDestroy {
                     const validators = res.error.validators;
                     Object.entries(validators).forEach(([field, objs]) => {
                         if (field === "") {
-                            this.formRegister.setErrors(
-                                objs as ValidationErrors
-                            );
+                            this.form.setErrors(objs as ValidationErrors);
                         } else {
-                            this.formRegister
+                            this.form
                                 .get(field)
                                 ?.setErrors(objs as ValidationErrors);
                         }
