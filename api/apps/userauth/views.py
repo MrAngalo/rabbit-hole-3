@@ -108,6 +108,15 @@ class RegisterCodeView(APIView):
                 status=status.HTTP_200_OK,
             )
 
+        if user.is_active:
+            print("Failed to send email - User Does Not Exist")
+            return Response(
+                {
+                    "status": "We have sent you a code via your email if it matches with our system."
+                },
+                status=status.HTTP_200_OK,
+            )
+
         token = UserToken.objects.get(user=user)
         if token == None:
             token = UserToken.objects.create(
@@ -170,6 +179,15 @@ class RegisterVerifyView(APIView):
             )
 
         if user.email != email.lower():
+            return Response(
+                {
+                    "error": "Token is invalid or expired.",
+                    "validators": {"token": {"tokenInvalid": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user.is_active:
             return Response(
                 {
                     "error": "Token is invalid or expired.",
@@ -419,6 +437,7 @@ class PasswordResetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        user.is_active = True
         user.set_password(password1)
         user.save()
         token_obj.delete()
