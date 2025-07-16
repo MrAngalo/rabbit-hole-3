@@ -47,18 +47,6 @@ class LoginView(APIView):
         return Response({"user": serializer.data})
 
 
-class RegisterView(APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def post(self, request):
-        serializer = UserRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            User.objects.create_user(**serializer.data)  # type: ignore
-            return Response({"user": serializer.data})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class LogoutView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -80,6 +68,23 @@ class UserInfoView(APIView):
     def get(self, request: Request):
         serializer = UserInfoSerializer(instance=request.user)
         return Response({"user": serializer.data}, status=status.HTTP_200_OK)
+
+
+class RegisterCodeView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+
+class RegisterView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    # def post(self, request):
+    #     serializer = UserRegisterSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         User.objects.create_user(**serializer.data)  # type: ignore
+    #         return Response({"user": serializer.data})
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PasswordCodeView(APIView):
