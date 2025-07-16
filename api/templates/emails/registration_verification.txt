@@ -2,4 +2,4 @@ Verify Your Email.
 Hello {{ username }}, you must verify your email to enter the rabbit hole. Click the button or copy the code - it will last 15 minutes:
 Code: {{ verification_code }}.
 Link: {{ verification_link }}.
-You have received this email because you requested create an account at {% now "Y-m-d H:i" %} UTC.
+You have received this email because you requested to verify your account at {% now "Y-m-d H:i" %} UTC.

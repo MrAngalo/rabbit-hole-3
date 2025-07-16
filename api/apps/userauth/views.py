@@ -13,8 +13,10 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from apps.core import settings
-from apps.core.utils import send_password_reset_email
+from apps.core.utils import (
+    send_password_reset_email,
+    send_registration_verification_email,
+)
 
 from .models import User, UserToken
 from userauth.serializers import (
@@ -79,12 +81,89 @@ class RegisterView(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # def post(self, request):
-    #     serializer = UserRegisterSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         User.objects.create_user(**serializer.data)  # type: ignore
-    #         return Response({"user": serializer.data})
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+
+        email: str = data["email"].strip()
+        username: str = data["username"].strip()
+        password1: str = data["password1"].strip()
+        password2: str = data["password2"].strip()
+
+        if password1 != password2:
+            return Response(
+                {
+                    "error": "Passwords do not match.",
+                    "validators": {"": {"passwordsMismatch": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(password1) < 8:
+            return Response(
+                {
+                    "error": "Password must have at least 8 characters.",
+                    "validators": {"": {"passwordFewCharacters": 8}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not re.search(r"\d", password1):
+            return Response(
+                {
+                    "error": "Password must have at least 1 number.",
+                    "validators": {"": {"passwordNoNumbers": 1}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not re.search(r"[A-Za-z]", password1):
+            return Response(
+                {
+                    "error": "Password must have at least 1 letter.",
+                    "validators": {"": {"passwordNoLetter": 1}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.get(email=email.lower())
+        if user != None:
+            return Response(
+                {
+                    "error": "There is already an account with this email.",
+                    "validators": {"email": {"emailInUse": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.get(username_lower=username.lower())
+        if user != None:
+            return Response(
+                {
+                    "error": "There is already an account with this username.",
+                    "validators": {"username": {"usernameInUse": True}},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        now = timezone.now()
+        user = User(
+            username_lower=username.lower(),
+            username=username,
+            email=email.lower(),
+            last_received_email=now,
+        )
+        user.set_password(password1)
+        user.save()
+
+        token = UserToken.objects.create(
+            user=user, expires_at=now + timedelta(minutes=15)
+        )
+
+        send_registration_verification_email(user.email, user.username, token.token)
+        return Response(
+            {"status": "Successfully created your account, please verify your email."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class PasswordCodeView(APIView):

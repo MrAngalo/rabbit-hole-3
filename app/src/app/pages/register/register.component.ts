@@ -90,7 +90,7 @@ export class RegisterComponent implements OnDestroy {
             .register(email, username, password1, password2)
             .subscribe({
                 next: (res) => {
-                    this.router.navigate(["/"], {
+                    this.router.navigate(["/rgverify"], {
                         queryParams: { email: email }
                     });
                     this.popupService.clear();
