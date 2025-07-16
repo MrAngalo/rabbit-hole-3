@@ -76,6 +76,56 @@ class RegisterCodeView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    def post(self, request):
+        data: dict[str, str] = request.data  # type: ignore
+
+        email: str = data["email"].strip()
+        user = User.objects.get(email=email)
+        if user == None:
+            print("Failed to send email - User Does Not Exist")
+            return Response(
+                {
+                    "status": "We have sent you a code via your email if it matches with our system."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        now = timezone.now()
+
+        # Check if more than 1 minute have passed
+        if user.last_received_email != None and (
+            now - user.last_received_email
+        ) < timedelta(minutes=1):
+            print(
+                f"Failed to send email - Too Many Requests (delta={now - user.last_received_email})"
+            )
+            return Response(
+                {
+                    "status": "We have sent you a code via your email if it matches with our system."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        token = UserToken.objects.get(user=user)
+        if token == None:
+            token = UserToken.objects.create(
+                user=user, expires_at=now + timedelta(minutes=15)
+            )
+        else:
+            lifetime = token.expires_at - token.created_at
+            halfway = token.created_at + (lifetime / 2)
+            if halfway < now:
+                token.delete()
+                token = UserToken.objects.create(
+                    user=user, expires_at=now + timedelta(minutes=15)
+                )
+
+        user.last_received_email = timezone.now()
+        user.save()
+
+        send_registration_verification_email(email, user.username, token.token)
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
 
 class RegisterView(APIView):
     authentication_classes = []

@@ -79,11 +79,10 @@ export class RegisterVerifyComponent implements OnDestroy {
         }
         this.cooldownTimer.start(60);
         const { email } = this.form.value;
-        console.log(email);
-        // this.authService.passwordCode(email).subscribe({
-        //     next: () => {},
-        //     error: () => {}
-        // });
+        this.authService.registerCode(email).subscribe({
+            next: () => {},
+            error: () => {}
+        });
     }
 
     registerVerify() {
