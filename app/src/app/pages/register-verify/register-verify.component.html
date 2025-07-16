@@ -1,6 +1,6 @@
 <div class="container">
-    <h1>Reset Password</h1>
-    <form [formGroup]="formCode">
+    <h1>Verify Account</h1>
+    <form [formGroup]="form">
         <div class="field">
             <input
                 type="email"
@@ -8,9 +8,9 @@
                 name="email"
                 placeholder="Email"
             />
-            @if (showErrorsReset && formCode.get("email")!.invalid) {
+            @if (showErrorsEmail && form.get("email")!.invalid) {
                 @for (
-                    error of formCode.get("email")!.errors | formatError;
+                    error of form.get("email")!.errors | formatError;
                     track error
                 ) {
                     <div>{{ error }}</div>
@@ -23,47 +23,6 @@
                 </div>
             }
         </div>
-        <button
-            type="button"
-            (click)="passwordCode()"
-            [disabled]="cooldownTimer.cooldown > 0"
-        >
-            Send Code
-        </button>
-    </form>
-    <form [formGroup]="formReset">
-        <div class="field">
-            <input
-                type="password"
-                formControlName="password1"
-                name="password1"
-                placeholder="New Password"
-            />
-            @if (showErrorsVerify && formReset.get("password1")!.invalid) {
-                @for (
-                    error of formReset.get("password1")!.errors | formatError;
-                    track error
-                ) {
-                    <div>{{ error }}</div>
-                }
-            }
-        </div>
-        <div class="field">
-            <input
-                type="password"
-                formControlName="password2"
-                name="password2"
-                placeholder="Repeat Password"
-            />
-            @if (showErrorsVerify && formReset.get("password2")!.invalid) {
-                @for (
-                    error of formReset.get("password2")!.errors | formatError;
-                    track error
-                ) {
-                    <div>{{ error }}</div>
-                }
-            }
-        </div>
         <div class="field">
             <input
                 type="text"
@@ -71,21 +30,28 @@
                 name="token"
                 placeholder="Token"
             />
-            @if (showErrorsVerify && formReset.get("token")!.invalid) {
+            @if (showErrorsToken && form.get("token")!.invalid) {
                 @for (
-                    error of formReset.get("token")!.errors | formatError;
+                    error of form.get("token")!.errors | formatError;
                     track error
                 ) {
                     <div>{{ error }}</div>
                 }
             }
-            @if (showErrorsVerify && formReset!.invalid) {
-                @for (error of formReset!.errors | formatError; track error) {
+            @if (showErrorsToken && form!.invalid) {
+                @for (error of form!.errors | formatError; track error) {
                     <div>{{ error }}</div>
                 }
             }
         </div>
-        <button type="button" (click)="passwordReset()">Reset Password</button>
+        <button
+            type="button"
+            (click)="registerCode()"
+            [disabled]="cooldownTimer.cooldown > 0"
+        >
+            Send Code
+        </button>
+        <button type="button" (click)="registerVerify()">Verify Account</button>
     </form>
     <p><a [routerLink]="['/register']">Don't have an account?</a></p>
     <p><a [routerLink]="['/login']">Remember your password?</a></p>

@@ -3,7 +3,6 @@ import {
     FormControl,
     FormGroup,
     ReactiveFormsModule,
-    ValidationErrors,
     Validators
 } from "@angular/forms";
 import { AuthService } from "../../services/auth/auth.service";
@@ -11,8 +10,6 @@ import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { PipeUtilsModule } from "../../utils/pipes/pipe-utils.module";
 import { CookieService } from "ngx-cookie-service";
 import { CooldownTimer } from "../../utils/cooldown";
-import { strongPasswordValidator } from "../../utils/validators/strong-password-validator";
-import { passwordMatchValidator } from "../../utils/validators/password-match-validator";
 import { PopupMessagesService } from "../../services/popup-messages/popup-messages.service";
 
 @Component({
@@ -23,13 +20,11 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
     standalone: true
 })
 export class RegisterVerifyComponent implements OnDestroy {
-    formCode: FormGroup;
-    formReset: FormGroup;
+    form: FormGroup;
+    showErrorsEmail = false;
+    showErrorsToken = false;
 
-    showErrorsReset = false;
-    showErrorsVerify = false;
-
-    readonly cooldownCookie = "pwreset_next";
+    readonly cooldownCookie = "rgverify_next";
     cooldownTimer: CooldownTimer;
 
     constructor(
@@ -39,32 +34,16 @@ export class RegisterVerifyComponent implements OnDestroy {
         private router: Router,
         private popupService: PopupMessagesService
     ) {
-        this.formCode = new FormGroup({
-            email: new FormControl("", [Validators.required, Validators.email])
+        const email = this.route.snapshot.queryParamMap.get("email") ?? "";
+        const token = this.route.snapshot.queryParamMap.get("token") ?? "";
+
+        this.form = new FormGroup({
+            email: new FormControl(email, [
+                Validators.required,
+                Validators.email
+            ]),
+            token: new FormControl(token, [Validators.required])
         });
-
-        this.formReset = new FormGroup(
-            {
-                password1: new FormControl("", [Validators.required]),
-                password2: new FormControl("", [Validators.required]),
-                token: new FormControl("", [Validators.required])
-            },
-            { validators: [passwordMatchValidator, strongPasswordValidator] }
-        );
-
-        if (this.route.snapshot.queryParamMap.has("email")) {
-            this.formCode.setValue({
-                email: this.route.snapshot.queryParamMap.get("email")
-            });
-        }
-
-        if (this.route.snapshot.queryParamMap.has("token")) {
-            this.formReset.setValue({
-                password1: "",
-                password2: "",
-                token: this.route.snapshot.queryParamMap.get("token")
-            });
-        }
 
         this.cooldownTimer = new CooldownTimer();
         this.cooldownTimer.onTick = (seconds) => {
@@ -92,56 +71,57 @@ export class RegisterVerifyComponent implements OnDestroy {
         this.cooldownTimer.stop();
     }
 
-    passwordCode() {
-        if (this.formCode.invalid) {
-            this.formCode.markAsUntouched();
-            this.showErrorsReset = true;
+    registerCode() {
+        if (this.form.get("email")!.invalid) {
+            this.form.markAsUntouched();
+            this.showErrorsEmail = true;
             return;
         }
         this.cooldownTimer.start(60);
-        const { email } = this.formCode.value;
-        this.authService.passwordCode(email).subscribe({
-            next: () => {},
-            error: () => {}
-        });
+        const { email } = this.form.value;
+        console.log(email);
+        // this.authService.passwordCode(email).subscribe({
+        //     next: () => {},
+        //     error: () => {}
+        // });
     }
 
-    passwordReset() {
-        if (this.formCode.invalid || this.formReset.invalid) {
-            this.formCode.markAsUntouched();
-            this.formReset.markAsUntouched();
-            this.showErrorsVerify = true;
+    registerVerify() {
+        if (this.form.invalid) {
+            this.form.markAsUntouched();
+            this.showErrorsEmail = true;
+            this.showErrorsToken = true;
             return;
         }
 
-        const { email } = this.formCode.value;
-        const { password1, password2, token } = this.formReset.value;
-        this.authService
-            .passwordReset(email, password1, password2, token)
-            .subscribe({
-                next: (res) => {
-                    this.router.navigate(["/login"], {
-                        queryParams: { email: email }
-                    });
-                    this.popupService.clear();
-                    this.popupService.display({
-                        message: res.status,
-                        color: "green"
-                    });
-                },
-                error: (res) => {
-                    const validators = res.error.validators;
-                    Object.entries(validators).forEach(([field, objs]) => {
-                        if (field === "") {
-                            this.formReset.setErrors(objs as ValidationErrors);
-                        } else {
-                            this.formReset
-                                .get(field)
-                                ?.setErrors(objs as ValidationErrors);
-                        }
-                    });
-                    this.showErrorsVerify = true;
-                }
-            });
+        const { email, token } = this.form.value;
+        console.log(email, token);
+        // this.authService
+        //     .passwordReset(email, password1, password2, token)
+        //     .subscribe({
+        //         next: (res) => {
+        //             this.router.navigate(["/login"], {
+        //                 queryParams: { email: email }
+        //             });
+        //             this.popupService.clear();
+        //             this.popupService.display({
+        //                 message: res.status,
+        //                 color: "green"
+        //             });
+        //         },
+        //         error: (res) => {
+        //             const validators = res.error.validators;
+        //             Object.entries(validators).forEach(([field, objs]) => {
+        //                 if (field === "") {
+        //                     this.formReset.setErrors(objs as ValidationErrors);
+        //                 } else {
+        //                     this.formReset
+        //                         .get(field)
+        //                         ?.setErrors(objs as ValidationErrors);
+        //                 }
+        //             });
+        //             this.showErrors = true;
+        //         }
+        //     });
     }
 }
