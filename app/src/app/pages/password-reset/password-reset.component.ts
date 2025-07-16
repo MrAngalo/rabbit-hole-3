@@ -23,8 +23,8 @@ import { PopupMessagesService } from "../../services/popup-messages/popup-messag
     standalone: true
 })
 export class PasswordResetComponent implements OnDestroy {
+    formCode: FormGroup;
     formReset: FormGroup;
-    formVerify: FormGroup;
 
     showErrorsReset = false;
     showErrorsVerify = false;
@@ -39,11 +39,11 @@ export class PasswordResetComponent implements OnDestroy {
         private router: Router,
         private popupService: PopupMessagesService
     ) {
-        this.formReset = new FormGroup({
+        this.formCode = new FormGroup({
             email: new FormControl("", [Validators.required, Validators.email])
         });
 
-        this.formVerify = new FormGroup(
+        this.formReset = new FormGroup(
             {
                 password1: new FormControl("", [Validators.required]),
                 password2: new FormControl("", [Validators.required]),
@@ -53,13 +53,13 @@ export class PasswordResetComponent implements OnDestroy {
         );
 
         if (this.route.snapshot.queryParamMap.has("email")) {
-            this.formReset.setValue({
+            this.formCode.setValue({
                 email: this.route.snapshot.queryParamMap.get("email")
             });
         }
 
         if (this.route.snapshot.queryParamMap.has("token")) {
-            this.formVerify.setValue({
+            this.formReset.setValue({
                 password1: "",
                 password2: "",
                 token: this.route.snapshot.queryParamMap.get("token")
@@ -93,31 +93,31 @@ export class PasswordResetComponent implements OnDestroy {
     }
 
     passwordCode() {
-        if (this.formReset.invalid) {
-            this.formReset.markAsUntouched();
+        if (this.formCode.invalid) {
+            this.formCode.markAsUntouched();
             this.showErrorsReset = true;
             return;
         }
         this.cooldownTimer.start(60);
-        const { email } = this.formReset.value;
+        const { email } = this.formCode.value;
         this.authService.passwordCode(email).subscribe({
             next: () => {},
             error: () => {}
         });
     }
 
-    passwordNew() {
-        if (this.formReset.invalid || this.formVerify.invalid) {
+    passwordReset() {
+        if (this.formCode.invalid || this.formReset.invalid) {
+            this.formCode.markAsUntouched();
             this.formReset.markAsUntouched();
-            this.formVerify.markAsUntouched();
             this.showErrorsVerify = true;
             return;
         }
 
-        const { email } = this.formReset.value;
-        const { password1, password2, token } = this.formVerify.value;
+        const { email } = this.formCode.value;
+        const { password1, password2, token } = this.formReset.value;
         this.authService
-            .passwordNew(email, password1, password2, token)
+            .passwordReset(email, password1, password2, token)
             .subscribe({
                 next: (res) => {
                     this.router.navigate(["/login"], {
@@ -133,9 +133,9 @@ export class PasswordResetComponent implements OnDestroy {
                     const validators = res.error.validators;
                     Object.entries(validators).forEach(([field, objs]) => {
                         if (field === "") {
-                            this.formVerify.setErrors(objs as ValidationErrors);
+                            this.formReset.setErrors(objs as ValidationErrors);
                         } else {
-                            this.formVerify
+                            this.formReset
                                 .get(field)
                                 ?.setErrors(objs as ValidationErrors);
                         }

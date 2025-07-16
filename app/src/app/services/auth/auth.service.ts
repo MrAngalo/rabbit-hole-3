@@ -131,7 +131,7 @@ export class AuthService {
             .pipe(this.discartCsrfToken());
     }
 
-    passwordNew(
+    passwordReset(
         email: string,
         password1: string,
         password2: string,
@@ -139,7 +139,7 @@ export class AuthService {
     ) {
         return this.http
             .post<PasswordNewResponse>(
-                `${this.apiUrl}pwnew/`,
+                `${this.apiUrl}pwreset/`,
                 {
                     email,
                     password1,

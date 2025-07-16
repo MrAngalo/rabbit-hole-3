@@ -137,7 +137,7 @@ class PasswordCodeView(APIView):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 
-class PasswordNewView(APIView):
+class PasswordResetView(APIView):
     authentication_classes = []
     permission_classes = []
 

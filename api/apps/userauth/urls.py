@@ -5,7 +5,7 @@ from userauth.views import (
     RegisterView,
     UserInfoView,
     PasswordCodeView,
-    PasswordNewView,
+    PasswordResetView,
 )
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
     #
     # re_path(r"^verify/$", NotImplementedView.as_view()),
     re_path(r"^pwcode/$", PasswordCodeView.as_view()),
-    re_path(r"^pwnew/$", PasswordNewView.as_view()),
+    re_path(r"^pwreset/$", PasswordResetView.as_view()),
 ]
