@@ -22,7 +22,7 @@ export class HeaderComponent {
 
     constructor(
         @Inject("DATA") public data: DeclaredData,
-        private router: Router,
+        public router: Router,
         private authService: AuthService
     ) {
         this.user$ = this.authService.user$;

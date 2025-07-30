@@ -1,51 +1,17 @@
 <header>
-    <div class="navigation">
-        <div class="navigation-left">
-            <a [routerLink]="['/']">
-                <div class="icon">
-                    <img src="/static/img/icons/rabbit.svg" alt="Rabbit" />
-                </div>
-                <div class="label">Rabbit Search</div>
-            </a>
-        </div>
-        <div class="navigation-right">
-            <div class="menu search">
-                <div class="hint-input">
-                    <label for="id">Scene ID #</label>
-                    <input
-                        type="number"
-                        [(ngModel)]="sceneId"
-                        [min]="0"
-                        [max]="data.maxId"
-                    />
-                    <div class="hint">Highest ID is {{ data.maxId }}!</div>
-                </div>
-                <div>
-                    <button
-                        class="icon button"
-                        [routerLink]="['/scene', sceneId || 0]"
-                    >
-                        <img src="/static/img/icons/search.svg" alt="Search" />
-                    </button>
-                </div>
-            </div>
-            <div class="menu profile">
-                <a
-                    [routerLink]="
-                        (user$ | async) !== null ? ['/account'] : ['/login']
-                    "
-                >
-                    <div class="icon button">
-                        <img
-                            src="/static/img/icons/profile.svg"
-                            alt="Account"
-                        />
-                    </div>
-                    <div class="username label">
-                        {{ (user$ | async)?.username || "Login" }}
-                    </div>
-                </a>
-            </div>
-        </div>
+    <div class="icon-title" (click)="router.navigate(['/'])">
+        <img class="icon" src="/static/img/icons/rabbit.svg" />
+        <div class="title">Rabbit Hole</div>
     </div>
+    @if (user$ | async; as user) {
+        <div
+            class="icon-title"
+            (click)="router.navigate(user !== null ? ['/account'] : ['/login'])"
+        >
+            <img class="icon" src="/static/img/icons/profile.svg" />
+            <div class="title">
+                {{ user !== null ? user.username : "Login" }}
+            </div>
+        </div>
+    }
 </header>
